@@ -1,0 +1,229 @@
+"Trino version: 422
+Fragment 0 [SINGLE]
+    Output layout: [c_customer_id]
+    Output partitioning: SINGLE []
+    Output[columnNames = [c_customer_id]]
+    │   Layout: [c_customer_id:varchar]
+    │   Estimates: {rows: 100 (5.37kB), cpu: 0, memory: 0B, network: 0B}
+    └─ TopN[count = 100, orderBy = [c_customer_id ASC NULLS LAST]]
+       │   Layout: [c_customer_id:varchar]
+       │   Estimates: {rows: 100 (5.37kB), cpu: ?, memory: ?, network: ?}
+       └─ LocalExchange[partitioning = SINGLE]
+          │   Layout: [c_customer_id:varchar]
+          │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}
+          └─ RemoteSource[sourceFragmentIds = [1]]
+                 Layout: [c_customer_id:varchar]
+
+Fragment 1 [HASH]
+    Output layout: [c_customer_id]
+    Output partitioning: SINGLE []
+    TopNPartial[count = 100, orderBy = [c_customer_id ASC NULLS LAST]]
+    │   Layout: [c_customer_id:varchar]
+    └─ FilterProject[filterPredicate = (CAST(""sum"" AS decimal(38, 3)) > (COALESCE(""avg"", ""avg_63"") * CAST(DECIMAL '1.2' AS decimal(2, 1))))]
+       │   Layout: [c_customer_id:varchar]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}/{rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       └─ CrossJoin[]
+          │   Layout: [sum:decimal(38,2), c_customer_id:varchar, avg:decimal(38,2), avg_63:decimal(38,2)]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 34B, network: 0B}
+          │   Distribution: REPLICATED
+          ├─ LeftJoin[criteria = (""sr_store_sk"" = ""sr_store_sk_12""), hash = [$hashvalue, $hashvalue_83], distribution = PARTITIONED]
+          │  │   Layout: [sum:decimal(38,2), c_customer_id:varchar, avg:decimal(38,2)]
+          │  │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+          │  │   Distribution: PARTITIONED
+          │  ├─ RemoteSource[sourceFragmentIds = [2]]
+          │  │      Layout: [sr_store_sk:integer, sum:decimal(38,2), c_customer_id:varchar, $hashvalue:bigint]
+          │  └─ Aggregate[type = FINAL, keys = [sr_store_sk_12], hash = [$hashvalue_83]]
+          │     │   Layout: [sr_store_sk_12:integer, $hashvalue_83:bigint, avg:decimal(38,2)]
+          │     │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+          │     │   avg := avg(""avg_65"")
+          │     └─ LocalExchange[partitioning = HASH, hashColumn = [$hashvalue_83], arguments = [""sr_store_sk_12""]]
+          │        │   Layout: [sr_store_sk_12:integer, avg_65:varbinary, $hashvalue_83:bigint]
+          │        │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │        └─ RemoteSource[sourceFragmentIds = [7]]
+          │               Layout: [sr_store_sk_12:integer, avg_65:varbinary, $hashvalue_84:bigint]
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [avg_63:decimal(38,2)]
+             │   Estimates: {rows: 1 (17B), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [10]]
+                    Layout: [avg_63:decimal(38,2)]
+
+Fragment 2 [HASH]
+    Output layout: [sr_store_sk, sum, c_customer_id, $hashvalue_82]
+    Output partitioning: HASH [sr_store_sk][$hashvalue_82]
+    Project[]
+    │   Layout: [sr_store_sk:integer, sum:decimal(38,2), c_customer_id:varchar, $hashvalue_82:bigint]
+    │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+    │   $hashvalue_82 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""sr_store_sk""), 0))
+    └─ InnerJoin[criteria = (""sr_customer_sk"" = ""c_customer_sk""), hash = [$hashvalue_78, $hashvalue_79], distribution = REPLICATED]
+       │   Layout: [sr_store_sk:integer, sum:decimal(38,2), c_customer_id:varchar]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 4.48MB, network: 0B}
+       │   Distribution: REPLICATED
+       │   dynamicFilterAssignments = {c_customer_sk -> #df_1998}
+       ├─ Project[]
+       │  │   Layout: [sr_customer_sk:integer, sr_store_sk:integer, sum:decimal(38,2), $hashvalue_78:bigint]
+       │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │  │   $hashvalue_78 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""sr_customer_sk""), 0))
+       │  └─ InnerJoin[criteria = (""sr_store_sk"" = ""s_store_sk""), hash = [$hashvalue_74, $hashvalue_75], distribution = REPLICATED]
+       │     │   Layout: [sr_customer_sk:integer, sr_store_sk:integer, sum:decimal(38,2)]
+       │     │   Estimates: {rows: ? (?), cpu: ?, memory: 168B, network: 0B}
+       │     │   Distribution: REPLICATED
+       │     │   dynamicFilterAssignments = {s_store_sk -> #df_1999}
+       │     ├─ Project[]
+       │     │  │   Layout: [sr_customer_sk:integer, sr_store_sk:integer, sum:decimal(38,2), $hashvalue_74:bigint]
+       │     │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │     │  │   $hashvalue_74 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""sr_store_sk""), 0))
+       │     │  └─ Aggregate[type = FINAL, keys = [sr_customer_sk, sr_store_sk], hash = [$hashvalue_67]]
+       │     │     │   Layout: [sr_customer_sk:integer, sr_store_sk:integer, $hashvalue_67:bigint, sum:decimal(38,2)]
+       │     │     │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+       │     │     │   sum := sum(""sum_64"")
+       │     │     └─ LocalExchange[partitioning = HASH, hashColumn = [$hashvalue_67], arguments = [""sr_customer_sk"", ""sr_store_sk""]]
+       │     │        │   Layout: [sr_customer_sk:integer, sr_store_sk:integer, sum_64:varbinary, $hashvalue_67:bigint]
+       │     │        │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │     │        └─ RemoteSource[sourceFragmentIds = [3]]
+       │     │               Layout: [sr_customer_sk:integer, sr_store_sk:integer, sum_64:varbinary, $hashvalue_68:bigint]
+       │     └─ LocalExchange[partitioning = SINGLE]
+       │        │   Layout: [s_store_sk:integer, $hashvalue_75:bigint]
+       │        │   Estimates: {rows: 6 (84B), cpu: 0, memory: 0B, network: 0B}
+       │        └─ RemoteSource[sourceFragmentIds = [5]]
+       │               Layout: [s_store_sk:integer, $hashvalue_76:bigint]
+       └─ LocalExchange[partitioning = SINGLE]
+          │   Layout: [c_customer_sk:integer, c_customer_id:varchar, $hashvalue_79:bigint]
+          │   Estimates: {rows: 100000 (2.24MB), cpu: 0, memory: 0B, network: 0B}
+          └─ RemoteSource[sourceFragmentIds = [6]]
+                 Layout: [c_customer_sk:integer, c_customer_id:varchar, $hashvalue_80:bigint]
+
+Fragment 3 [SOURCE]
+    Output layout: [sr_customer_sk, sr_store_sk, sum_64, $hashvalue_73]
+    Output partitioning: HASH [sr_customer_sk, sr_store_sk][$hashvalue_73]
+    Aggregate[type = PARTIAL, keys = [sr_customer_sk, sr_store_sk], hash = [$hashvalue_73]]
+    │   Layout: [sr_customer_sk:integer, sr_store_sk:integer, $hashvalue_73:bigint, sum_64:varbinary]
+    │   sum_64 := sum(""sr_return_amt"")
+    └─ Project[]
+       │   Layout: [sr_customer_sk:integer, sr_store_sk:integer, sr_return_amt:decimal(7,2), $hashvalue_73:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   $hashvalue_73 := combine_hash(combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""sr_customer_sk""), 0)), COALESCE(""$operator$hash_code""(""sr_store_sk""), 0))
+       └─ InnerJoin[criteria = (""sr_returned_date_sk"" = ""d_date_sk""), hash = [$hashvalue_69, $hashvalue_70], distribution = REPLICATED]
+          │   Layout: [sr_customer_sk:integer, sr_store_sk:integer, sr_return_amt:decimal(7,2)]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk -> #df_2000}
+          ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.store_returns$data@730940709024989749, dynamicFilters = {""sr_customer_sk"" = #df_1998, ""sr_store_sk"" = #df_1999, ""sr_returned_date_sk"" = #df_2000}]
+          │      Layout: [sr_customer_sk:integer, sr_store_sk:integer, sr_return_amt:decimal(7,2), sr_returned_date_sk:integer, $hashvalue_69:bigint]
+          │      Estimates: {rows: 278201 (8.68MB), cpu: 6.29M, memory: 0B, network: 0B}/{rows: 278201 (8.68MB), cpu: 6.29M, memory: 0B, network: 0B}/{rows: 278201 (8.68MB), cpu: 8.68M, memory: 0B, network: 0B}
+          │      $hashvalue_69 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""sr_returned_date_sk""), 0))
+          │      sr_returned_date_sk := 20:sr_returned_date_sk:integer
+          │      sr_return_amt := 11:sr_return_amt:decimal(7,2)
+          │      sr_store_sk := 7:sr_store_sk:integer
+          │      sr_customer_sk := 3:sr_customer_sk:integer
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk:integer, $hashvalue_70:bigint]
+             │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [4]]
+                    Layout: [d_date_sk:integer, $hashvalue_71:bigint]
+
+Fragment 4 [SOURCE]
+    Output layout: [d_date_sk, $hashvalue_72]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year"" = 2000)]
+        Layout: [d_date_sk:integer, $hashvalue_72:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: ? (?), cpu: 713.37k, memory: 0B, network: 0B}/{rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+        $hashvalue_72 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk""), 0))
+        d_date_sk := 1:d_date_sk:integer
+        d_year := 7:d_year:integer
+
+Fragment 5 [SOURCE]
+    Output layout: [s_store_sk, $hashvalue_77]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.store$data@7359973075065441165, filterPredicate = (""s_state"" = VARCHAR 'TN')]
+        Layout: [s_store_sk:integer, $hashvalue_77:bigint]
+        Estimates: {rows: 12 (168B), cpu: 379, memory: 0B, network: 0B}/{rows: 6 (84B), cpu: 379, memory: 0B, network: 0B}/{rows: 6 (84B), cpu: 84, memory: 0B, network: 0B}
+        $hashvalue_77 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""s_store_sk""), 0))
+        s_state := 25:s_state:varchar
+        s_store_sk := 1:s_store_sk:integer
+
+Fragment 6 [SOURCE]
+    Output layout: [c_customer_sk, c_customer_id, $hashvalue_81]
+    Output partitioning: BROADCAST []
+    ScanProject[table = iceberg:tpcds_sf1_iceberg.customer$data@139077337131383881]
+        Layout: [c_customer_sk:integer, c_customer_id:varchar, $hashvalue_81:bigint]
+        Estimates: {rows: 100000 (2.24MB), cpu: 1.38M, memory: 0B, network: 0B}/{rows: 100000 (2.24MB), cpu: 2.24M, memory: 0B, network: 0B}
+        $hashvalue_81 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""c_customer_sk""), 0))
+        c_customer_sk := 1:c_customer_sk:integer
+        c_customer_id := 2:c_customer_id:varchar
+
+Fragment 7 [HASH]
+    Output layout: [sr_store_sk_12, avg_65, $hashvalue_92]
+    Output partitioning: HASH [sr_store_sk_12][$hashvalue_92]
+    Aggregate[type = PARTIAL, keys = [sr_store_sk_12], hash = [$hashvalue_92]]
+    │   Layout: [sr_store_sk_12:integer, $hashvalue_92:bigint, avg_65:varbinary]
+    │   avg_65 := avg(""sum_60"") (mask = non_null)
+    └─ Project[]
+       │   Layout: [non_null:boolean, sr_store_sk_12:integer, sum_60:decimal(38,2), $hashvalue_92:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   non_null := true
+       └─ Project[]
+          │   Layout: [sr_store_sk_12:integer, sum_60:decimal(38,2), $hashvalue_92:bigint]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │   $hashvalue_92 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""sr_store_sk_12""), 0))
+          └─ Aggregate[type = FINAL, keys = [sr_customer_sk_8, sr_store_sk_12], hash = [$hashvalue_85]]
+             │   Layout: [sr_customer_sk_8:integer, sr_store_sk_12:integer, $hashvalue_85:bigint, sum_60:decimal(38,2)]
+             │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+             │   sum_60 := sum(""sum_66"")
+             └─ LocalExchange[partitioning = HASH, hashColumn = [$hashvalue_85], arguments = [""sr_customer_sk_8"", ""sr_store_sk_12""]]
+                │   Layout: [sr_customer_sk_8:integer, sr_store_sk_12:integer, sum_66:varbinary, $hashvalue_85:bigint]
+                │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+                └─ RemoteSource[sourceFragmentIds = [8]]
+                       Layout: [sr_customer_sk_8:integer, sr_store_sk_12:integer, sum_66:varbinary, $hashvalue_86:bigint]
+
+Fragment 8 [SOURCE]
+    Output layout: [sr_customer_sk_8, sr_store_sk_12, sum_66, $hashvalue_91]
+    Output partitioning: HASH [sr_customer_sk_8, sr_store_sk_12][$hashvalue_91]
+    Aggregate[type = PARTIAL, keys = [sr_customer_sk_8, sr_store_sk_12], hash = [$hashvalue_91]]
+    │   Layout: [sr_customer_sk_8:integer, sr_store_sk_12:integer, $hashvalue_91:bigint, sum_66:varbinary]
+    │   sum_66 := sum(""sr_return_amt_16"")
+    └─ Project[]
+       │   Layout: [sr_customer_sk_8:integer, sr_store_sk_12:integer, sr_return_amt_16:decimal(7,2), $hashvalue_91:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   $hashvalue_91 := combine_hash(combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""sr_customer_sk_8""), 0)), COALESCE(""$operator$hash_code""(""sr_store_sk_12""), 0))
+       └─ InnerJoin[criteria = (""sr_returned_date_sk_25"" = ""d_date_sk_28""), hash = [$hashvalue_87, $hashvalue_88], distribution = REPLICATED]
+          │   Layout: [sr_customer_sk_8:integer, sr_store_sk_12:integer, sr_return_amt_16:decimal(7,2)]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk_28 -> #df_2013}
+          ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.store_returns$data@730940709024989749, dynamicFilters = {""sr_returned_date_sk_25"" = #df_2013}]
+          │      Layout: [sr_customer_sk_8:integer, sr_store_sk_12:integer, sr_return_amt_16:decimal(7,2), sr_returned_date_sk_25:integer, $hashvalue_87:bigint]
+          │      Estimates: {rows: 278201 (8.68MB), cpu: 6.29M, memory: 0B, network: 0B}/{rows: 278201 (8.68MB), cpu: 6.29M, memory: 0B, network: 0B}/{rows: 278201 (8.68MB), cpu: 8.68M, memory: 0B, network: 0B}
+          │      $hashvalue_87 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""sr_returned_date_sk_25""), 0))
+          │      sr_customer_sk_8 := 3:sr_customer_sk:integer
+          │      sr_return_amt_16 := 11:sr_return_amt:decimal(7,2)
+          │      sr_returned_date_sk_25 := 20:sr_returned_date_sk:integer
+          │      sr_store_sk_12 := 7:sr_store_sk:integer
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk_28:integer, $hashvalue_88:bigint]
+             │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [9]]
+                    Layout: [d_date_sk_28:integer, $hashvalue_89:bigint]
+
+Fragment 9 [SOURCE]
+    Output layout: [d_date_sk_28, $hashvalue_90]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year_34"" = 2000)]
+        Layout: [d_date_sk_28:integer, $hashvalue_90:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: ? (?), cpu: 713.37k, memory: 0B, network: 0B}/{rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+        $hashvalue_90 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_28""), 0))
+        d_date_sk_28 := 1:d_date_sk:integer
+        d_year_34 := 7:d_year:integer
+
+Fragment 10 [SINGLE]
+    Output layout: [avg_63]
+    Output partitioning: BROADCAST []
+    Aggregate[]
+    │   Layout: [avg_63:decimal(38,2)]
+    │   Estimates: {rows: 1 (17B), cpu: 2, memory: 17B, network: 0B}
+    │   avg_63 := avg(""null_62"") (mask = null)
+    └─ Values[]
+           Layout: [null:boolean, null_62:decimal(38,2)]
+           Estimates: {rows: 1 (2B), cpu: 0, memory: 0B, network: 0B}
+           (CAST(null AS boolean), CAST(null AS decimal(38, 2)))
+
+"

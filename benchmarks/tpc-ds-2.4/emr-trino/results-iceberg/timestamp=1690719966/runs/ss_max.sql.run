@@ -1,0 +1,4 @@
+SET SESSION
+
+[33mWARNING: COUNT(DISTINCT xxx) can be a very expensive operation when the cardinality is high for xxx. In most scenarios, using approx_distinct instead would be enough[39m
+"2750838","2750838","1823","2452642","75599","18000","100000","1920793","7200","50000","10","300"

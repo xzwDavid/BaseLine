@@ -1,0 +1,131 @@
+"- Output[state, cnt] => [ca_state:varchar, count:bigint]
+        state := ca_state (4:8)
+        cnt := count (4:15)
+    - TopN[100 by (count ASC_NULLS_LAST)] => [ca_state:varchar, count:bigint]
+        - LocalExchange[SINGLE] () => [ca_state:varchar, count:bigint]
+            - RemoteStreamingExchange[GATHER] => [ca_state:varchar, count:bigint]
+                - TopNPartial[100 by (count ASC_NULLS_LAST)] => [ca_state:varchar, count:bigint]
+                    - Filter[filterPredicate = (count) >= (BIGINT'10')] => [ca_state:varchar, count:bigint]
+                        - Project[projectLocality = LOCAL] => [ca_state:varchar, count:bigint]
+                            - Aggregate(FINAL)[ca_state][$hashvalue] => [ca_state:varchar, $hashvalue:bigint, count:bigint]
+                                    count := ""presto.default.count""((count_75)) (5:27)
+                                - LocalExchange[HASH][$hashvalue] (ca_state) => [ca_state:varchar, count_75:bigint, $hashvalue:bigint]
+                                    - RemoteStreamingExchange[REPARTITION][$hashvalue_77] => [ca_state:varchar, count_75:bigint, $hashvalue_77:bigint]
+                                        - Aggregate(PARTIAL)[ca_state][$hashvalue_110] => [ca_state:varchar, $hashvalue_110:bigint, count_75:bigint]
+                                                count_75 := ""presto.default.count""(*) (5:27)
+                                            - Project[projectLocality = LOCAL] => [ca_state:varchar, $hashvalue_110:bigint]
+                                                    $hashvalue_110 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(ca_state), BIGINT'0')) (18:11)
+                                                - InnerJoin[(""i_category"" = ""i_category_43"") AND (CAST(i_current_price AS decimal(9,3))) > ((DECIMAL'1.2') * (avg))][$hashvalue_78, $hashvalue_107] => [ca_state:varchar]
+                                                        Distribution: PARTITIONED
+                                                    - RemoteStreamingExchange[REPARTITION][$hashvalue_78] => [ca_state:varchar, i_current_price:decimal(7,2), i_category:varchar, $hashvalue_78:bigint]
+                                                        - Project[projectLocality = LOCAL] => [ca_state:varchar, i_current_price:decimal(7,2), i_category:varchar, $hashvalue_106:bigint]
+                                                                $hashvalue_106 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(i_category), BIGINT'0')) (7:64)
+                                                            - InnerJoin[(""d_month_seq"" = ""d_month_seq_3"")][$hashvalue_99, $hashvalue_100] => [ca_state:varchar, i_current_price:decimal(7,2), i_category:varchar]
+                                                                    Distribution: REPLICATED
+                                                                - Project[projectLocality = LOCAL] => [ca_state:varchar, d_month_seq:integer, i_current_price:decimal(7,2), i_category:varchar, $hashvalue_99:bigint]
+                                                                        $hashvalue_99 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(d_month_seq), BIGINT'0')) (7:52)
+                                                                    - InnerJoin[(""ss_item_sk"" = ""i_item_sk"")][$hashvalue_79, $hashvalue_96] => [ca_state:varchar, d_month_seq:integer, i_current_price:decimal(7,2), i_category:varchar]
+                                                                            Distribution: PARTITIONED
+                                                                        - RemoteStreamingExchange[REPARTITION][$hashvalue_79] => [ca_state:varchar, ss_item_sk:integer, d_month_seq:integer, $hashvalue_79:bigint]
+                                                                            - Project[projectLocality = LOCAL] => [ca_state:varchar, ss_item_sk:integer, d_month_seq:integer, $hashvalue_95:bigint]
+                                                                                    $hashvalue_95 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(ss_item_sk), BIGINT'0')) (7:37)
+                                                                                - InnerJoin[(""ss_sold_date_sk"" = ""d_date_sk"")][$hashvalue_80, $hashvalue_92] => [ca_state:varchar, ss_item_sk:integer, d_month_seq:integer]
+                                                                                        Distribution: PARTITIONED
+                                                                                    - RemoteStreamingExchange[REPARTITION][$hashvalue_80] => [ca_state:varchar, ss_item_sk:integer, ss_sold_date_sk:integer, $hashvalue_80:bigint]
+                                                                                        - Project[projectLocality = LOCAL] => [ca_state:varchar, ss_item_sk:integer, ss_sold_date_sk:integer, $hashvalue_91:bigint]
+                                                                                                $hashvalue_91 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(ss_sold_date_sk), BIGINT'0')) (7:37)
+                                                                                            - InnerJoin[(""c_customer_sk"" = ""ss_customer_sk"")][$hashvalue_81, $hashvalue_88] => [ca_state:varchar, ss_item_sk:integer, ss_sold_date_sk:integer]
+                                                                                                    Distribution: PARTITIONED
+                                                                                                - RemoteStreamingExchange[REPARTITION][$hashvalue_81] => [ca_state:varchar, c_customer_sk:integer, $hashvalue_81:bigint]
+                                                                                                    - Project[projectLocality = LOCAL] => [ca_state:varchar, c_customer_sk:integer, $hashvalue_87:bigint]
+                                                                                                            $hashvalue_87 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(c_customer_sk), BIGINT'0')) (7:25)
+                                                                                                        - InnerJoin[(""ca_address_sk"" = ""c_current_addr_sk"")][$hashvalue_82, $hashvalue_84] => [ca_state:varchar, c_customer_sk:integer]
+                                                                                                                Distribution: PARTITIONED
+                                                                                                            - RemoteStreamingExchange[REPARTITION][$hashvalue_82] => [ca_address_sk:integer, ca_state:varchar, $hashvalue_82:bigint]
+                                                                                                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                                                - ScanProject[table = TableHandle {connectorId='delta', connectorHandle='DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.customer_address}', layout='Optional[DeltaTableLayoutHandle{table=DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.customer_address}, predicate=Optional[ALL]}]'}, projectLocality = LOCAL] => [ca_address_sk:integer, ca_state:varchar, $hashvalue_83:bigint]
+                                                                                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                                                        $hashvalue_83 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(ca_address_sk), BIGINT'0')) (7:5)
+                                                                                                                        LAYOUT: DeltaTableLayoutHandle{table=DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.customer_address}, predicate=Optional[ALL]}
+                                                                                                                        ca_address_sk := DeltaColumnHandle{name=ca_address_sk, dataType=integer, columnType=REGULAR} (7:5)
+                                                                                                                        ca_state := DeltaColumnHandle{name=ca_state, dataType=varchar, columnType=REGULAR} (7:5)
+                                                                                                            - LocalExchange[HASH][$hashvalue_84] (c_current_addr_sk) => [c_customer_sk:integer, c_current_addr_sk:integer, $hashvalue_84:bigint]
+                                                                                                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                                                - RemoteStreamingExchange[REPARTITION][$hashvalue_85] => [c_customer_sk:integer, c_current_addr_sk:integer, $hashvalue_85:bigint]
+                                                                                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                                                    - ScanProject[table = TableHandle {connectorId='delta', connectorHandle='DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.customer}', layout='Optional[DeltaTableLayoutHandle{table=DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.customer}, predicate=Optional[ALL]}]'}, projectLocality = LOCAL] => [c_customer_sk:integer, c_current_addr_sk:integer, $hashvalue_86:bigint]
+                                                                                                                            Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                                                            $hashvalue_86 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(c_current_addr_sk), BIGINT'0')) (7:25)
+                                                                                                                            LAYOUT: DeltaTableLayoutHandle{table=DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.customer}, predicate=Optional[ALL]}
+                                                                                                                            c_customer_sk := DeltaColumnHandle{name=c_customer_sk, dataType=integer, columnType=REGULAR} (7:25)
+                                                                                                                            c_current_addr_sk := DeltaColumnHandle{name=c_current_addr_sk, dataType=integer, columnType=REGULAR} (7:25)
+                                                                                                - LocalExchange[HASH][$hashvalue_88] (ss_customer_sk) => [ss_item_sk:integer, ss_customer_sk:integer, ss_sold_date_sk:integer, $hashvalue_88:bigint]
+                                                                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                                    - RemoteStreamingExchange[REPARTITION][$hashvalue_89] => [ss_item_sk:integer, ss_customer_sk:integer, ss_sold_date_sk:integer, $hashvalue_89:bigint]
+                                                                                                            Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                                        - ScanProject[table = TableHandle {connectorId='delta', connectorHandle='DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.store_sales}', layout='Optional[DeltaTableLayoutHandle{table=DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.store_sales}, predicate=Optional[ALL]}]'}, projectLocality = LOCAL] => [ss_item_sk:integer, ss_customer_sk:integer, ss_sold_date_sk:integer, $hashvalue_90:bigint]
+                                                                                                                Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                                                $hashvalue_90 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(ss_customer_sk), BIGINT'0')) (7:37)
+                                                                                                                LAYOUT: DeltaTableLayoutHandle{table=DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.store_sales}, predicate=Optional[ALL]}
+                                                                                                                ss_sold_date_sk := DeltaColumnHandle{name=ss_sold_date_sk, dataType=integer, columnType=PARTITION} (7:37)
+                                                                                                                ss_item_sk := DeltaColumnHandle{name=ss_item_sk, dataType=integer, columnType=REGULAR} (7:37)
+                                                                                                                ss_customer_sk := DeltaColumnHandle{name=ss_customer_sk, dataType=integer, columnType=REGULAR} (7:37)
+                                                                                    - LocalExchange[HASH][$hashvalue_92] (d_date_sk) => [d_date_sk:integer, d_month_seq:integer, $hashvalue_92:bigint]
+                                                                                            Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                        - RemoteStreamingExchange[REPARTITION][$hashvalue_93] => [d_date_sk:integer, d_month_seq:integer, $hashvalue_93:bigint]
+                                                                                                Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                            - ScanProject[table = TableHandle {connectorId='delta', connectorHandle='DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.date_dim}', layout='Optional[DeltaTableLayoutHandle{table=DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.date_dim}, predicate=Optional[ALL]}]'}, projectLocality = LOCAL] => [d_date_sk:integer, d_month_seq:integer, $hashvalue_94:bigint]
+                                                                                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                                    $hashvalue_94 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(d_date_sk), BIGINT'0')) (7:52)
+                                                                                                    LAYOUT: DeltaTableLayoutHandle{table=DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.date_dim}, predicate=Optional[ALL]}
+                                                                                                    d_date_sk := DeltaColumnHandle{name=d_date_sk, dataType=integer, columnType=REGULAR} (7:52)
+                                                                                                    d_month_seq := DeltaColumnHandle{name=d_month_seq, dataType=integer, columnType=REGULAR} (7:52)
+                                                                        - LocalExchange[HASH][$hashvalue_96] (i_item_sk) => [i_item_sk:integer, i_current_price:decimal(7,2), i_category:varchar, $hashvalue_96:bigint]
+                                                                                Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                            - RemoteStreamingExchange[REPARTITION][$hashvalue_97] => [i_item_sk:integer, i_current_price:decimal(7,2), i_category:varchar, $hashvalue_97:bigint]
+                                                                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                - ScanProject[table = TableHandle {connectorId='delta', connectorHandle='DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.item}', layout='Optional[DeltaTableLayoutHandle{table=DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.item}, predicate=Optional[ALL]}]'}, projectLocality = LOCAL] => [i_item_sk:integer, i_current_price:decimal(7,2), i_category:varchar, $hashvalue_98:bigint]
+                                                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                        $hashvalue_98 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(i_item_sk), BIGINT'0')) (7:64)
+                                                                                        LAYOUT: DeltaTableLayoutHandle{table=DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.item}, predicate=Optional[ALL]}
+                                                                                        i_category := DeltaColumnHandle{name=i_category, dataType=varchar, columnType=REGULAR} (7:64)
+                                                                                        i_current_price := DeltaColumnHandle{name=i_current_price, dataType=decimal(7,2), columnType=REGULAR} (7:64)
+                                                                                        i_item_sk := DeltaColumnHandle{name=i_item_sk, dataType=integer, columnType=REGULAR} (7:64)
+                                                                - LocalExchange[HASH][$hashvalue_100] (d_month_seq_3) => [d_month_seq_3:integer, $hashvalue_100:bigint]
+                                                                        Estimates: {rows: 1 (64B), cpu: ?, memory: ?, network: ?}
+                                                                    - RemoteStreamingExchange[REPLICATE] => [d_month_seq_3:integer, $hashvalue_101:bigint]
+                                                                            Estimates: {rows: 1 (64B), cpu: ?, memory: ?, network: ?}
+                                                                        - Project[projectLocality = LOCAL] => [d_month_seq_3:integer, $hashvalue_105:bigint]
+                                                                                Estimates: {rows: 1 (64B), cpu: ?, memory: ?, network: ?}
+                                                                                $hashvalue_105 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(d_month_seq_3), BIGINT'0')) (13:26)
+                                                                            - EnforceSingleRow => [d_month_seq_3:integer]
+                                                                                    Estimates: {rows: 1 (64B), cpu: ?, memory: ?, network: ?}
+                                                                                - LocalExchange[SINGLE] () => [d_month_seq_3:integer]
+                                                                                    - RemoteStreamingExchange[GATHER] => [d_month_seq_3:integer]
+                                                                                        - Project[projectLocality = LOCAL] => [d_month_seq_3:integer]
+                                                                                            - Aggregate(FINAL)[d_month_seq_3][$hashvalue_102] => [d_month_seq_3:integer, $hashvalue_102:bigint]
+                                                                                                - LocalExchange[HASH][$hashvalue_102] (d_month_seq_3) => [d_month_seq_3:integer, $hashvalue_102:bigint]
+                                                                                                    - RemoteStreamingExchange[REPARTITION][$hashvalue_103] => [d_month_seq_3:integer, $hashvalue_103:bigint]
+                                                                                                        - Aggregate(PARTIAL)[d_month_seq_3][$hashvalue_104] => [d_month_seq_3:integer, $hashvalue_104:bigint]
+                                                                                                            - ScanFilterProject[table = TableHandle {connectorId='delta', connectorHandle='DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.date_dim}', layout='Optional[DeltaTableLayoutHandle{table=DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.date_dim}, predicate=Optional[{DeltaColumnHandle{name=d_year, dataType=integer, columnType=REGULAR}=[ [[""2001""]] ], DeltaColumnHandle{name=d_moy, dataType=integer, columnType=REGULAR}=[ [[""1""]] ]}]}]'}, filterPredicate = ((d_year_6) = (INTEGER'2001')) AND ((d_moy_8) = (INTEGER'1')), projectLocality = LOCAL] => [d_month_seq_3:integer, $hashvalue_104:bigint]
+                                                                                                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                                                    $hashvalue_104 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(d_month_seq_3), BIGINT'0')) (13:45)
+                                                                                                                    LAYOUT: DeltaTableLayoutHandle{table=DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.date_dim}, predicate=Optional[{DeltaColumnHandle{name=d_year, dataType=integer, columnType=REGULAR}=[ [[""2001""]] ], DeltaColumnHandle{name=d_moy, dataType=integer, columnType=REGULAR}=[ [[""1""]] ]}]}
+                                                                                                                    d_month_seq_3 := DeltaColumnHandle{name=d_month_seq, dataType=integer, columnType=REGULAR} (13:44)
+                                                                                                                    d_year_6 := DeltaColumnHandle{name=d_year, dataType=integer, columnType=REGULAR} (13:44)
+                                                                                                                        :: [[""2001""]]
+                                                                                                                    d_moy_8 := DeltaColumnHandle{name=d_moy, dataType=integer, columnType=REGULAR} (13:44)
+                                                                                                                        :: [[""1""]]
+                                                    - Aggregate(FINAL)[i_category_43][$hashvalue_107] => [i_category_43:varchar, $hashvalue_107:bigint, avg:decimal(7,2)]
+                                                            avg := ""presto.default.avg""((avg_76)) (16:22)
+                                                        - LocalExchange[HASH][$hashvalue_107] (i_category_43) => [i_category_43:varchar, avg_76:varbinary, $hashvalue_107:bigint]
+                                                            - RemoteStreamingExchange[REPARTITION][$hashvalue_108] => [i_category_43:varchar, avg_76:varbinary, $hashvalue_108:bigint]
+                                                                - Aggregate(PARTIAL)[i_category_43][$hashvalue_109] => [i_category_43:varchar, $hashvalue_109:bigint, avg_76:varbinary]
+                                                                        avg_76 := ""presto.default.avg""((i_current_price_36)) (16:22)
+                                                                    - ScanProject[table = TableHandle {connectorId='delta', connectorHandle='DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.item}', layout='Optional[DeltaTableLayoutHandle{table=DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.item}, predicate=Optional[ALL]}]'}, projectLocality = LOCAL] => [i_current_price_36:decimal(7,2), i_category_43:varchar, $hashvalue_109:bigint]
+                                                                            Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                            $hashvalue_109 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(i_category_43), BIGINT'0')) (16:51)
+                                                                            LAYOUT: DeltaTableLayoutHandle{table=DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.item}, predicate=Optional[ALL]}
+                                                                            i_category_43 := DeltaColumnHandle{name=i_category, dataType=varchar, columnType=REGULAR} (16:50)
+                                                                            i_current_price_36 := DeltaColumnHandle{name=i_current_price, dataType=decimal(7,2), columnType=REGULAR} (16:50)
+"

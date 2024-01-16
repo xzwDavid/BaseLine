@@ -1,0 +1,2 @@
+Name,Runtime,Vendor,System,Cluster,Configuration,Database,Date,Scale,Error
+q1-v2.4,4.378,EMR,Presto 0.170,10x r3.xlarge (+r3.xlarge driver),std,tpcds_sf1_iceberg,2023-08-04,1,FINISHED"

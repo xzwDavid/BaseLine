@@ -1,0 +1,167 @@
+"- Output[B1_LP, B1_CNT, B1_CNTD, B2_LP, B2_CNT, B2_CNTD, B3_LP, B3_CNT, B3_CNTD, B4_LP, B4_CNT, B4_CNTD, B5_LP, B5_CNT, B5_CNTD, B6_LP, B6_CNT, B6_CNTD] => [avg:decimal(7,2), count:bigint, count_3:bigint, avg_41:decimal(7,2), count_42:bigint, count_43:bigint, avg_82:decimal(7,2), count_83:bigint, count_84:bigint, avg_123:decimal(7,2), count_124:bigint, count_125:bigint, avg_164:decimal(7,2), count_165:bigint, count_166:bigint, avg_205:decimal(7,2), count_206:bigint, count_207:bigint]
+        Estimates: {rows: 100 (15.82kB), cpu: ?, memory: ?, network: ?}
+        B1_LP := avg (4:2)
+        B1_CNT := count (4:2)
+        B1_CNTD := count_3 (4:2)
+        B2_LP := avg_41 (4:2)
+        B2_CNT := count_42 (4:2)
+        B2_CNTD := count_43 (4:2)
+        B3_LP := avg_82 (4:2)
+        B3_CNT := count_83 (4:2)
+        B3_CNTD := count_84 (4:2)
+        B4_LP := avg_123 (4:2)
+        B4_CNT := count_124 (4:2)
+        B4_CNTD := count_125 (4:2)
+        B5_LP := avg_164 (4:2)
+        B5_CNT := count_165 (4:2)
+        B5_CNTD := count_166 (4:2)
+        B6_LP := avg_205 (4:2)
+        B6_CNT := count_206 (4:2)
+        B6_CNTD := count_207 (4:2)
+    - Limit[100] => [avg:decimal(7,2), count:bigint, count_3:bigint, count_43:bigint, avg_41:decimal(7,2), count_42:bigint, avg_82:decimal(7,2), count_83:bigint, count_84:bigint, count_124:bigint, avg_123:decimal(7,2), count_125:bigint, count_165:bigint, avg_164:decimal(7,2), count_166:bigint, avg_205:decimal(7,2), count_207:bigint, count_206:bigint]
+            Estimates: {rows: 100 (15.82kB), cpu: ?, memory: ?, network: ?}
+        - LocalExchange[SINGLE] () => [avg:decimal(7,2), count:bigint, count_3:bigint, count_43:bigint, avg_41:decimal(7,2), count_42:bigint, avg_82:decimal(7,2), count_83:bigint, count_84:bigint, count_124:bigint, avg_123:decimal(7,2), count_125:bigint, count_165:bigint, avg_164:decimal(7,2), count_166:bigint, avg_205:decimal(7,2), count_207:bigint, count_206:bigint]
+            - CrossJoin => [avg:decimal(7,2), count:bigint, count_3:bigint, count_43:bigint, avg_41:decimal(7,2), count_42:bigint, avg_82:decimal(7,2), count_83:bigint, count_84:bigint, count_124:bigint, avg_123:decimal(7,2), count_125:bigint, count_165:bigint, avg_164:decimal(7,2), count_166:bigint, avg_205:decimal(7,2), count_207:bigint, count_206:bigint]
+                    Distribution: REPLICATED
+                - CrossJoin => [avg:decimal(7,2), count:bigint, count_3:bigint, count_43:bigint, avg_41:decimal(7,2), count_42:bigint, avg_82:decimal(7,2), count_83:bigint, count_84:bigint, count_124:bigint, avg_123:decimal(7,2), count_125:bigint, count_165:bigint, avg_164:decimal(7,2), count_166:bigint]
+                        Distribution: REPLICATED
+                    - CrossJoin => [avg:decimal(7,2), count:bigint, count_3:bigint, count_43:bigint, avg_41:decimal(7,2), count_42:bigint, avg_82:decimal(7,2), count_83:bigint, count_84:bigint, count_124:bigint, avg_123:decimal(7,2), count_125:bigint]
+                            Distribution: REPLICATED
+                        - CrossJoin => [avg:decimal(7,2), count:bigint, count_3:bigint, count_43:bigint, avg_41:decimal(7,2), count_42:bigint, avg_82:decimal(7,2), count_83:bigint, count_84:bigint]
+                                Distribution: REPLICATED
+                            - CrossJoin => [avg:decimal(7,2), count:bigint, count_3:bigint, count_43:bigint, avg_41:decimal(7,2), count_42:bigint]
+                                    Distribution: REPLICATED
+                                - LocalExchange[ROUND_ROBIN] () => [avg:decimal(7,2), count:bigint, count_3:bigint]
+                                    - Aggregate(FINAL) => [avg:decimal(7,2), count:bigint, count_3:bigint]
+                                            avg := ""presto.default.avg""((avg_298)) (5:15)
+                                            count := ""presto.default.count""((count_299)) (6:14)
+                                            count_3 := ""presto.default.count""((count_300)) (7:14)
+                                        - LocalExchange[SINGLE] () => [avg_298:varbinary, count_299:bigint, count_300:bigint]
+                                            - RemoteStreamingExchange[GATHER] => [avg_298:varbinary, count_299:bigint, count_300:bigint]
+                                                - Aggregate(PARTIAL) => [avg_298:varbinary, count_299:bigint, count_300:bigint]
+                                                        avg_298 := ""presto.default.avg""((ss_list_price)) (5:15)
+                                                        count_299 := ""presto.default.count""((ss_list_price)) (6:14)
+                                                        count_300 := ""presto.default.count""((ss_list_price)) (mask = ss_list_price_292) (7:14)
+                                                    - MarkDistinct[distinct=ss_list_price:decimal(7,2) marker=ss_list_price_292][$hashvalue] => [ss_list_price:decimal(7,2), $hashvalue:bigint, ss_list_price_292:boolean]
+                                                        - LocalExchange[HASH][$hashvalue] (ss_list_price) => [ss_list_price:decimal(7,2), $hashvalue:bigint]
+                                                                Estimates: {rows: 97675 (15.09MB), cpu: 66138284.10, memory: 0.00, network: 1228403.37}
+                                                            - RemoteStreamingExchange[REPARTITION][$hashvalue_316] => [ss_list_price:decimal(7,2), $hashvalue_316:bigint]
+                                                                    Estimates: {rows: 97675 (15.09MB), cpu: 64909880.73, memory: 0.00, network: 1228403.37}
+                                                                - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]', layout='Optional[tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]]'}, filterPredicate = (ss_quantity BETWEEN (INTEGER'0') AND (INTEGER'5')) AND (((CAST(ss_list_price AS decimal(12,2)) BETWEEN (DECIMAL'8.00') AND (DECIMAL'18.00')) OR (CAST(ss_coupon_amt AS decimal(12,2)) BETWEEN (DECIMAL'459.00') AND (DECIMAL'1459.00'))) OR (CAST(ss_wholesale_cost AS decimal(12,2)) BETWEEN (DECIMAL'57.00') AND (DECIMAL'77.00'))), projectLocality = LOCAL] => [ss_list_price:decimal(7,2), $hashvalue_317:bigint]
+                                                                        Estimates: {rows: 2750838 (424.99MB), cpu: 31226537.00, memory: 0.00, network: 0.00}/{rows: 97675 (15.09MB), cpu: 62453074.00, memory: 0.00, network: 0.00}/{rows: 97675 (15.09MB), cpu: 63681477.37, memory: 0.00, network: 0.00}
+                                                                        $hashvalue_317 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(ss_list_price), BIGINT'0')) (8:13)
+                                                                        ss_list_price := 12:ss_list_price:decimal(7,2) (8:12)
+                                                                        ss_quantity := 10:ss_quantity:integer (8:12)
+                                                                        ss_coupon_amt := 19:ss_coupon_amt:decimal(7,2) (8:12)
+                                                                        ss_wholesale_cost := 11:ss_wholesale_cost:decimal(7,2) (8:12)
+                                - Aggregate(FINAL) => [count_43:bigint, avg_41:decimal(7,2), count_42:bigint]
+                                        count_43 := ""presto.default.count""((count_301)) (15:14)
+                                        avg_41 := ""presto.default.avg""((avg_302)) (13:14)
+                                        count_42 := ""presto.default.count""((count_303)) (14:14)
+                                    - LocalExchange[SINGLE] () => [count_303:bigint, avg_302:varbinary, count_301:bigint]
+                                        - RemoteStreamingExchange[GATHER] => [count_303:bigint, avg_302:varbinary, count_301:bigint]
+                                            - Aggregate(PARTIAL) => [count_303:bigint, avg_302:varbinary, count_301:bigint]
+                                                    count_303 := ""presto.default.count""((ss_list_price_26)) (14:14)
+                                                    avg_302 := ""presto.default.avg""((ss_list_price_26)) (13:14)
+                                                    count_301 := ""presto.default.count""((ss_list_price_26)) (mask = ss_list_price_293) (15:14)
+                                                - MarkDistinct[distinct=ss_list_price_26:decimal(7,2) marker=ss_list_price_293][$hashvalue_318] => [ss_list_price_26:decimal(7,2), $hashvalue_318:bigint, ss_list_price_293:boolean]
+                                                    - LocalExchange[HASH][$hashvalue_318] (ss_list_price_26) => [ss_list_price_26:decimal(7,2), $hashvalue_318:bigint]
+                                                            Estimates: {rows: 97675 (15.09MB), cpu: 66138284.10, memory: 0.00, network: 1228403.37}
+                                                        - RemoteStreamingExchange[REPARTITION][$hashvalue_319] => [ss_list_price_26:decimal(7,2), $hashvalue_319:bigint]
+                                                                Estimates: {rows: 97675 (15.09MB), cpu: 64909880.73, memory: 0.00, network: 1228403.37}
+                                                            - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]', layout='Optional[tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]]'}, filterPredicate = (ss_quantity_24 BETWEEN (INTEGER'6') AND (INTEGER'10')) AND (((CAST(ss_list_price_26 AS decimal(12,2)) BETWEEN (DECIMAL'90.00') AND (DECIMAL'100.00')) OR (CAST(ss_coupon_amt_33 AS decimal(12,2)) BETWEEN (DECIMAL'2323.00') AND (DECIMAL'3323.00'))) OR (CAST(ss_wholesale_cost_25 AS decimal(12,2)) BETWEEN (DECIMAL'31.00') AND (DECIMAL'51.00'))), projectLocality = LOCAL] => [ss_list_price_26:decimal(7,2), $hashvalue_320:bigint]
+                                                                    Estimates: {rows: 2750838 (424.99MB), cpu: 31226537.00, memory: 0.00, network: 0.00}/{rows: 97675 (15.09MB), cpu: 62453074.00, memory: 0.00, network: 0.00}/{rows: 97675 (15.09MB), cpu: 63681477.37, memory: 0.00, network: 0.00}
+                                                                    $hashvalue_320 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(ss_list_price_26), BIGINT'0')) (16:13)
+                                                                    ss_coupon_amt_33 := 19:ss_coupon_amt:decimal(7,2) (16:12)
+                                                                    ss_quantity_24 := 10:ss_quantity:integer (16:12)
+                                                                    ss_wholesale_cost_25 := 11:ss_wholesale_cost:decimal(7,2) (16:12)
+                                                                    ss_list_price_26 := 12:ss_list_price:decimal(7,2) (16:12)
+                            - Aggregate(FINAL) => [avg_82:decimal(7,2), count_83:bigint, count_84:bigint]
+                                    avg_82 := ""presto.default.avg""((avg_304)) (21:14)
+                                    count_83 := ""presto.default.count""((count_305)) (22:14)
+                                    count_84 := ""presto.default.count""((count_306)) (23:14)
+                                - LocalExchange[SINGLE] () => [avg_304:varbinary, count_306:bigint, count_305:bigint]
+                                    - RemoteStreamingExchange[GATHER] => [avg_304:varbinary, count_306:bigint, count_305:bigint]
+                                        - Aggregate(PARTIAL) => [avg_304:varbinary, count_306:bigint, count_305:bigint]
+                                                avg_304 := ""presto.default.avg""((ss_list_price_67)) (21:14)
+                                                count_306 := ""presto.default.count""((ss_list_price_67)) (mask = ss_list_price_294) (23:14)
+                                                count_305 := ""presto.default.count""((ss_list_price_67)) (22:14)
+                                            - MarkDistinct[distinct=ss_list_price_67:decimal(7,2) marker=ss_list_price_294][$hashvalue_321] => [ss_list_price_67:decimal(7,2), $hashvalue_321:bigint, ss_list_price_294:boolean]
+                                                - LocalExchange[HASH][$hashvalue_321] (ss_list_price_67) => [ss_list_price_67:decimal(7,2), $hashvalue_321:bigint]
+                                                        Estimates: {rows: 97675 (15.09MB), cpu: 66138284.10, memory: 0.00, network: 1228403.37}
+                                                    - RemoteStreamingExchange[REPARTITION][$hashvalue_322] => [ss_list_price_67:decimal(7,2), $hashvalue_322:bigint]
+                                                            Estimates: {rows: 97675 (15.09MB), cpu: 64909880.73, memory: 0.00, network: 1228403.37}
+                                                        - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]', layout='Optional[tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]]'}, filterPredicate = (ss_quantity_65 BETWEEN (INTEGER'11') AND (INTEGER'15')) AND (((CAST(ss_list_price_67 AS decimal(12,2)) BETWEEN (DECIMAL'142.00') AND (DECIMAL'152.00')) OR (CAST(ss_coupon_amt_74 AS decimal(12,2)) BETWEEN (DECIMAL'12214.00') AND (DECIMAL'13214.00'))) OR (CAST(ss_wholesale_cost_66 AS decimal(12,2)) BETWEEN (DECIMAL'79.00') AND (DECIMAL'99.00'))), projectLocality = LOCAL] => [ss_list_price_67:decimal(7,2), $hashvalue_323:bigint]
+                                                                Estimates: {rows: 2750838 (424.99MB), cpu: 31226537.00, memory: 0.00, network: 0.00}/{rows: 97675 (15.09MB), cpu: 62453074.00, memory: 0.00, network: 0.00}/{rows: 97675 (15.09MB), cpu: 63681477.37, memory: 0.00, network: 0.00}
+                                                                $hashvalue_323 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(ss_list_price_67), BIGINT'0')) (24:13)
+                                                                ss_list_price_67 := 12:ss_list_price:decimal(7,2) (24:12)
+                                                                ss_quantity_65 := 10:ss_quantity:integer (24:12)
+                                                                ss_wholesale_cost_66 := 11:ss_wholesale_cost:decimal(7,2) (24:12)
+                                                                ss_coupon_amt_74 := 19:ss_coupon_amt:decimal(7,2) (24:12)
+                        - Aggregate(FINAL) => [count_124:bigint, avg_123:decimal(7,2), count_125:bigint]
+                                count_124 := ""presto.default.count""((count_307)) (30:14)
+                                avg_123 := ""presto.default.avg""((avg_308)) (29:14)
+                                count_125 := ""presto.default.count""((count_309)) (31:14)
+                            - LocalExchange[SINGLE] () => [avg_308:varbinary, count_307:bigint, count_309:bigint]
+                                - RemoteStreamingExchange[GATHER] => [avg_308:varbinary, count_307:bigint, count_309:bigint]
+                                    - Aggregate(PARTIAL) => [avg_308:varbinary, count_307:bigint, count_309:bigint]
+                                            avg_308 := ""presto.default.avg""((ss_list_price_108)) (29:14)
+                                            count_307 := ""presto.default.count""((ss_list_price_108)) (30:14)
+                                            count_309 := ""presto.default.count""((ss_list_price_108)) (mask = ss_list_price_295) (31:14)
+                                        - MarkDistinct[distinct=ss_list_price_108:decimal(7,2) marker=ss_list_price_295][$hashvalue_324] => [ss_list_price_108:decimal(7,2), $hashvalue_324:bigint, ss_list_price_295:boolean]
+                                            - LocalExchange[HASH][$hashvalue_324] (ss_list_price_108) => [ss_list_price_108:decimal(7,2), $hashvalue_324:bigint]
+                                                    Estimates: {rows: 97675 (15.09MB), cpu: 66138284.10, memory: 0.00, network: 1228403.37}
+                                                - RemoteStreamingExchange[REPARTITION][$hashvalue_325] => [ss_list_price_108:decimal(7,2), $hashvalue_325:bigint]
+                                                        Estimates: {rows: 97675 (15.09MB), cpu: 64909880.73, memory: 0.00, network: 1228403.37}
+                                                    - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]', layout='Optional[tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]]'}, filterPredicate = (ss_quantity_106 BETWEEN (INTEGER'16') AND (INTEGER'20')) AND (((CAST(ss_list_price_108 AS decimal(12,2)) BETWEEN (DECIMAL'135.00') AND (DECIMAL'145.00')) OR (CAST(ss_coupon_amt_115 AS decimal(12,2)) BETWEEN (DECIMAL'6071.00') AND (DECIMAL'7071.00'))) OR (CAST(ss_wholesale_cost_107 AS decimal(12,2)) BETWEEN (DECIMAL'38.00') AND (DECIMAL'58.00'))), projectLocality = LOCAL] => [ss_list_price_108:decimal(7,2), $hashvalue_326:bigint]
+                                                            Estimates: {rows: 2750838 (424.99MB), cpu: 31226537.00, memory: 0.00, network: 0.00}/{rows: 97675 (15.09MB), cpu: 62453074.00, memory: 0.00, network: 0.00}/{rows: 97675 (15.09MB), cpu: 63681477.37, memory: 0.00, network: 0.00}
+                                                            $hashvalue_326 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(ss_list_price_108), BIGINT'0')) (32:13)
+                                                            ss_quantity_106 := 10:ss_quantity:integer (32:12)
+                                                            ss_coupon_amt_115 := 19:ss_coupon_amt:decimal(7,2) (32:12)
+                                                            ss_wholesale_cost_107 := 11:ss_wholesale_cost:decimal(7,2) (32:12)
+                                                            ss_list_price_108 := 12:ss_list_price:decimal(7,2) (32:12)
+                    - Aggregate(FINAL) => [count_165:bigint, avg_164:decimal(7,2), count_166:bigint]
+                            count_165 := ""presto.default.count""((count_310)) (38:14)
+                            avg_164 := ""presto.default.avg""((avg_311)) (37:14)
+                            count_166 := ""presto.default.count""((count_312)) (39:14)
+                        - LocalExchange[SINGLE] () => [avg_311:varbinary, count_310:bigint, count_312:bigint]
+                            - RemoteStreamingExchange[GATHER] => [avg_311:varbinary, count_310:bigint, count_312:bigint]
+                                - Aggregate(PARTIAL) => [avg_311:varbinary, count_310:bigint, count_312:bigint]
+                                        avg_311 := ""presto.default.avg""((ss_list_price_149)) (37:14)
+                                        count_310 := ""presto.default.count""((ss_list_price_149)) (38:14)
+                                        count_312 := ""presto.default.count""((ss_list_price_149)) (mask = ss_list_price_296) (39:14)
+                                    - MarkDistinct[distinct=ss_list_price_149:decimal(7,2) marker=ss_list_price_296][$hashvalue_327] => [ss_list_price_149:decimal(7,2), $hashvalue_327:bigint, ss_list_price_296:boolean]
+                                        - LocalExchange[HASH][$hashvalue_327] (ss_list_price_149) => [ss_list_price_149:decimal(7,2), $hashvalue_327:bigint]
+                                                Estimates: {rows: 97675 (15.09MB), cpu: 66138284.10, memory: 0.00, network: 1228403.37}
+                                            - RemoteStreamingExchange[REPARTITION][$hashvalue_328] => [ss_list_price_149:decimal(7,2), $hashvalue_328:bigint]
+                                                    Estimates: {rows: 97675 (15.09MB), cpu: 64909880.73, memory: 0.00, network: 1228403.37}
+                                                - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]', layout='Optional[tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]]'}, filterPredicate = (ss_quantity_147 BETWEEN (INTEGER'21') AND (INTEGER'25')) AND (((CAST(ss_list_price_149 AS decimal(12,2)) BETWEEN (DECIMAL'122.00') AND (DECIMAL'132.00')) OR (CAST(ss_coupon_amt_156 AS decimal(12,2)) BETWEEN (DECIMAL'836.00') AND (DECIMAL'1836.00'))) OR (CAST(ss_wholesale_cost_148 AS decimal(12,2)) BETWEEN (DECIMAL'17.00') AND (DECIMAL'37.00'))), projectLocality = LOCAL] => [ss_list_price_149:decimal(7,2), $hashvalue_329:bigint]
+                                                        Estimates: {rows: 2750838 (424.99MB), cpu: 31226537.00, memory: 0.00, network: 0.00}/{rows: 97675 (15.09MB), cpu: 62453074.00, memory: 0.00, network: 0.00}/{rows: 97675 (15.09MB), cpu: 63681477.37, memory: 0.00, network: 0.00}
+                                                        $hashvalue_329 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(ss_list_price_149), BIGINT'0')) (40:13)
+                                                        ss_list_price_149 := 12:ss_list_price:decimal(7,2) (40:12)
+                                                        ss_coupon_amt_156 := 19:ss_coupon_amt:decimal(7,2) (40:12)
+                                                        ss_wholesale_cost_148 := 11:ss_wholesale_cost:decimal(7,2) (40:12)
+                                                        ss_quantity_147 := 10:ss_quantity:integer (40:12)
+                - Aggregate(FINAL) => [avg_205:decimal(7,2), count_207:bigint, count_206:bigint]
+                        avg_205 := ""presto.default.avg""((avg_313)) (45:14)
+                        count_207 := ""presto.default.count""((count_314)) (47:14)
+                        count_206 := ""presto.default.count""((count_315)) (46:14)
+                    - LocalExchange[SINGLE] () => [count_314:bigint, avg_313:varbinary, count_315:bigint]
+                        - RemoteStreamingExchange[GATHER] => [count_314:bigint, avg_313:varbinary, count_315:bigint]
+                            - Aggregate(PARTIAL) => [count_314:bigint, avg_313:varbinary, count_315:bigint]
+                                    count_314 := ""presto.default.count""((ss_list_price_190)) (mask = ss_list_price_297) (47:14)
+                                    avg_313 := ""presto.default.avg""((ss_list_price_190)) (45:14)
+                                    count_315 := ""presto.default.count""((ss_list_price_190)) (46:14)
+                                - MarkDistinct[distinct=ss_list_price_190:decimal(7,2) marker=ss_list_price_297][$hashvalue_330] => [ss_list_price_190:decimal(7,2), $hashvalue_330:bigint, ss_list_price_297:boolean]
+                                    - LocalExchange[HASH][$hashvalue_330] (ss_list_price_190) => [ss_list_price_190:decimal(7,2), $hashvalue_330:bigint]
+                                            Estimates: {rows: 97675 (15.09MB), cpu: 66138284.10, memory: 0.00, network: 1228403.37}
+                                        - RemoteStreamingExchange[REPARTITION][$hashvalue_331] => [ss_list_price_190:decimal(7,2), $hashvalue_331:bigint]
+                                                Estimates: {rows: 97675 (15.09MB), cpu: 64909880.73, memory: 0.00, network: 1228403.37}
+                                            - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]', layout='Optional[tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]]'}, filterPredicate = (ss_quantity_188 BETWEEN (INTEGER'26') AND (INTEGER'30')) AND (((CAST(ss_list_price_190 AS decimal(12,2)) BETWEEN (DECIMAL'154.00') AND (DECIMAL'164.00')) OR (CAST(ss_coupon_amt_197 AS decimal(12,2)) BETWEEN (DECIMAL'7326.00') AND (DECIMAL'8326.00'))) OR (CAST(ss_wholesale_cost_189 AS decimal(12,2)) BETWEEN (DECIMAL'7.00') AND (DECIMAL'27.00'))), projectLocality = LOCAL] => [ss_list_price_190:decimal(7,2), $hashvalue_332:bigint]
+                                                    Estimates: {rows: 2750838 (424.99MB), cpu: 31226537.00, memory: 0.00, network: 0.00}/{rows: 97675 (15.09MB), cpu: 62453074.00, memory: 0.00, network: 0.00}/{rows: 97675 (15.09MB), cpu: 63681477.37, memory: 0.00, network: 0.00}
+                                                    $hashvalue_332 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(ss_list_price_190), BIGINT'0')) (48:13)
+                                                    ss_coupon_amt_197 := 19:ss_coupon_amt:decimal(7,2) (48:12)
+                                                    ss_wholesale_cost_189 := 11:ss_wholesale_cost:decimal(7,2) (48:12)
+                                                    ss_quantity_188 := 10:ss_quantity:integer (48:12)
+                                                    ss_list_price_190 := 12:ss_list_price:decimal(7,2) (48:12)
+"

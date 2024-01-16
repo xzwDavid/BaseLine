@@ -1,0 +1,58 @@
+"- Output[ss_customer_sk, sumsales] => [ss_customer_sk:integer, sum:decimal(38,2)]
+        sumsales := sum (4:25)
+    - TopN[100 by (sum ASC_NULLS_LAST, ss_customer_sk ASC_NULLS_LAST)] => [ss_customer_sk:integer, sum:decimal(38,2)]
+        - LocalExchange[SINGLE] () => [ss_customer_sk:integer, sum:decimal(38,2)]
+            - RemoteStreamingExchange[GATHER] => [ss_customer_sk:integer, sum:decimal(38,2)]
+                - TopNPartial[100 by (sum ASC_NULLS_LAST, ss_customer_sk ASC_NULLS_LAST)] => [ss_customer_sk:integer, sum:decimal(38,2)]
+                    - Project[projectLocality = LOCAL] => [ss_customer_sk:integer, sum:decimal(38,2)]
+                        - Aggregate(FINAL)[ss_customer_sk][$hashvalue] => [ss_customer_sk:integer, $hashvalue:bigint, sum:decimal(38,2)]
+                                sum := ""presto.default.sum""((sum_28)) (4:25)
+                            - LocalExchange[HASH][$hashvalue] (ss_customer_sk) => [ss_customer_sk:integer, sum_28:varbinary, $hashvalue:bigint]
+                                - RemoteStreamingExchange[REPARTITION][$hashvalue_29] => [ss_customer_sk:integer, sum_28:varbinary, $hashvalue_29:bigint]
+                                    - Aggregate(PARTIAL)[ss_customer_sk][$hashvalue_40] => [ss_customer_sk:integer, $hashvalue_40:bigint, sum_28:varbinary]
+                                            sum_28 := ""presto.default.sum""((expr)) (4:25)
+                                        - Project[projectLocality = LOCAL] => [ss_customer_sk:integer, expr:decimal(17,2), $hashvalue_40:bigint]
+                                                expr := SWITCH(BOOLEAN'true', WHEN(not(IS_NULL(sr_return_quantity)), (CAST((ss_quantity) - (sr_return_quantity) AS decimal(10,0))) * (ss_sales_price)), (CAST(ss_quantity AS decimal(10,0))) * (ss_sales_price)) (10:25)
+                                                $hashvalue_40 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(ss_customer_sk), BIGINT'0')) (9:14)
+                                            - InnerJoin[(""sr_reason_sk"" = ""r_reason_sk"")][$hashvalue_30, $hashvalue_37] => [ss_customer_sk:integer, ss_quantity:integer, ss_sales_price:decimal(7,2), sr_return_quantity:integer]
+                                                    Distribution: PARTITIONED
+                                                - RemoteStreamingExchange[REPARTITION][$hashvalue_30] => [ss_customer_sk:integer, ss_quantity:integer, ss_sales_price:decimal(7,2), sr_reason_sk:integer, sr_return_quantity:integer, $hashvalue_30:bigint]
+                                                    - Project[projectLocality = LOCAL] => [ss_customer_sk:integer, ss_quantity:integer, ss_sales_price:decimal(7,2), sr_reason_sk:integer, sr_return_quantity:integer, $hashvalue_36:bigint]
+                                                            $hashvalue_36 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(sr_reason_sk), BIGINT'0')) (10:24)
+                                                        - LeftJoin[(""ss_item_sk"" = ""sr_item_sk"") AND (""ss_ticket_number"" = ""sr_ticket_number"")][$hashvalue_31, $hashvalue_33] => [ss_customer_sk:integer, ss_quantity:integer, ss_sales_price:decimal(7,2), sr_reason_sk:integer, sr_return_quantity:integer]
+                                                                Distribution: PARTITIONED
+                                                            - RemoteStreamingExchange[REPARTITION][$hashvalue_31] => [ss_item_sk:integer, ss_customer_sk:integer, ss_ticket_number:bigint, ss_quantity:integer, ss_sales_price:decimal(7,2), $hashvalue_31:bigint]
+                                                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                - ScanProject[table = TableHandle {connectorId='delta', connectorHandle='DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.store_sales}', layout='Optional[DeltaTableLayoutHandle{table=DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.store_sales}, predicate=Optional[ALL]}]'}, projectLocality = LOCAL] => [ss_item_sk:integer, ss_customer_sk:integer, ss_ticket_number:bigint, ss_quantity:integer, ss_sales_price:decimal(7,2), $hashvalue_32:bigint]
+                                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                        $hashvalue_32 := combine_hash(combine_hash(BIGINT'0', COALESCE($operator$hash_code(ss_item_sk), BIGINT'0')), COALESCE($operator$hash_code(ss_ticket_number), BIGINT'0')) (9:13)
+                                                                        LAYOUT: DeltaTableLayoutHandle{table=DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.store_sales}, predicate=Optional[ALL]}
+                                                                        ss_sales_price := DeltaColumnHandle{name=ss_sales_price, dataType=decimal(7,2), columnType=REGULAR} (9:13)
+                                                                        ss_ticket_number := DeltaColumnHandle{name=ss_ticket_number, dataType=bigint, columnType=REGULAR} (9:13)
+                                                                        ss_quantity := DeltaColumnHandle{name=ss_quantity, dataType=integer, columnType=REGULAR} (9:13)
+                                                                        ss_item_sk := DeltaColumnHandle{name=ss_item_sk, dataType=integer, columnType=REGULAR} (9:13)
+                                                                        ss_customer_sk := DeltaColumnHandle{name=ss_customer_sk, dataType=integer, columnType=REGULAR} (9:13)
+                                                            - LocalExchange[HASH][$hashvalue_33] (sr_item_sk, sr_ticket_number) => [sr_item_sk:integer, sr_reason_sk:integer, sr_ticket_number:bigint, sr_return_quantity:integer, $hashvalue_33:bigint]
+                                                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                - RemoteStreamingExchange[REPARTITION][$hashvalue_34] => [sr_item_sk:integer, sr_reason_sk:integer, sr_ticket_number:bigint, sr_return_quantity:integer, $hashvalue_34:bigint]
+                                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                    - ScanProject[table = TableHandle {connectorId='delta', connectorHandle='DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.store_returns}', layout='Optional[DeltaTableLayoutHandle{table=DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.store_returns}, predicate=Optional[ALL]}]'}, projectLocality = LOCAL] => [sr_item_sk:integer, sr_reason_sk:integer, sr_ticket_number:bigint, sr_return_quantity:integer, $hashvalue_35:bigint]
+                                                                            Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                            $hashvalue_35 := combine_hash(combine_hash(BIGINT'0', COALESCE($operator$hash_code(sr_item_sk), BIGINT'0')), COALESCE($operator$hash_code(sr_ticket_number), BIGINT'0')) (10:24)
+                                                                            LAYOUT: DeltaTableLayoutHandle{table=DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.store_returns}, predicate=Optional[ALL]}
+                                                                            sr_ticket_number := DeltaColumnHandle{name=sr_ticket_number, dataType=bigint, columnType=REGULAR} (10:24)
+                                                                            sr_reason_sk := DeltaColumnHandle{name=sr_reason_sk, dataType=integer, columnType=REGULAR} (10:24)
+                                                                            sr_return_quantity := DeltaColumnHandle{name=sr_return_quantity, dataType=integer, columnType=REGULAR} (10:24)
+                                                                            sr_item_sk := DeltaColumnHandle{name=sr_item_sk, dataType=integer, columnType=REGULAR} (10:24)
+                                                - LocalExchange[HASH][$hashvalue_37] (r_reason_sk) => [r_reason_sk:integer, $hashvalue_37:bigint]
+                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                    - RemoteStreamingExchange[REPARTITION][$hashvalue_38] => [r_reason_sk:integer, $hashvalue_38:bigint]
+                                                            Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                        - ScanFilterProject[table = TableHandle {connectorId='delta', connectorHandle='DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.reason}', layout='Optional[DeltaTableLayoutHandle{table=DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.reason}, predicate=Optional[{DeltaColumnHandle{name=r_reason_desc, dataType=varchar, columnType=REGULAR}=[ [[""reason 28""]] ]}]}]'}, filterPredicate = (r_reason_desc) = (VARCHAR'reason 28'), projectLocality = LOCAL] => [r_reason_sk:integer, $hashvalue_39:bigint]
+                                                                Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                $hashvalue_39 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(r_reason_sk), BIGINT'0')) (12:8)
+                                                                LAYOUT: DeltaTableLayoutHandle{table=DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.reason}, predicate=Optional[{DeltaColumnHandle{name=r_reason_desc, dataType=varchar, columnType=REGULAR}=[ [[""reason 28""]] ]}]}
+                                                                r_reason_desc := DeltaColumnHandle{name=r_reason_desc, dataType=varchar, columnType=REGULAR} (12:8)
+                                                                    :: [[""reason 28""]]
+                                                                r_reason_sk := DeltaColumnHandle{name=r_reason_sk, dataType=integer, columnType=REGULAR} (12:8)
+"

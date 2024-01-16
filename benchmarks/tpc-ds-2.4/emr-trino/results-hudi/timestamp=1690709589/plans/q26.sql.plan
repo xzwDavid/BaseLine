@@ -1,0 +1,95 @@
+"- Output[i_item_id, agg1, agg2, agg3, agg4] => [i_item_id:varchar, avg:double, avg_25:decimal(7,2), avg_26:decimal(7,2), avg_27:decimal(7,2)]
+        agg1 := avg (5:9)
+        agg2 := avg_25 (6:9)
+        agg3 := avg_26 (7:9)
+        agg4 := avg_27 (8:9)
+    - TopN[100 by (i_item_id ASC_NULLS_LAST)] => [i_item_id:varchar, avg:double, avg_25:decimal(7,2), avg_26:decimal(7,2), avg_27:decimal(7,2)]
+        - LocalExchange[SINGLE] () => [i_item_id:varchar, avg:double, avg_25:decimal(7,2), avg_26:decimal(7,2), avg_27:decimal(7,2)]
+            - RemoteStreamingExchange[GATHER] => [i_item_id:varchar, avg:double, avg_25:decimal(7,2), avg_26:decimal(7,2), avg_27:decimal(7,2)]
+                - TopNPartial[100 by (i_item_id ASC_NULLS_LAST)] => [i_item_id:varchar, avg_26:decimal(7,2), avg_27:decimal(7,2), avg:double, avg_25:decimal(7,2)]
+                    - Project[projectLocality = LOCAL] => [i_item_id:varchar, avg_26:decimal(7,2), avg_27:decimal(7,2), avg:double, avg_25:decimal(7,2)]
+                        - Aggregate(FINAL)[i_item_id][$hashvalue] => [i_item_id:varchar, $hashvalue:bigint, avg_26:decimal(7,2), avg_27:decimal(7,2), avg:double, avg_25:decimal(7,2)]
+                                avg_26 := ""presto.default.avg""((avg_46)) (7:9)
+                                avg_27 := ""presto.default.avg""((avg_47)) (8:9)
+                                avg := ""presto.default.avg""((avg_44)) (5:9)
+                                avg_25 := ""presto.default.avg""((avg_45)) (6:9)
+                            - LocalExchange[HASH][$hashvalue] (i_item_id) => [i_item_id:varchar, avg_44:row(""field0"" double, ""field1"" bigint), avg_47:varbinary, avg_46:varbinary, avg_45:varbinary, $hashvalue:bigint]
+                                - RemoteStreamingExchange[REPARTITION][$hashvalue_48] => [i_item_id:varchar, avg_44:row(""field0"" double, ""field1"" bigint), avg_47:varbinary, avg_46:varbinary, avg_45:varbinary, $hashvalue_48:bigint]
+                                    - Aggregate(PARTIAL)[i_item_id][$hashvalue_69] => [i_item_id:varchar, $hashvalue_69:bigint, avg_44:row(""field0"" double, ""field1"" bigint), avg_47:varbinary, avg_46:varbinary, avg_45:varbinary]
+                                            avg_44 := ""presto.default.avg""((cs_quantity_21)) (5:9)
+                                            avg_47 := ""presto.default.avg""((cs_sales_price)) (8:9)
+                                            avg_46 := ""presto.default.avg""((cs_coupon_amt)) (7:9)
+                                            avg_45 := ""presto.default.avg""((cs_list_price)) (6:9)
+                                        - Project[projectLocality = LOCAL] => [i_item_id:varchar, cs_quantity_21:bigint, cs_list_price:decimal(7,2), cs_coupon_amt:decimal(7,2), cs_sales_price:decimal(7,2), $hashvalue_69:bigint]
+                                                cs_quantity_21 := CAST(cs_quantity AS bigint) (9:8)
+                                                $hashvalue_69 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(i_item_id), BIGINT'0')) (9:56)
+                                            - InnerJoin[(""cs_promo_sk"" = ""p_promo_sk"")][$hashvalue_49, $hashvalue_66] => [cs_quantity:integer, cs_list_price:decimal(7,2), cs_sales_price:decimal(7,2), cs_coupon_amt:decimal(7,2), i_item_id:varchar]
+                                                    Distribution: PARTITIONED
+                                                - RemoteStreamingExchange[REPARTITION][$hashvalue_49] => [cs_promo_sk:integer, cs_quantity:integer, cs_list_price:decimal(7,2), cs_sales_price:decimal(7,2), cs_coupon_amt:decimal(7,2), i_item_id:varchar, $hashvalue_49:bigint]
+                                                    - Project[projectLocality = LOCAL] => [cs_promo_sk:integer, cs_quantity:integer, cs_list_price:decimal(7,2), cs_sales_price:decimal(7,2), cs_coupon_amt:decimal(7,2), i_item_id:varchar, $hashvalue_65:bigint]
+                                                            $hashvalue_65 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(cs_promo_sk), BIGINT'0')) (9:7)
+                                                        - InnerJoin[(""cs_item_sk"" = ""i_item_sk"")][$hashvalue_50, $hashvalue_62] => [cs_promo_sk:integer, cs_quantity:integer, cs_list_price:decimal(7,2), cs_sales_price:decimal(7,2), cs_coupon_amt:decimal(7,2), i_item_id:varchar]
+                                                                Distribution: PARTITIONED
+                                                            - RemoteStreamingExchange[REPARTITION][$hashvalue_50] => [cs_item_sk:integer, cs_promo_sk:integer, cs_quantity:integer, cs_list_price:decimal(7,2), cs_sales_price:decimal(7,2), cs_coupon_amt:decimal(7,2), $hashvalue_50:bigint]
+                                                                - Project[projectLocality = LOCAL] => [cs_item_sk:integer, cs_promo_sk:integer, cs_quantity:integer, cs_list_price:decimal(7,2), cs_sales_price:decimal(7,2), cs_coupon_amt:decimal(7,2), $hashvalue_61:bigint]
+                                                                        $hashvalue_61 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(cs_item_sk), BIGINT'0')) (9:7)
+                                                                    - InnerJoin[(""cs_sold_date_sk"" = ""d_date_sk"")][$hashvalue_51, $hashvalue_58] => [cs_item_sk:integer, cs_promo_sk:integer, cs_quantity:integer, cs_list_price:decimal(7,2), cs_sales_price:decimal(7,2), cs_coupon_amt:decimal(7,2)]
+                                                                            Distribution: PARTITIONED
+                                                                        - RemoteStreamingExchange[REPARTITION][$hashvalue_51] => [cs_item_sk:integer, cs_promo_sk:integer, cs_quantity:integer, cs_list_price:decimal(7,2), cs_sales_price:decimal(7,2), cs_coupon_amt:decimal(7,2), cs_sold_date_sk:integer, $hashvalue_51:bigint]
+                                                                            - Project[projectLocality = LOCAL] => [cs_item_sk:integer, cs_promo_sk:integer, cs_quantity:integer, cs_list_price:decimal(7,2), cs_sales_price:decimal(7,2), cs_coupon_amt:decimal(7,2), cs_sold_date_sk:integer, $hashvalue_57:bigint]
+                                                                                    $hashvalue_57 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(cs_sold_date_sk), BIGINT'0')) (9:7)
+                                                                                - InnerJoin[(""cs_bill_cdemo_sk"" = ""cd_demo_sk"")][$hashvalue_52, $hashvalue_54] => [cs_item_sk:integer, cs_promo_sk:integer, cs_quantity:integer, cs_list_price:decimal(7,2), cs_sales_price:decimal(7,2), cs_coupon_amt:decimal(7,2), cs_sold_date_sk:integer]
+                                                                                        Distribution: PARTITIONED
+                                                                                    - RemoteStreamingExchange[REPARTITION][$hashvalue_52] => [cs_bill_cdemo_sk:integer, cs_item_sk:integer, cs_promo_sk:integer, cs_quantity:integer, cs_list_price:decimal(7,2), cs_sales_price:decimal(7,2), cs_coupon_amt:decimal(7,2), cs_sold_date_sk:integer, $hashvalue_52:bigint]
+                                                                                            Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                        - ScanProject[table = TableHandle {connectorId='hudi', connectorHandle='tpcds_sf1_hudi.catalog_sales', layout='Optional[tpcds_sf1_hudi.catalog_sales]'}, projectLocality = LOCAL] => [cs_bill_cdemo_sk:integer, cs_item_sk:integer, cs_promo_sk:integer, cs_quantity:integer, cs_list_price:decimal(7,2), cs_sales_price:decimal(7,2), cs_coupon_amt:decimal(7,2), cs_sold_date_sk:integer, $hashvalue_53:bigint]
+                                                                                                Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                                $hashvalue_53 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(cs_bill_cdemo_sk), BIGINT'0')) (9:7)
+                                                                                                cs_coupon_amt := 31:cs_coupon_amt:decimal(7,2):REGULAR (9:7)
+                                                                                                cs_sales_price := 25:cs_sales_price:decimal(7,2):REGULAR (9:7)
+                                                                                                cs_list_price := 24:cs_list_price:decimal(7,2):REGULAR (9:7)
+                                                                                                cs_bill_cdemo_sk := 8:cs_bill_cdemo_sk:int:REGULAR (9:7)
+                                                                                                cs_item_sk := 19:cs_item_sk:int:REGULAR (9:7)
+                                                                                                cs_quantity := 22:cs_quantity:int:REGULAR (9:7)
+                                                                                                cs_promo_sk := 20:cs_promo_sk:int:REGULAR (9:7)
+                                                                                                cs_sold_date_sk := -13:cs_sold_date_sk:int:PARTITION_KEY (9:7)
+                                                                                    - LocalExchange[HASH][$hashvalue_54] (cd_demo_sk) => [cd_demo_sk:integer, $hashvalue_54:bigint]
+                                                                                            Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                        - RemoteStreamingExchange[REPARTITION][$hashvalue_55] => [cd_demo_sk:integer, $hashvalue_55:bigint]
+                                                                                                Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                            - ScanFilterProject[table = TableHandle {connectorId='hudi', connectorHandle='tpcds_sf1_hudi.customer_demographics', layout='Optional[tpcds_sf1_hudi.customer_demographics]'}, filterPredicate = (((cd_gender) = (VARCHAR'M')) AND ((cd_marital_status) = (VARCHAR'S'))) AND ((cd_education_status) = (VARCHAR'College')), projectLocality = LOCAL] => [cd_demo_sk:integer, $hashvalue_56:bigint]
+                                                                                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                                    $hashvalue_56 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(cd_demo_sk), BIGINT'0')) (9:22)
+                                                                                                    cd_education_status := 8:cd_education_status:string:REGULAR (9:22)
+                                                                                                    cd_demo_sk := 5:cd_demo_sk:int:REGULAR (9:22)
+                                                                                                    cd_gender := 6:cd_gender:string:REGULAR (9:22)
+                                                                                                    cd_marital_status := 7:cd_marital_status:string:REGULAR (9:22)
+                                                                        - LocalExchange[HASH][$hashvalue_58] (d_date_sk) => [d_date_sk:integer, $hashvalue_58:bigint]
+                                                                                Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                            - RemoteStreamingExchange[REPARTITION][$hashvalue_59] => [d_date_sk:integer, $hashvalue_59:bigint]
+                                                                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                - ScanFilterProject[table = TableHandle {connectorId='hudi', connectorHandle='tpcds_sf1_hudi.date_dim', layout='Optional[tpcds_sf1_hudi.date_dim]'}, filterPredicate = (d_year) = (INTEGER'2000'), projectLocality = LOCAL] => [d_date_sk:integer, $hashvalue_60:bigint]
+                                                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                        $hashvalue_60 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(d_date_sk), BIGINT'0')) (9:45)
+                                                                                        d_date_sk := 5:d_date_sk:int:REGULAR (9:45)
+                                                                                        d_year := 11:d_year:int:REGULAR (9:45)
+                                                            - LocalExchange[HASH][$hashvalue_62] (i_item_sk) => [i_item_sk:integer, i_item_id:varchar, $hashvalue_62:bigint]
+                                                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                - RemoteStreamingExchange[REPARTITION][$hashvalue_63] => [i_item_sk:integer, i_item_id:varchar, $hashvalue_63:bigint]
+                                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                    - ScanProject[table = TableHandle {connectorId='hudi', connectorHandle='tpcds_sf1_hudi.item', layout='Optional[tpcds_sf1_hudi.item]'}, projectLocality = LOCAL] => [i_item_sk:integer, i_item_id:varchar, $hashvalue_64:bigint]
+                                                                            Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                            $hashvalue_64 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(i_item_sk), BIGINT'0')) (9:55)
+                                                                            i_item_sk := 5:i_item_sk:int:REGULAR (9:55)
+                                                                            i_item_id := 6:i_item_id:string:REGULAR (9:55)
+                                                - LocalExchange[HASH][$hashvalue_66] (p_promo_sk) => [p_promo_sk:integer, $hashvalue_66:bigint]
+                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                    - RemoteStreamingExchange[REPARTITION][$hashvalue_67] => [p_promo_sk:integer, $hashvalue_67:bigint]
+                                                            Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                        - ScanFilterProject[table = TableHandle {connectorId='hudi', connectorHandle='tpcds_sf1_hudi.promotion', layout='Optional[tpcds_sf1_hudi.promotion]'}, filterPredicate = ((p_channel_email) = (VARCHAR'N')) OR ((p_channel_event) = (VARCHAR'N')), projectLocality = LOCAL] => [p_promo_sk:integer, $hashvalue_68:bigint]
+                                                                Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                $hashvalue_68 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(p_promo_sk), BIGINT'0')) (9:61)
+                                                                p_channel_email := 14:p_channel_email:string:REGULAR (9:61)
+                                                                p_promo_sk := 5:p_promo_sk:int:REGULAR (9:61)
+                                                                p_channel_event := 19:p_channel_event:string:REGULAR (9:61)
+"

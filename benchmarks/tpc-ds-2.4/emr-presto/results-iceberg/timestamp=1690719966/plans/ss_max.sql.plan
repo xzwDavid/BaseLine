@@ -1,0 +1,59 @@
+"- Output[total, not_null_total, unique_days, max_ss_sold_date_sk, max_ss_sold_time_sk, max_ss_item_sk, max_ss_customer_sk, max_ss_cdemo_sk, max_ss_hdemo_sk, max_ss_addr_sk, max_ss_store_sk, max_ss_promo_sk] => [count:bigint, count_11:bigint, count_12:bigint, max:integer, max_13:integer, max_14:integer, max_15:integer, max_16:integer, max_17:integer, max_18:integer, max_19:integer, max_20:integer]
+        total := count (4:3)
+        not_null_total := count_11 (5:3)
+        unique_days := count_12 (6:3)
+        max_ss_sold_date_sk := max (7:3)
+        max_ss_sold_time_sk := max_13 (8:3)
+        max_ss_item_sk := max_14 (9:3)
+        max_ss_customer_sk := max_15 (10:3)
+        max_ss_cdemo_sk := max_16 (11:3)
+        max_ss_hdemo_sk := max_17 (12:3)
+        max_ss_addr_sk := max_18 (13:3)
+        max_ss_store_sk := max_19 (14:3)
+        max_ss_promo_sk := max_20 (15:3)
+    - Aggregate(FINAL) => [max:integer, max_19:integer, max_17:integer, max_18:integer, max_15:integer, max_16:integer, count_12:bigint, max_13:integer, count:bigint, max_14:integer, count_11:bigint, max_20:integer]
+            max := ""presto.default.max""((max_69)) (7:3)
+            max_19 := ""presto.default.max""((max_70)) (14:3)
+            max_17 := ""presto.default.max""((max_71)) (12:3)
+            max_18 := ""presto.default.max""((max_72)) (13:3)
+            max_15 := ""presto.default.max""((max_73)) (10:3)
+            max_16 := ""presto.default.max""((max_74)) (11:3)
+            count_12 := ""presto.default.count""((count_75)) (6:3)
+            max_13 := ""presto.default.max""((max_76)) (8:3)
+            count := ""presto.default.count""((count_77)) (4:3)
+            max_14 := ""presto.default.max""((max_78)) (9:3)
+            count_11 := ""presto.default.count""((count_79)) (5:3)
+            max_20 := ""presto.default.max""((max_80)) (15:3)
+        - LocalExchange[SINGLE] () => [max_76:bigint, max_78:bigint, max_69:bigint, count_79:bigint, count_77:bigint, max_80:bigint, max_70:bigint, count_75:bigint, max_71:bigint, max_72:bigint, max_73:bigint, max_74:bigint]
+            - RemoteStreamingExchange[GATHER] => [max_76:bigint, max_78:bigint, max_69:bigint, count_79:bigint, count_77:bigint, max_80:bigint, max_70:bigint, count_75:bigint, max_71:bigint, max_72:bigint, max_73:bigint, max_74:bigint]
+                - Aggregate(PARTIAL) => [max_76:bigint, max_78:bigint, max_69:bigint, count_79:bigint, count_77:bigint, max_80:bigint, max_70:bigint, count_75:bigint, max_71:bigint, max_72:bigint, max_73:bigint, max_74:bigint]
+                        max_76 := ""presto.default.max""((ss_sold_time_sk)) (8:3)
+                        max_78 := ""presto.default.max""((ss_item_sk)) (9:3)
+                        max_69 := ""presto.default.max""((ss_sold_date_sk)) (7:3)
+                        count_79 := ""presto.default.count""((ss_sold_date_sk)) (5:3)
+                        count_77 := ""presto.default.count""(*) (4:3)
+                        max_80 := ""presto.default.max""((ss_promo_sk)) (15:3)
+                        max_70 := ""presto.default.max""((ss_store_sk)) (14:3)
+                        count_75 := ""presto.default.count""((ss_sold_date_sk)) (mask = ss_sold_date_sk_68) (6:3)
+                        max_71 := ""presto.default.max""((ss_hdemo_sk)) (12:3)
+                        max_72 := ""presto.default.max""((ss_addr_sk)) (13:3)
+                        max_73 := ""presto.default.max""((ss_customer_sk)) (10:3)
+                        max_74 := ""presto.default.max""((ss_cdemo_sk)) (11:3)
+                    - MarkDistinct[distinct=ss_sold_date_sk:integer marker=ss_sold_date_sk_68][$hashvalue] => [ss_sold_time_sk:integer, ss_item_sk:integer, ss_customer_sk:integer, ss_cdemo_sk:integer, ss_hdemo_sk:integer, ss_addr_sk:integer, ss_store_sk:integer, ss_promo_sk:integer, ss_sold_date_sk:integer, $hashvalue:bigint, ss_sold_date_sk_68:boolean]
+                        - LocalExchange[HASH][$hashvalue] (ss_sold_date_sk) => [ss_sold_time_sk:integer, ss_item_sk:integer, ss_customer_sk:integer, ss_cdemo_sk:integer, ss_hdemo_sk:integer, ss_addr_sk:integer, ss_store_sk:integer, ss_promo_sk:integer, ss_sold_date_sk:integer, $hashvalue:bigint]
+                                Estimates: {rows: 2750838 (188.89MB), cpu: 252330890.00, memory: 0.00, network: 69272108.00}
+                            - RemoteStreamingExchange[REPARTITION][$hashvalue_81] => [ss_sold_time_sk:integer, ss_item_sk:integer, ss_customer_sk:integer, ss_cdemo_sk:integer, ss_hdemo_sk:integer, ss_addr_sk:integer, ss_store_sk:integer, ss_promo_sk:integer, ss_sold_date_sk:integer, $hashvalue_81:bigint]
+                                    Estimates: {rows: 2750838 (188.89MB), cpu: 183058782.00, memory: 0.00, network: 69272108.00}
+                                - ScanProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]', layout='Optional[tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]]'}, projectLocality = LOCAL] => [ss_sold_time_sk:integer, ss_item_sk:integer, ss_customer_sk:integer, ss_cdemo_sk:integer, ss_hdemo_sk:integer, ss_addr_sk:integer, ss_store_sk:integer, ss_promo_sk:integer, ss_sold_date_sk:integer, $hashvalue_82:bigint]
+                                        Estimates: {rows: 2750838 (188.89MB), cpu: 44514566.00, memory: 0.00, network: 0.00}/{rows: 2750838 (188.89MB), cpu: 113786674.00, memory: 0.00, network: 0.00}
+                                        $hashvalue_82 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(ss_sold_date_sk), BIGINT'0')) (16:6)
+                                        ss_hdemo_sk := 5:ss_hdemo_sk:integer (16:6)
+                                        ss_sold_date_sk := 23:ss_sold_date_sk:integer (16:6)
+                                        ss_customer_sk := 3:ss_customer_sk:integer (16:6)
+                                        ss_promo_sk := 8:ss_promo_sk:integer (16:6)
+                                        ss_cdemo_sk := 4:ss_cdemo_sk:integer (16:6)
+                                        ss_addr_sk := 6:ss_addr_sk:integer (16:6)
+                                        ss_store_sk := 7:ss_store_sk:integer (16:6)
+                                        ss_item_sk := 2:ss_item_sk:integer (16:6)
+                                        ss_sold_time_sk := 1:ss_sold_time_sk:integer (16:6)
+"

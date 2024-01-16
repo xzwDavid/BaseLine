@@ -1,0 +1,120 @@
+"Trino version: 422
+Fragment 0 [SINGLE]
+    Output layout: [i_item_id, i_item_desc, i_category, i_class, i_current_price, sum, expr]
+    Output partitioning: SINGLE []
+    Output[columnNames = [i_item_id, i_item_desc, i_category, i_class, i_current_price, itemrevenue, revenueratio]]
+    │   Layout: [i_item_id:varchar, i_item_desc:varchar, i_category:varchar, i_class:varchar, i_current_price:decimal(7,2), sum:decimal(38,2), expr:decimal(38,2)]
+    │   Estimates: {rows: 100 (25.68kB), cpu: 0, memory: 0B, network: 0B}
+    │   itemrevenue := sum
+    │   revenueratio := expr
+    └─ TopN[count = 100, orderBy = [i_category ASC NULLS LAST, i_class ASC NULLS LAST, i_item_id ASC NULLS LAST, i_item_desc ASC NULLS LAST, expr ASC NULLS LAST]]
+       │   Layout: [i_item_id:varchar, i_class:varchar, sum:decimal(38,2), expr:decimal(38,2), i_category:varchar, i_current_price:decimal(7,2), i_item_desc:varchar]
+       │   Estimates: {rows: 100 (25.68kB), cpu: ?, memory: ?, network: ?}
+       └─ LocalExchange[partitioning = SINGLE]
+          │   Layout: [i_item_id:varchar, i_class:varchar, sum:decimal(38,2), expr:decimal(38,2), i_category:varchar, i_current_price:decimal(7,2), i_item_desc:varchar]
+          │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}
+          └─ RemoteSource[sourceFragmentIds = [1]]
+                 Layout: [i_item_id:varchar, i_class:varchar, sum:decimal(38,2), expr:decimal(38,2), i_category:varchar, i_current_price:decimal(7,2), i_item_desc:varchar]
+
+Fragment 1 [HASH]
+    Output layout: [i_item_id, i_class, sum, expr, i_category, i_current_price, i_item_desc]
+    Output partitioning: SINGLE []
+    TopNPartial[count = 100, orderBy = [i_category ASC NULLS LAST, i_class ASC NULLS LAST, i_item_id ASC NULLS LAST, i_item_desc ASC NULLS LAST, expr ASC NULLS LAST]]
+    │   Layout: [i_item_id:varchar, i_class:varchar, sum:decimal(38,2), expr:decimal(38,2), i_category:varchar, i_current_price:decimal(7,2), i_item_desc:varchar]
+    └─ Project[]
+       │   Layout: [i_item_id:varchar, i_class:varchar, sum:decimal(38,2), expr:decimal(38,2), i_category:varchar, i_current_price:decimal(7,2), i_item_desc:varchar]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   expr := ((""sum"" * CAST(DECIMAL '100' AS decimal(10, 0))) / ""sum_4"")
+       └─ Window[partitionBy = [i_class], hash = [$hashvalue]]
+          │   Layout: [i_item_id:varchar, i_item_desc:varchar, i_category:varchar, i_class:varchar, i_current_price:decimal(7,2), sum:decimal(38,2), $hashvalue:bigint, sum_4:decimal(38,2)]
+          │   sum_4 := sum(""sum"") RANGE UNBOUNDED_PRECEDING CURRENT_ROW
+          └─ LocalExchange[partitioning = HASH, hashColumn = [$hashvalue], arguments = [""i_class""]]
+             │   Layout: [i_item_id:varchar, i_item_desc:varchar, i_category:varchar, i_class:varchar, i_current_price:decimal(7,2), sum:decimal(38,2), $hashvalue:bigint]
+             │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [2]]
+                    Layout: [i_item_id:varchar, i_item_desc:varchar, i_category:varchar, i_class:varchar, i_current_price:decimal(7,2), sum:decimal(38,2), $hashvalue_6:bigint]
+
+Fragment 2 [HASH]
+    Output layout: [i_item_id, i_item_desc, i_category, i_class, i_current_price, sum, $hashvalue_18]
+    Output partitioning: HASH [i_class][$hashvalue_18]
+    Project[]
+    │   Layout: [i_item_id:varchar, i_item_desc:varchar, i_category:varchar, i_class:varchar, i_current_price:decimal(7,2), sum:decimal(38,2), $hashvalue_18:bigint]
+    │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+    │   $hashvalue_18 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_class""), 0))
+    └─ Aggregate[type = FINAL, keys = [i_item_id, i_item_desc, i_category, i_class, i_current_price], hash = [$hashvalue_7]]
+       │   Layout: [i_item_id:varchar, i_item_desc:varchar, i_category:varchar, i_class:varchar, i_current_price:decimal(7,2), $hashvalue_7:bigint, sum:decimal(38,2)]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+       │   sum := sum(""sum_5"")
+       └─ LocalExchange[partitioning = HASH, hashColumn = [$hashvalue_7], arguments = [""i_item_id"", ""i_item_desc"", ""i_category"", ""i_class"", ""i_current_price""]]
+          │   Layout: [i_item_id:varchar, i_item_desc:varchar, i_category:varchar, i_class:varchar, i_current_price:decimal(7,2), sum_5:varbinary, $hashvalue_7:bigint]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          └─ RemoteSource[sourceFragmentIds = [3]]
+                 Layout: [i_item_id:varchar, i_item_desc:varchar, i_category:varchar, i_class:varchar, i_current_price:decimal(7,2), sum_5:varbinary, $hashvalue_8:bigint]
+
+Fragment 3 [SOURCE]
+    Output layout: [i_item_id, i_item_desc, i_category, i_class, i_current_price, sum_5, $hashvalue_17]
+    Output partitioning: HASH [i_item_id, i_item_desc, i_category, i_class, i_current_price][$hashvalue_17]
+    Aggregate[type = PARTIAL, keys = [i_item_id, i_item_desc, i_category, i_class, i_current_price], hash = [$hashvalue_17]]
+    │   Layout: [i_item_id:varchar, i_item_desc:varchar, i_category:varchar, i_class:varchar, i_current_price:decimal(7,2), $hashvalue_17:bigint, sum_5:varbinary]
+    │   sum_5 := sum(""ws_ext_sales_price"")
+    └─ Project[]
+       │   Layout: [ws_ext_sales_price:decimal(7,2), i_item_id:varchar, i_item_desc:varchar, i_current_price:decimal(7,2), i_class:varchar, i_category:varchar, $hashvalue_17:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   $hashvalue_17 := combine_hash(combine_hash(combine_hash(combine_hash(combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_item_id""), 0)), COALESCE(""$operator$hash_code""(""i_item_desc""), 0)), COALESCE(""$operator$hash_code""(""i_category""), 0)), COALESCE(""$operator$hash_code""(""i_class""), 0)), COALESCE(""$operator$hash_code""(""i_current_price""), 0))
+       └─ InnerJoin[criteria = (""ws_sold_date_sk"" = ""d_date_sk""), hash = [$hashvalue_13, $hashvalue_14], distribution = REPLICATED]
+          │   Layout: [ws_ext_sales_price:decimal(7,2), i_item_id:varchar, i_item_desc:varchar, i_current_price:decimal(7,2), i_class:varchar, i_category:varchar]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 840B, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk -> #df_845}
+          ├─ Project[]
+          │  │   Layout: [ws_ext_sales_price:decimal(7,2), ws_sold_date_sk:integer, i_item_id:varchar, i_item_desc:varchar, i_current_price:decimal(7,2), i_class:varchar, i_category:varchar, $hashvalue_13:bigint]
+          │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │  │   $hashvalue_13 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ws_sold_date_sk""), 0))
+          │  └─ InnerJoin[criteria = (""ws_item_sk"" = ""i_item_sk""), hash = [$hashvalue_9, $hashvalue_10], distribution = REPLICATED]
+          │     │   Layout: [ws_ext_sales_price:decimal(7,2), ws_sold_date_sk:integer, i_item_id:varchar, i_item_desc:varchar, i_current_price:decimal(7,2), i_class:varchar, i_category:varchar]
+          │     │   Estimates: {rows: ? (?), cpu: ?, memory: 4.69MB, network: 0B}
+          │     │   Distribution: REPLICATED
+          │     │   dynamicFilterAssignments = {i_item_sk -> #df_846}
+          │     ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.web_sales$data@7618567712963574495, dynamicFilters = {""ws_sold_date_sk"" = #df_845, ""ws_item_sk"" = #df_846}]
+          │     │      Layout: [ws_item_sk:integer, ws_ext_sales_price:decimal(7,2), ws_sold_date_sk:integer, $hashvalue_9:bigint]
+          │     │      Estimates: {rows: 718760 (19.19MB), cpu: 13.02M, memory: 0B, network: 0B}/{rows: 718760 (19.19MB), cpu: 13.02M, memory: 0B, network: 0B}/{rows: 718760 (19.19MB), cpu: 19.19M, memory: 0B, network: 0B}
+          │     │      $hashvalue_9 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ws_item_sk""), 0))
+          │     │      ws_item_sk := 3:ws_item_sk:integer
+          │     │      ws_ext_sales_price := 23:ws_ext_sales_price:decimal(7,2)
+          │     │      ws_sold_date_sk := 34:ws_sold_date_sk:integer
+          │     └─ LocalExchange[partitioning = SINGLE]
+          │        │   Layout: [i_item_sk:integer, i_item_id:varchar, i_item_desc:varchar, i_current_price:decimal(7,2), i_class:varchar, i_category:varchar, $hashvalue_10:bigint]
+          │        │   Estimates: {rows: 17948 (2.34MB), cpu: 0, memory: 0B, network: 0B}
+          │        └─ RemoteSource[sourceFragmentIds = [4]]
+          │               Layout: [i_item_sk:integer, i_item_id:varchar, i_item_desc:varchar, i_current_price:decimal(7,2), i_class:varchar, i_category:varchar, $hashvalue_11:bigint]
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk:integer, $hashvalue_14:bigint]
+             │   Estimates: {rows: 30 (420B), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [5]]
+                    Layout: [d_date_sk:integer, $hashvalue_15:bigint]
+
+Fragment 4 [SOURCE]
+    Output layout: [i_item_sk, i_item_id, i_item_desc, i_current_price, i_class, i_category, $hashvalue_12]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.item$data@8481639847816879046, filterPredicate = (""i_category"" IN (VARCHAR 'Books', VARCHAR 'Home', VARCHAR 'Sports'))]
+        Layout: [i_item_sk:integer, i_item_id:varchar, i_item_desc:varchar, i_current_price:decimal(7,2), i_class:varchar, i_category:varchar, $hashvalue_12:bigint]
+        Estimates: {rows: 18000 (2.35MB), cpu: 2.20M, memory: 0B, network: 0B}/{rows: 17948 (2.34MB), cpu: 2.20M, memory: 0B, network: 0B}/{rows: 17948 (2.34MB), cpu: 2.34M, memory: 0B, network: 0B}
+        $hashvalue_12 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_item_sk""), 0))
+        i_item_desc := 5:i_item_desc:varchar
+        i_item_id := 2:i_item_id:varchar
+        i_class := 11:i_class:varchar
+        i_category := 13:i_category:varchar
+        i_current_price := 6:i_current_price:decimal(7,2)
+        i_item_sk := 1:i_item_sk:integer
+
+Fragment 5 [SOURCE]
+    Output layout: [d_date_sk, $hashvalue_16]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_date"" BETWEEN DATE '1999-02-22' AND DATE '1999-03-24')]
+        Layout: [d_date_sk:integer, $hashvalue_16:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 30 (420B), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 30 (420B), cpu: 420, memory: 0B, network: 0B}
+        $hashvalue_16 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk""), 0))
+        d_date := 3:d_date:date
+        d_date_sk := 1:d_date_sk:integer
+
+"

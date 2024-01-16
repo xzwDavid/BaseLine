@@ -1,0 +1,170 @@
+"Trino version: 422
+Fragment 0 [SINGLE]
+    Output layout: [avg, avg_11, avg_12, sum]
+    Output partitioning: SINGLE []
+    Output[columnNames = [_col0, _col1, _col2, _col3]]
+    │   Layout: [avg:double, avg_11:decimal(7,2), avg_12:decimal(7,2), sum:decimal(38,2)]
+    │   Estimates: {rows: 1 (44B), cpu: 0, memory: 0B, network: 0B}
+    │   _col0 := avg
+    │   _col1 := avg_11
+    │   _col2 := avg_12
+    │   _col3 := sum
+    └─ Aggregate[type = FINAL]
+       │   Layout: [avg:double, avg_11:decimal(7,2), sum:decimal(38,2), avg_12:decimal(7,2)]
+       │   Estimates: {rows: 1 (44B), cpu: ?, memory: 44B, network: 0B}
+       │   avg := avg(""avg_13"")
+       │   avg_11 := avg(""avg_14"")
+       │   sum := sum(""sum_16"")
+       │   avg_12 := avg(""avg_15"")
+       └─ LocalExchange[partitioning = SINGLE]
+          │   Layout: [avg_15:varbinary, avg_14:varbinary, sum_16:varbinary, avg_13:row(double, bigint)]
+          │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}
+          └─ RemoteSource[sourceFragmentIds = [1]]
+                 Layout: [avg_15:varbinary, avg_14:varbinary, sum_16:varbinary, avg_13:row(double, bigint)]
+
+Fragment 1 [SOURCE]
+    Output layout: [avg_15, avg_14, sum_16, avg_13]
+    Output partitioning: SINGLE []
+    Aggregate[type = PARTIAL]
+    │   Layout: [avg_15:varbinary, avg_14:varbinary, sum_16:varbinary, avg_13:row(double, bigint)]
+    │   avg_15 := avg(""ss_ext_wholesale_cost"")
+    │   avg_14 := avg(""ss_ext_sales_price"")
+    │   sum_16 := sum(""ss_ext_wholesale_cost"")
+    │   avg_13 := avg(""ss_quantity_10"")
+    └─ Project[]
+       │   Layout: [ss_ext_sales_price:decimal(7,2), ss_ext_wholesale_cost:decimal(7,2), ss_quantity_10:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   ss_quantity_10 := CAST(""ss_quantity"" AS bigint)
+       └─ InnerJoin[criteria = (""ss_sold_date_sk"" = ""d_date_sk""), hash = [$hashvalue_32, $hashvalue_33], distribution = REPLICATED]
+          │   Layout: [ss_quantity:integer, ss_ext_sales_price:decimal(7,2), ss_ext_wholesale_cost:decimal(7,2)]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk -> #df_1165}
+          ├─ Project[]
+          │  │   Layout: [ss_quantity:integer, ss_ext_sales_price:decimal(7,2), ss_ext_wholesale_cost:decimal(7,2), ss_sold_date_sk:integer, $hashvalue_32:bigint]
+          │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │  │   $hashvalue_32 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ss_sold_date_sk""), 0))
+          │  └─ InnerJoin[criteria = (""ss_addr_sk"" = ""ca_address_sk"") AND (((""ca_state"" IN (VARCHAR 'TX', VARCHAR 'OH')) AND (CAST(""ss_net_profit"" AS decimal(12, 2)) BETWEEN CAST(DECIMAL '100.00' AS decimal(12, 2)) AND CAST(DECIMAL '200.00' AS decimal(12, 2)))) OR ((""ca_state"" IN (VARCHAR 'OR', VARCHAR 'NM', VARCHAR 'KY')) AND (CAST(""ss_net_profit"" AS decimal(12, 2)) BETWEEN CAST(DECIMAL '150.00' AS decimal(12, 2)) AND CAST(DECIMAL '300.00' AS decimal(12, 2)))) OR ((""ca_state"" IN (VARCHAR 'VA', VARCHAR 'TX', VARCHAR 'MS')) AND (CAST(""ss_net_profit"" AS decimal(12, 2)) BETWEEN CAST(DECIMAL '50.00' AS decimal(12, 2)) AND CAST(DECIMAL '250.00' AS decimal(12, 2))))), hash = [$hashvalue_28, $hashvalue_29], distribution = REPLICATED]
+          │     │   Layout: [ss_quantity:integer, ss_ext_sales_price:decimal(7,2), ss_ext_wholesale_cost:decimal(7,2), ss_sold_date_sk:integer]
+          │     │   Estimates: {rows: ? (?), cpu: ?, memory: 995.88kB, network: 0B}
+          │     │   Distribution: REPLICATED
+          │     │   dynamicFilterAssignments = {ca_address_sk -> #df_1166}
+          │     ├─ Project[]
+          │     │  │   Layout: [ss_addr_sk:integer, ss_quantity:integer, ss_ext_sales_price:decimal(7,2), ss_ext_wholesale_cost:decimal(7,2), ss_net_profit:decimal(7,2), ss_sold_date_sk:integer, $hashvalue_28:bigint]
+          │     │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │     │  │   $hashvalue_28 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ss_addr_sk""), 0))
+          │     │  └─ InnerJoin[criteria = (""ss_hdemo_sk"" = ""hd_demo_sk"") AND (((""cd_marital_status"" = VARCHAR 'M') AND (""cd_education_status"" = VARCHAR 'Advanced Degree') AND (""ss_sales_price"" BETWEEN CAST(DECIMAL '100.00' AS decimal(7, 2)) AND CAST(DECIMAL '150.00' AS decimal(7, 2))) AND (""hd_dep_count"" = 3)) OR ((""cd_marital_status"" = VARCHAR 'S') AND (""cd_education_status"" = VARCHAR 'College') AND (""ss_sales_price"" BETWEEN CAST(DECIMAL '50.00' AS decimal(7, 2)) AND CAST(DECIMAL '100.00' AS decimal(7, 2))) AND (""hd_dep_count"" = 1)) OR ((""cd_marital_status"" = VARCHAR 'W') AND (""cd_education_status"" = VARCHAR '2 yr Degree') AND (""ss_sales_price"" BETWEEN CAST(DECIMAL '150.00' AS decimal(7, 2)) AND CAST(DECIMAL '200.00' AS decimal(7, 2))) AND (""hd_dep_count"" = 1))), hash = [$hashvalue_24, $hashvalue_25], distribution = REPLICATED]
+          │     │     │   Layout: [ss_addr_sk:integer, ss_quantity:integer, ss_ext_sales_price:decimal(7,2), ss_ext_wholesale_cost:decimal(7,2), ss_net_profit:decimal(7,2), ss_sold_date_sk:integer]
+          │     │     │   Estimates: {rows: ? (?), cpu: ?, memory: 267.19kB, network: 0B}
+          │     │     │   Distribution: REPLICATED
+          │     │     │   dynamicFilterAssignments = {hd_demo_sk -> #df_1167}
+          │     │     ├─ Project[]
+          │     │     │  │   Layout: [ss_hdemo_sk:integer, ss_addr_sk:integer, ss_quantity:integer, ss_sales_price:decimal(7,2), ss_ext_sales_price:decimal(7,2), ss_ext_wholesale_cost:decimal(7,2), ss_net_profit:decimal(7,2), ss_sold_date_sk:integer, cd_marital_status:varchar, cd_education_status:varchar, $hashvalue_24:bigint]
+          │     │     │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │     │     │  │   $hashvalue_24 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ss_hdemo_sk""), 0))
+          │     │     │  └─ InnerJoin[criteria = (""ss_cdemo_sk"" = ""cd_demo_sk""), hash = [$hashvalue_20, $hashvalue_21], distribution = REPLICATED]
+          │     │     │     │   Layout: [ss_hdemo_sk:integer, ss_addr_sk:integer, ss_quantity:integer, ss_sales_price:decimal(7,2), ss_ext_sales_price:decimal(7,2), ss_ext_wholesale_cost:decimal(7,2), ss_net_profit:decimal(7,2), ss_sold_date_sk:integer, cd_marital_status:varchar, cd_education_status:varchar]
+          │     │     │     │   Estimates: {rows: ? (?), cpu: ?, memory: 88.05MB, network: 0B}
+          │     │     │     │   Distribution: REPLICATED
+          │     │     │     │   dynamicFilterAssignments = {cd_demo_sk -> #df_1168}
+          │     │     │     ├─ Project[]
+          │     │     │     │  │   Layout: [ss_cdemo_sk:integer, ss_hdemo_sk:integer, ss_addr_sk:integer, ss_quantity:integer, ss_sales_price:decimal(7,2), ss_ext_sales_price:decimal(7,2), ss_ext_wholesale_cost:decimal(7,2), ss_net_profit:decimal(7,2), ss_sold_date_sk:integer, $hashvalue_20:bigint]
+          │     │     │     │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │     │     │     │  │   $hashvalue_20 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ss_cdemo_sk""), 0))
+          │     │     │     │  └─ InnerJoin[criteria = (""ss_store_sk"" = ""s_store_sk""), hash = [$hashvalue, $hashvalue_17], distribution = REPLICATED]
+          │     │     │     │     │   Layout: [ss_cdemo_sk:integer, ss_hdemo_sk:integer, ss_addr_sk:integer, ss_quantity:integer, ss_sales_price:decimal(7,2), ss_ext_sales_price:decimal(7,2), ss_ext_wholesale_cost:decimal(7,2), ss_net_profit:decimal(7,2), ss_sold_date_sk:integer]
+          │     │     │     │     │   Estimates: {rows: ? (?), cpu: ?, memory: 336B, network: 0B}
+          │     │     │     │     │   Distribution: REPLICATED
+          │     │     │     │     │   dynamicFilterAssignments = {s_store_sk -> #df_1169}
+          │     │     │     │     ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.store_sales$data@6526568472398842660, dynamicFilters = {""ss_sold_date_sk"" = #df_1165, ""ss_addr_sk"" = #df_1166, ""ss_hdemo_sk"" = #df_1167, ""ss_cdemo_sk"" = #df_1168, ""ss_store_sk"" = #df_1169}]
+          │     │     │     │     │      Layout: [ss_cdemo_sk:integer, ss_hdemo_sk:integer, ss_addr_sk:integer, ss_store_sk:integer, ss_quantity:integer, ss_sales_price:decimal(7,2), ss_ext_sales_price:decimal(7,2), ss_ext_wholesale_cost:decimal(7,2), ss_net_profit:decimal(7,2), ss_sold_date_sk:integer, $hashvalue:bigint]
+          │     │     │     │     │      Estimates: {rows: 2750838 (193.54MB), cpu: 169.93M, memory: 0B, network: 0B}/{rows: 2750838 (193.54MB), cpu: 169.93M, memory: 0B, network: 0B}/{rows: 2750838 (193.54MB), cpu: 193.54M, memory: 0B, network: 0B}
+          │     │     │     │     │      $hashvalue := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ss_store_sk""), 0))
+          │     │     │     │     │      ss_cdemo_sk := 4:ss_cdemo_sk:integer
+          │     │     │     │     │      ss_ext_sales_price := 15:ss_ext_sales_price:decimal(7,2)
+          │     │     │     │     │      ss_ext_wholesale_cost := 16:ss_ext_wholesale_cost:decimal(7,2)
+          │     │     │     │     │      ss_net_profit := 22:ss_net_profit:decimal(7,2)
+          │     │     │     │     │      ss_addr_sk := 6:ss_addr_sk:integer
+          │     │     │     │     │      ss_sold_date_sk := 23:ss_sold_date_sk:integer
+          │     │     │     │     │      ss_store_sk := 7:ss_store_sk:integer
+          │     │     │     │     │      ss_hdemo_sk := 5:ss_hdemo_sk:integer
+          │     │     │     │     │      ss_quantity := 10:ss_quantity:integer
+          │     │     │     │     │      ss_sales_price := 13:ss_sales_price:decimal(7,2)
+          │     │     │     │     └─ LocalExchange[partitioning = SINGLE]
+          │     │     │     │        │   Layout: [s_store_sk:integer, $hashvalue_17:bigint]
+          │     │     │     │        │   Estimates: {rows: 12 (168B), cpu: 0, memory: 0B, network: 0B}
+          │     │     │     │        └─ RemoteSource[sourceFragmentIds = [2]]
+          │     │     │     │               Layout: [s_store_sk:integer, $hashvalue_18:bigint]
+          │     │     │     └─ LocalExchange[partitioning = HASH, hashColumn = [$hashvalue_21], arguments = [""cd_demo_sk""]]
+          │     │     │        │   Layout: [cd_demo_sk:integer, cd_marital_status:varchar, cd_education_status:varchar, $hashvalue_21:bigint]
+          │     │     │        │   Estimates: {rows: 1920800 (44.03MB), cpu: 44.03M, memory: 0B, network: 0B}
+          │     │     │        └─ RemoteSource[sourceFragmentIds = [3]]
+          │     │     │               Layout: [cd_demo_sk:integer, cd_marital_status:varchar, cd_education_status:varchar, $hashvalue_22:bigint]
+          │     │     └─ LocalExchange[partitioning = SINGLE]
+          │     │        │   Layout: [hd_demo_sk:integer, hd_dep_count:integer, $hashvalue_25:bigint]
+          │     │        │   Estimates: {rows: 7200 (133.59kB), cpu: 0, memory: 0B, network: 0B}
+          │     │        └─ RemoteSource[sourceFragmentIds = [4]]
+          │     │               Layout: [hd_demo_sk:integer, hd_dep_count:integer, $hashvalue_26:bigint]
+          │     └─ LocalExchange[partitioning = SINGLE]
+          │        │   Layout: [ca_address_sk:integer, ca_state:varchar, $hashvalue_29:bigint]
+          │        │   Estimates: {rows: 24233 (497.94kB), cpu: 0, memory: 0B, network: 0B}
+          │        └─ RemoteSource[sourceFragmentIds = [5]]
+          │               Layout: [ca_address_sk:integer, ca_state:varchar, $hashvalue_30:bigint]
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk:integer, $hashvalue_33:bigint]
+             │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [6]]
+                    Layout: [d_date_sk:integer, $hashvalue_34:bigint]
+
+Fragment 2 [SOURCE]
+    Output layout: [s_store_sk, $hashvalue_19]
+    Output partitioning: BROADCAST []
+    ScanProject[table = iceberg:tpcds_sf1_iceberg.store$data@7359973075065441165]
+        Layout: [s_store_sk:integer, $hashvalue_19:bigint]
+        Estimates: {rows: 12 (168B), cpu: 60, memory: 0B, network: 0B}/{rows: 12 (168B), cpu: 168, memory: 0B, network: 0B}
+        $hashvalue_19 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""s_store_sk""), 0))
+        s_store_sk := 1:s_store_sk:integer
+
+Fragment 3 [SOURCE]
+    Output layout: [cd_demo_sk, cd_marital_status, cd_education_status, $hashvalue_23]
+    Output partitioning: BROADCAST []
+    ScanProject[table = iceberg:tpcds_sf1_iceberg.customer_demographics$data@4061231783922475372]
+        Layout: [cd_demo_sk:integer, cd_marital_status:varchar, cd_education_status:varchar, $hashvalue_23:bigint]
+        Estimates: {rows: 1920800 (44.03MB), cpu: 27.54M, memory: 0B, network: 0B}/{rows: 1920800 (44.03MB), cpu: 44.03M, memory: 0B, network: 0B}
+        $hashvalue_23 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""cd_demo_sk""), 0))
+        cd_demo_sk := 1:cd_demo_sk:integer
+        cd_education_status := 4:cd_education_status:varchar
+        cd_marital_status := 3:cd_marital_status:varchar
+
+Fragment 4 [SOURCE]
+    Output layout: [hd_demo_sk, hd_dep_count, $hashvalue_27]
+    Output partitioning: BROADCAST []
+    ScanProject[table = iceberg:tpcds_sf1_iceberg.household_demographics$data@1417532563405616921]
+        Layout: [hd_demo_sk:integer, hd_dep_count:integer, $hashvalue_27:bigint]
+        Estimates: {rows: 7200 (133.59kB), cpu: 70.31k, memory: 0B, network: 0B}/{rows: 7200 (133.59kB), cpu: 133.59k, memory: 0B, network: 0B}
+        $hashvalue_27 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""hd_demo_sk""), 0))
+        hd_demo_sk := 1:hd_demo_sk:integer
+        hd_dep_count := 4:hd_dep_count:integer
+
+Fragment 5 [SOURCE]
+    Output layout: [ca_address_sk, ca_state, $hashvalue_31]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.customer_address$data@1405840002351874863, filterPredicate = (""ca_country"" = VARCHAR 'United States')]
+        Layout: [ca_address_sk:integer, ca_state:varchar, $hashvalue_31:bigint]
+        Estimates: {rows: 50000 (1.00MB), cpu: 839.01k, memory: 0B, network: 0B}/{rows: 24233 (497.94kB), cpu: 839.01k, memory: 0B, network: 0B}/{rows: 24233 (497.94kB), cpu: 497.94k, memory: 0B, network: 0B}
+        $hashvalue_31 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ca_address_sk""), 0))
+        ca_state := 9:ca_state:varchar
+        ca_address_sk := 1:ca_address_sk:integer
+        ca_country := 11:ca_country:varchar
+
+Fragment 6 [SOURCE]
+    Output layout: [d_date_sk, $hashvalue_35]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year"" = 2001)]
+        Layout: [d_date_sk:integer, $hashvalue_35:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: ? (?), cpu: 713.37k, memory: 0B, network: 0B}/{rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+        $hashvalue_35 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk""), 0))
+        d_date_sk := 1:d_date_sk:integer
+        d_year := 7:d_year:integer
+
+"

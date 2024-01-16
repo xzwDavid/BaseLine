@@ -1,0 +1,300 @@
+"- Output[bucket1, bucket2, bucket3, bucket4, bucket5] => [expr_404:decimal(7,2), expr_405:decimal(7,2), expr_406:decimal(7,2), expr_407:decimal(7,2), expr_408:decimal(7,2)]
+        Estimates: {rows: ? (?), cpu: ?, memory: ?, network: ?}
+        bucket1 := expr_404 (4:8)
+        bucket2 := expr_405 (10:8)
+        bucket3 := expr_406 (16:8)
+        bucket4 := expr_407 (22:8)
+        bucket5 := expr_408 (28:8)
+    - RemoteStreamingExchange[GATHER] => [expr_404:decimal(7,2), expr_405:decimal(7,2), expr_406:decimal(7,2), expr_407:decimal(7,2), expr_408:decimal(7,2)]
+            Estimates: {rows: ? (?), cpu: ?, memory: ?, network: ?}
+        - Project[projectLocality = LOCAL] => [expr_404:decimal(7,2), expr_405:decimal(7,2), expr_406:decimal(7,2), expr_407:decimal(7,2), expr_408:decimal(7,2)]
+                Estimates: {rows: ? (?), cpu: ?, memory: ?, network: ?}
+                expr_404 := SWITCH(BOOLEAN'true', WHEN((count) > (BIGINT'74129'), avg), avg_55) (4:8)
+                expr_405 := SWITCH(BOOLEAN'true', WHEN((count_83) > (BIGINT'122840'), avg_112), avg_141) (10:8)
+                expr_406 := SWITCH(BOOLEAN'true', WHEN((count_169) > (BIGINT'56580'), avg_198), avg_227) (16:8)
+                expr_407 := SWITCH(BOOLEAN'true', WHEN((count_255) > (BIGINT'10097'), avg_284), avg_313) (22:8)
+                expr_408 := SWITCH(BOOLEAN'true', WHEN((count_341) > (BIGINT'165306'), avg_370), avg_399) (28:8)
+            - CrossJoin => [r_reason_sk:integer, count:bigint, avg:decimal(7,2), avg_55:decimal(7,2), count_83:bigint, avg_112:decimal(7,2), avg_141:decimal(7,2), count_169:bigint, avg_198:decimal(7,2), avg_227:decimal(7,2), count_255:bigint, avg_284:decimal(7,2), avg_313:decimal(7,2), count_341:bigint, avg_370:decimal(7,2), avg_399:decimal(7,2)]
+                    Estimates: {rows: ? (?), cpu: ?, memory: ?, network: ?}
+                    Distribution: REPLICATED
+                - CrossJoin => [r_reason_sk:integer, count:bigint, avg:decimal(7,2), avg_55:decimal(7,2), count_83:bigint, avg_112:decimal(7,2), avg_141:decimal(7,2), count_169:bigint, avg_198:decimal(7,2), avg_227:decimal(7,2), count_255:bigint, avg_284:decimal(7,2), avg_313:decimal(7,2), count_341:bigint, avg_370:decimal(7,2)]
+                        Estimates: {rows: ? (?), cpu: ?, memory: ?, network: ?}
+                        Distribution: REPLICATED
+                    - CrossJoin => [r_reason_sk:integer, count:bigint, avg:decimal(7,2), avg_55:decimal(7,2), count_83:bigint, avg_112:decimal(7,2), avg_141:decimal(7,2), count_169:bigint, avg_198:decimal(7,2), avg_227:decimal(7,2), count_255:bigint, avg_284:decimal(7,2), avg_313:decimal(7,2), count_341:bigint]
+                            Estimates: {rows: ? (?), cpu: ?, memory: ?, network: ?}
+                            Distribution: REPLICATED
+                        - CrossJoin => [r_reason_sk:integer, count:bigint, avg:decimal(7,2), avg_55:decimal(7,2), count_83:bigint, avg_112:decimal(7,2), avg_141:decimal(7,2), count_169:bigint, avg_198:decimal(7,2), avg_227:decimal(7,2), count_255:bigint, avg_284:decimal(7,2), avg_313:decimal(7,2)]
+                                Estimates: {rows: ? (?), cpu: ?, memory: ?, network: ?}
+                                Distribution: REPLICATED
+                            - CrossJoin => [r_reason_sk:integer, count:bigint, avg:decimal(7,2), avg_55:decimal(7,2), count_83:bigint, avg_112:decimal(7,2), avg_141:decimal(7,2), count_169:bigint, avg_198:decimal(7,2), avg_227:decimal(7,2), count_255:bigint, avg_284:decimal(7,2)]
+                                    Estimates: {rows: ? (?), cpu: ?, memory: ?, network: ?}
+                                    Distribution: REPLICATED
+                                - CrossJoin => [r_reason_sk:integer, count:bigint, avg:decimal(7,2), avg_55:decimal(7,2), count_83:bigint, avg_112:decimal(7,2), avg_141:decimal(7,2), count_169:bigint, avg_198:decimal(7,2), avg_227:decimal(7,2), count_255:bigint]
+                                        Estimates: {rows: ? (?), cpu: ?, memory: ?, network: ?}
+                                        Distribution: REPLICATED
+                                    - CrossJoin => [r_reason_sk:integer, count:bigint, avg:decimal(7,2), avg_55:decimal(7,2), count_83:bigint, avg_112:decimal(7,2), avg_141:decimal(7,2), count_169:bigint, avg_198:decimal(7,2), avg_227:decimal(7,2)]
+                                            Estimates: {rows: ? (?), cpu: ?, memory: ?, network: ?}
+                                            Distribution: REPLICATED
+                                        - CrossJoin => [r_reason_sk:integer, count:bigint, avg:decimal(7,2), avg_55:decimal(7,2), count_83:bigint, avg_112:decimal(7,2), avg_141:decimal(7,2), count_169:bigint, avg_198:decimal(7,2)]
+                                                Estimates: {rows: ? (?), cpu: ?, memory: ?, network: ?}
+                                                Distribution: REPLICATED
+                                            - CrossJoin => [r_reason_sk:integer, count:bigint, avg:decimal(7,2), avg_55:decimal(7,2), count_83:bigint, avg_112:decimal(7,2), avg_141:decimal(7,2), count_169:bigint]
+                                                    Estimates: {rows: ? (?), cpu: ?, memory: ?, network: ?}
+                                                    Distribution: REPLICATED
+                                                - CrossJoin => [r_reason_sk:integer, count:bigint, avg:decimal(7,2), avg_55:decimal(7,2), count_83:bigint, avg_112:decimal(7,2), avg_141:decimal(7,2)]
+                                                        Estimates: {rows: ? (?), cpu: ?, memory: ?, network: ?}
+                                                        Distribution: REPLICATED
+                                                    - CrossJoin => [r_reason_sk:integer, count:bigint, avg:decimal(7,2), avg_55:decimal(7,2), count_83:bigint, avg_112:decimal(7,2)]
+                                                            Estimates: {rows: ? (?), cpu: ?, memory: ?, network: ?}
+                                                            Distribution: REPLICATED
+                                                        - CrossJoin => [r_reason_sk:integer, count:bigint, avg:decimal(7,2), avg_55:decimal(7,2), count_83:bigint]
+                                                                Estimates: {rows: ? (?), cpu: ?, memory: ?, network: ?}
+                                                                Distribution: REPLICATED
+                                                            - CrossJoin => [r_reason_sk:integer, count:bigint, avg:decimal(7,2), avg_55:decimal(7,2)]
+                                                                    Estimates: {rows: ? (?), cpu: ?, memory: ?, network: ?}
+                                                                    Distribution: REPLICATED
+                                                                - CrossJoin => [r_reason_sk:integer, count:bigint, avg:decimal(7,2)]
+                                                                        Estimates: {rows: ? (?), cpu: ?, memory: ?, network: ?}
+                                                                        Distribution: REPLICATED
+                                                                    - CrossJoin => [r_reason_sk:integer, count:bigint]
+                                                                            Estimates: {rows: ? (?), cpu: ?, memory: ?, network: ?}
+                                                                            Distribution: REPLICATED
+                                                                        - ScanFilter[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.reason$data@Optional[3254327480283231368]', layout='Optional[tpcds_sf1_iceberg.reason$data@Optional[3254327480283231368]]'}, filterPredicate = (r_reason_sk) = (INTEGER'1')] => [r_reason_sk:integer]
+                                                                                Estimates: {rows: 35 (1.54kB), cpu: 143.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 286.00, memory: 0.00, network: 0.00}
+                                                                                r_reason_sk := 1:r_reason_sk:integer (34:6)
+                                                                        - LocalExchange[SINGLE] () => [count:bigint]
+                                                                                Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                                            - RemoteStreamingExchange[REPLICATE] => [count:bigint]
+                                                                                    Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                                                - EnforceSingleRow => [count:bigint]
+                                                                                        Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                                                    - Aggregate(FINAL) => [count:bigint]
+                                                                                            count := ""presto.default.count""((count_424)) (4:26)
+                                                                                        - LocalExchange[SINGLE] () => [count_424:bigint]
+                                                                                            - RemoteStreamingExchange[GATHER] => [count_424:bigint]
+                                                                                                - Aggregate(PARTIAL) => [count_424:bigint]
+                                                                                                        count_424 := ""presto.default.count""(*) (4:26)
+                                                                                                    - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]', layout='Optional[tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]]'}, filterPredicate = ss_quantity BETWEEN (INTEGER'1') AND (INTEGER'20'), projectLocality = LOCAL] => []
+                                                                                                            Estimates: {rows: 2750838 (118.05MB), cpu: 5769037.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 11538074.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 11538074.00, memory: 0.00, network: 0.00}
+                                                                                                            ss_quantity := 10:ss_quantity:integer (4:40)
+                                                                    - LocalExchange[SINGLE] () => [avg:decimal(7,2)]
+                                                                            Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                                        - RemoteStreamingExchange[REPLICATE] => [avg:decimal(7,2)]
+                                                                                Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                                            - EnforceSingleRow => [avg:decimal(7,2)]
+                                                                                    Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                                                - Aggregate(FINAL) => [avg:decimal(7,2)]
+                                                                                        avg := ""presto.default.avg""((avg_425)) (6:26)
+                                                                                    - LocalExchange[SINGLE] () => [avg_425:varbinary]
+                                                                                        - RemoteStreamingExchange[GATHER] => [avg_425:varbinary]
+                                                                                            - Aggregate(PARTIAL) => [avg_425:varbinary]
+                                                                                                    avg_425 := ""presto.default.avg""((ss_ext_discount_amt_16)) (6:26)
+                                                                                                - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]', layout='Optional[tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]]'}, filterPredicate = ss_quantity_12 BETWEEN (INTEGER'1') AND (INTEGER'20'), projectLocality = LOCAL] => [ss_ext_discount_amt_16:decimal(7,2)]
+                                                                                                        Estimates: {rows: 2750838 (118.05MB), cpu: 11810019.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 23620038.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 24752121.40, memory: 0.00, network: 0.00}
+                                                                                                        ss_ext_discount_amt_16 := 14:ss_ext_discount_amt:decimal(7,2) (6:56)
+                                                                                                        ss_quantity_12 := 10:ss_quantity:integer (6:56)
+                                                                - LocalExchange[SINGLE] () => [avg_55:decimal(7,2)]
+                                                                        Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                                    - RemoteStreamingExchange[REPLICATE] => [avg_55:decimal(7,2)]
+                                                                            Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                                        - EnforceSingleRow => [avg_55:decimal(7,2)]
+                                                                                Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                                            - Aggregate(FINAL) => [avg_55:decimal(7,2)]
+                                                                                    avg_55 := ""presto.default.avg""((avg_426)) (8:26)
+                                                                                - LocalExchange[SINGLE] () => [avg_426:varbinary]
+                                                                                    - RemoteStreamingExchange[GATHER] => [avg_426:varbinary]
+                                                                                        - Aggregate(PARTIAL) => [avg_426:varbinary]
+                                                                                                avg_426 := ""presto.default.avg""((ss_net_paid_50)) (8:26)
+                                                                                            - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]', layout='Optional[tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]]'}, filterPredicate = ss_quantity_40 BETWEEN (INTEGER'1') AND (INTEGER'20'), projectLocality = LOCAL] => [ss_net_paid_50:decimal(7,2)]
+                                                                                                    Estimates: {rows: 2750838 (118.05MB), cpu: 16912335.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 33824670.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 35912930.26, memory: 0.00, network: 0.00}
+                                                                                                    ss_net_paid_50 := 20:ss_net_paid:decimal(7,2) (8:48)
+                                                                                                    ss_quantity_40 := 10:ss_quantity:integer (8:48)
+                                                            - LocalExchange[SINGLE] () => [count_83:bigint]
+                                                                    Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                                - RemoteStreamingExchange[REPLICATE] => [count_83:bigint]
+                                                                        Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                                    - EnforceSingleRow => [count_83:bigint]
+                                                                            Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                                        - Aggregate(FINAL) => [count_83:bigint]
+                                                                                count_83 := ""presto.default.count""((count_427)) (10:26)
+                                                                            - LocalExchange[SINGLE] () => [count_427:bigint]
+                                                                                - RemoteStreamingExchange[GATHER] => [count_427:bigint]
+                                                                                    - Aggregate(PARTIAL) => [count_427:bigint]
+                                                                                            count_427 := ""presto.default.count""(*) (10:26)
+                                                                                        - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]', layout='Optional[tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]]'}, filterPredicate = ss_quantity_69 BETWEEN (INTEGER'21') AND (INTEGER'40'), projectLocality = LOCAL] => []
+                                                                                                Estimates: {rows: 2750838 (118.05MB), cpu: 5769037.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 11538074.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 11538074.00, memory: 0.00, network: 0.00}
+                                                                                                ss_quantity_69 := 10:ss_quantity:integer (10:40)
+                                                        - LocalExchange[SINGLE] () => [avg_112:decimal(7,2)]
+                                                                Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                            - RemoteStreamingExchange[REPLICATE] => [avg_112:decimal(7,2)]
+                                                                    Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                                - EnforceSingleRow => [avg_112:decimal(7,2)]
+                                                                        Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                                    - Aggregate(FINAL) => [avg_112:decimal(7,2)]
+                                                                            avg_112 := ""presto.default.avg""((avg_428)) (12:26)
+                                                                        - LocalExchange[SINGLE] () => [avg_428:varbinary]
+                                                                            - RemoteStreamingExchange[GATHER] => [avg_428:varbinary]
+                                                                                - Aggregate(PARTIAL) => [avg_428:varbinary]
+                                                                                        avg_428 := ""presto.default.avg""((ss_ext_discount_amt_101)) (12:26)
+                                                                                    - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]', layout='Optional[tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]]'}, filterPredicate = ss_quantity_97 BETWEEN (INTEGER'21') AND (INTEGER'40'), projectLocality = LOCAL] => [ss_ext_discount_amt_101:decimal(7,2)]
+                                                                                            Estimates: {rows: 2750838 (118.05MB), cpu: 11810019.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 23620038.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 24752121.40, memory: 0.00, network: 0.00}
+                                                                                            ss_quantity_97 := 10:ss_quantity:integer (12:56)
+                                                                                            ss_ext_discount_amt_101 := 14:ss_ext_discount_amt:decimal(7,2) (12:56)
+                                                    - LocalExchange[SINGLE] () => [avg_141:decimal(7,2)]
+                                                            Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                        - RemoteStreamingExchange[REPLICATE] => [avg_141:decimal(7,2)]
+                                                                Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                            - EnforceSingleRow => [avg_141:decimal(7,2)]
+                                                                    Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                                - Aggregate(FINAL) => [avg_141:decimal(7,2)]
+                                                                        avg_141 := ""presto.default.avg""((avg_429)) (14:26)
+                                                                    - LocalExchange[SINGLE] () => [avg_429:varbinary]
+                                                                        - RemoteStreamingExchange[GATHER] => [avg_429:varbinary]
+                                                                            - Aggregate(PARTIAL) => [avg_429:varbinary]
+                                                                                    avg_429 := ""presto.default.avg""((ss_net_paid_136)) (14:26)
+                                                                                - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]', layout='Optional[tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]]'}, filterPredicate = ss_quantity_126 BETWEEN (INTEGER'21') AND (INTEGER'40'), projectLocality = LOCAL] => [ss_net_paid_136:decimal(7,2)]
+                                                                                        Estimates: {rows: 2750838 (118.05MB), cpu: 16912335.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 33824670.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 35912930.26, memory: 0.00, network: 0.00}
+                                                                                        ss_net_paid_136 := 20:ss_net_paid:decimal(7,2) (14:48)
+                                                                                        ss_quantity_126 := 10:ss_quantity:integer (14:48)
+                                                - LocalExchange[SINGLE] () => [count_169:bigint]
+                                                        Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                    - RemoteStreamingExchange[REPLICATE] => [count_169:bigint]
+                                                            Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                        - EnforceSingleRow => [count_169:bigint]
+                                                                Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                            - Aggregate(FINAL) => [count_169:bigint]
+                                                                    count_169 := ""presto.default.count""((count_430)) (16:26)
+                                                                - LocalExchange[SINGLE] () => [count_430:bigint]
+                                                                    - RemoteStreamingExchange[GATHER] => [count_430:bigint]
+                                                                        - Aggregate(PARTIAL) => [count_430:bigint]
+                                                                                count_430 := ""presto.default.count""(*) (16:26)
+                                                                            - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]', layout='Optional[tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]]'}, filterPredicate = ss_quantity_155 BETWEEN (INTEGER'41') AND (INTEGER'60'), projectLocality = LOCAL] => []
+                                                                                    Estimates: {rows: 2750838 (118.05MB), cpu: 5769037.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 11538074.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 11538074.00, memory: 0.00, network: 0.00}
+                                                                                    ss_quantity_155 := 10:ss_quantity:integer (16:40)
+                                            - LocalExchange[SINGLE] () => [avg_198:decimal(7,2)]
+                                                    Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                - RemoteStreamingExchange[REPLICATE] => [avg_198:decimal(7,2)]
+                                                        Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                    - EnforceSingleRow => [avg_198:decimal(7,2)]
+                                                            Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                        - Aggregate(FINAL) => [avg_198:decimal(7,2)]
+                                                                avg_198 := ""presto.default.avg""((avg_431)) (18:26)
+                                                            - LocalExchange[SINGLE] () => [avg_431:varbinary]
+                                                                - RemoteStreamingExchange[GATHER] => [avg_431:varbinary]
+                                                                    - Aggregate(PARTIAL) => [avg_431:varbinary]
+                                                                            avg_431 := ""presto.default.avg""((ss_ext_discount_amt_187)) (18:26)
+                                                                        - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]', layout='Optional[tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]]'}, filterPredicate = ss_quantity_183 BETWEEN (INTEGER'41') AND (INTEGER'60'), projectLocality = LOCAL] => [ss_ext_discount_amt_187:decimal(7,2)]
+                                                                                Estimates: {rows: 2750838 (118.05MB), cpu: 11810019.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 23620038.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 24752121.40, memory: 0.00, network: 0.00}
+                                                                                ss_quantity_183 := 10:ss_quantity:integer (18:56)
+                                                                                ss_ext_discount_amt_187 := 14:ss_ext_discount_amt:decimal(7,2) (18:56)
+                                        - LocalExchange[SINGLE] () => [avg_227:decimal(7,2)]
+                                                Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                            - RemoteStreamingExchange[REPLICATE] => [avg_227:decimal(7,2)]
+                                                    Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                - EnforceSingleRow => [avg_227:decimal(7,2)]
+                                                        Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                    - Aggregate(FINAL) => [avg_227:decimal(7,2)]
+                                                            avg_227 := ""presto.default.avg""((avg_432)) (20:26)
+                                                        - LocalExchange[SINGLE] () => [avg_432:varbinary]
+                                                            - RemoteStreamingExchange[GATHER] => [avg_432:varbinary]
+                                                                - Aggregate(PARTIAL) => [avg_432:varbinary]
+                                                                        avg_432 := ""presto.default.avg""((ss_net_paid_222)) (20:26)
+                                                                    - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]', layout='Optional[tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]]'}, filterPredicate = ss_quantity_212 BETWEEN (INTEGER'41') AND (INTEGER'60'), projectLocality = LOCAL] => [ss_net_paid_222:decimal(7,2)]
+                                                                            Estimates: {rows: 2750838 (118.05MB), cpu: 16912335.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 33824670.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 35912930.26, memory: 0.00, network: 0.00}
+                                                                            ss_quantity_212 := 10:ss_quantity:integer (20:48)
+                                                                            ss_net_paid_222 := 20:ss_net_paid:decimal(7,2) (20:48)
+                                    - LocalExchange[SINGLE] () => [count_255:bigint]
+                                            Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                        - RemoteStreamingExchange[REPLICATE] => [count_255:bigint]
+                                                Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                            - EnforceSingleRow => [count_255:bigint]
+                                                    Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                                - Aggregate(FINAL) => [count_255:bigint]
+                                                        count_255 := ""presto.default.count""((count_433)) (22:26)
+                                                    - LocalExchange[SINGLE] () => [count_433:bigint]
+                                                        - RemoteStreamingExchange[GATHER] => [count_433:bigint]
+                                                            - Aggregate(PARTIAL) => [count_433:bigint]
+                                                                    count_433 := ""presto.default.count""(*) (22:26)
+                                                                - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]', layout='Optional[tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]]'}, filterPredicate = ss_quantity_241 BETWEEN (INTEGER'61') AND (INTEGER'80'), projectLocality = LOCAL] => []
+                                                                        Estimates: {rows: 2750838 (118.05MB), cpu: 5769037.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 11538074.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 11538074.00, memory: 0.00, network: 0.00}
+                                                                        ss_quantity_241 := 10:ss_quantity:integer (22:40)
+                                - LocalExchange[SINGLE] () => [avg_284:decimal(7,2)]
+                                        Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                    - RemoteStreamingExchange[REPLICATE] => [avg_284:decimal(7,2)]
+                                            Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                        - EnforceSingleRow => [avg_284:decimal(7,2)]
+                                                Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                            - Aggregate(FINAL) => [avg_284:decimal(7,2)]
+                                                    avg_284 := ""presto.default.avg""((avg_434)) (24:26)
+                                                - LocalExchange[SINGLE] () => [avg_434:varbinary]
+                                                    - RemoteStreamingExchange[GATHER] => [avg_434:varbinary]
+                                                        - Aggregate(PARTIAL) => [avg_434:varbinary]
+                                                                avg_434 := ""presto.default.avg""((ss_ext_discount_amt_273)) (24:26)
+                                                            - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]', layout='Optional[tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]]'}, filterPredicate = ss_quantity_269 BETWEEN (INTEGER'61') AND (INTEGER'80'), projectLocality = LOCAL] => [ss_ext_discount_amt_273:decimal(7,2)]
+                                                                    Estimates: {rows: 2750838 (118.05MB), cpu: 11810019.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 23620038.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 24752121.40, memory: 0.00, network: 0.00}
+                                                                    ss_quantity_269 := 10:ss_quantity:integer (24:56)
+                                                                    ss_ext_discount_amt_273 := 14:ss_ext_discount_amt:decimal(7,2) (24:56)
+                            - LocalExchange[SINGLE] () => [avg_313:decimal(7,2)]
+                                    Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                - RemoteStreamingExchange[REPLICATE] => [avg_313:decimal(7,2)]
+                                        Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                    - EnforceSingleRow => [avg_313:decimal(7,2)]
+                                            Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                        - Aggregate(FINAL) => [avg_313:decimal(7,2)]
+                                                avg_313 := ""presto.default.avg""((avg_435)) (26:26)
+                                            - LocalExchange[SINGLE] () => [avg_435:varbinary]
+                                                - RemoteStreamingExchange[GATHER] => [avg_435:varbinary]
+                                                    - Aggregate(PARTIAL) => [avg_435:varbinary]
+                                                            avg_435 := ""presto.default.avg""((ss_net_paid_308)) (26:26)
+                                                        - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]', layout='Optional[tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]]'}, filterPredicate = ss_quantity_298 BETWEEN (INTEGER'61') AND (INTEGER'80'), projectLocality = LOCAL] => [ss_net_paid_308:decimal(7,2)]
+                                                                Estimates: {rows: 2750838 (118.05MB), cpu: 16912335.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 33824670.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 35912930.26, memory: 0.00, network: 0.00}
+                                                                ss_quantity_298 := 10:ss_quantity:integer (26:48)
+                                                                ss_net_paid_308 := 20:ss_net_paid:decimal(7,2) (26:48)
+                        - LocalExchange[SINGLE] () => [count_341:bigint]
+                                Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                            - RemoteStreamingExchange[REPLICATE] => [count_341:bigint]
+                                    Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                - EnforceSingleRow => [count_341:bigint]
+                                        Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                    - Aggregate(FINAL) => [count_341:bigint]
+                                            count_341 := ""presto.default.count""((count_436)) (28:26)
+                                        - LocalExchange[SINGLE] () => [count_436:bigint]
+                                            - RemoteStreamingExchange[GATHER] => [count_436:bigint]
+                                                - Aggregate(PARTIAL) => [count_436:bigint]
+                                                        count_436 := ""presto.default.count""(*) (28:26)
+                                                    - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]', layout='Optional[tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]]'}, filterPredicate = ss_quantity_327 BETWEEN (INTEGER'81') AND (INTEGER'100'), projectLocality = LOCAL] => []
+                                                            Estimates: {rows: 2750838 (118.05MB), cpu: 5769037.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 11538074.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 11538074.00, memory: 0.00, network: 0.00}
+                                                            ss_quantity_327 := 10:ss_quantity:integer (28:40)
+                    - LocalExchange[SINGLE] () => [avg_370:decimal(7,2)]
+                            Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                        - RemoteStreamingExchange[REPLICATE] => [avg_370:decimal(7,2)]
+                                Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                            - EnforceSingleRow => [avg_370:decimal(7,2)]
+                                    Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                                - Aggregate(FINAL) => [avg_370:decimal(7,2)]
+                                        avg_370 := ""presto.default.avg""((avg_437)) (30:26)
+                                    - LocalExchange[SINGLE] () => [avg_437:varbinary]
+                                        - RemoteStreamingExchange[GATHER] => [avg_437:varbinary]
+                                            - Aggregate(PARTIAL) => [avg_437:varbinary]
+                                                    avg_437 := ""presto.default.avg""((ss_ext_discount_amt_359)) (30:26)
+                                                - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]', layout='Optional[tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]]'}, filterPredicate = ss_quantity_355 BETWEEN (INTEGER'81') AND (INTEGER'100'), projectLocality = LOCAL] => [ss_ext_discount_amt_359:decimal(7,2)]
+                                                        Estimates: {rows: 2750838 (118.05MB), cpu: 11810019.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 23620038.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 24752121.40, memory: 0.00, network: 0.00}
+                                                        ss_ext_discount_amt_359 := 14:ss_ext_discount_amt:decimal(7,2) (30:56)
+                                                        ss_quantity_355 := 10:ss_quantity:integer (30:56)
+                - LocalExchange[SINGLE] () => [avg_399:decimal(7,2)]
+                        Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                    - RemoteStreamingExchange[REPLICATE] => [avg_399:decimal(7,2)]
+                            Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                        - EnforceSingleRow => [avg_399:decimal(7,2)]
+                                Estimates: {rows: 1 (45B), cpu: ?, memory: ?, network: ?}
+                            - Aggregate(FINAL) => [avg_399:decimal(7,2)]
+                                    avg_399 := ""presto.default.avg""((avg_438)) (32:26)
+                                - LocalExchange[SINGLE] () => [avg_438:varbinary]
+                                    - RemoteStreamingExchange[GATHER] => [avg_438:varbinary]
+                                        - Aggregate(PARTIAL) => [avg_438:varbinary]
+                                                avg_438 := ""presto.default.avg""((ss_net_paid_394)) (32:26)
+                                            - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]', layout='Optional[tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]]'}, filterPredicate = ss_quantity_384 BETWEEN (INTEGER'81') AND (INTEGER'100'), projectLocality = LOCAL] => [ss_net_paid_394:decimal(7,2)]
+                                                    Estimates: {rows: 2750838 (118.05MB), cpu: 16912335.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 33824670.00, memory: 0.00, network: 0.00}/{rows: 515509 (22.12MB), cpu: 35912930.26, memory: 0.00, network: 0.00}
+                                                    ss_net_paid_394 := 20:ss_net_paid:decimal(7,2) (32:48)
+                                                    ss_quantity_384 := 10:ss_quantity:integer (32:48)
+"

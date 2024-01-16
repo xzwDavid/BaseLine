@@ -1,0 +1,1626 @@
+"Trino version: 422
+Fragment 0 [SINGLE]
+    Output layout: [channel$gid, i_brand_id$gid_1593, i_class_id$gid_1594, i_category_id$gid_1595, sum_1596, sum_1597]
+    Output partitioning: SINGLE []
+    Output[columnNames = [channel, i_brand_id, i_class_id, i_category_id, _col4, _col5]]
+    │   Layout: [channel$gid:varchar(7), i_brand_id$gid_1593:integer, i_class_id$gid_1594:integer, i_category_id$gid_1595:integer, sum_1596:decimal(38,2), sum_1597:bigint]
+    │   Estimates: {rows: 100 (9.38kB), cpu: 0, memory: 0B, network: 0B}
+    │   channel := channel$gid
+    │   i_brand_id := i_brand_id$gid_1593
+    │   i_class_id := i_class_id$gid_1594
+    │   i_category_id := i_category_id$gid_1595
+    │   _col4 := sum_1596
+    │   _col5 := sum_1597
+    └─ TopN[count = 100, orderBy = [channel$gid ASC NULLS LAST, i_brand_id$gid_1593 ASC NULLS LAST, i_class_id$gid_1594 ASC NULLS LAST, i_category_id$gid_1595 ASC NULLS LAST]]
+       │   Layout: [channel$gid:varchar(7), i_brand_id$gid_1593:integer, i_class_id$gid_1594:integer, i_category_id$gid_1595:integer, sum_1596:decimal(38,2), sum_1597:bigint]
+       │   Estimates: {rows: 100 (9.38kB), cpu: ?, memory: ?, network: ?}
+       └─ LocalExchange[partitioning = SINGLE]
+          │   Layout: [channel$gid:varchar(7), i_brand_id$gid_1593:integer, i_class_id$gid_1594:integer, i_category_id$gid_1595:integer, sum_1596:decimal(38,2), sum_1597:bigint]
+          │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}
+          └─ RemoteSource[sourceFragmentIds = [1]]
+                 Layout: [channel$gid:varchar(7), i_brand_id$gid_1593:integer, i_class_id$gid_1594:integer, i_category_id$gid_1595:integer, sum_1596:decimal(38,2), sum_1597:bigint]
+
+Fragment 1 [HASH]
+    Output layout: [channel$gid, i_brand_id$gid_1593, i_class_id$gid_1594, i_category_id$gid_1595, sum_1596, sum_1597]
+    Output partitioning: SINGLE []
+    TopNPartial[count = 100, orderBy = [channel$gid ASC NULLS LAST, i_brand_id$gid_1593 ASC NULLS LAST, i_class_id$gid_1594 ASC NULLS LAST, i_category_id$gid_1595 ASC NULLS LAST]]
+    │   Layout: [channel$gid:varchar(7), i_brand_id$gid_1593:integer, i_class_id$gid_1594:integer, i_category_id$gid_1595:integer, sum_1596:decimal(38,2), sum_1597:bigint]
+    └─ Project[]
+       │   Layout: [channel$gid:varchar(7), i_brand_id$gid_1593:integer, i_class_id$gid_1594:integer, i_category_id$gid_1595:integer, sum_1596:decimal(38,2), sum_1597:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       └─ Aggregate[type = FINAL, keys = [channel$gid, i_brand_id$gid_1593, i_class_id$gid_1594, i_category_id$gid_1595, groupid], hash = [$hashvalue]]
+          │   Layout: [channel$gid:varchar(7), i_brand_id$gid_1593:integer, i_class_id$gid_1594:integer, i_category_id$gid_1595:integer, groupid:bigint, $hashvalue:bigint, sum_1597:bigint, sum_1596:decimal(38,2)]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+          │   sum_1597 := sum(""sum_1692"")
+          │   sum_1596 := sum(""sum_1691"")
+          └─ LocalExchange[partitioning = HASH, hashColumn = [$hashvalue], arguments = [""channel$gid"", ""i_brand_id$gid_1593"", ""i_class_id$gid_1594"", ""i_category_id$gid_1595"", ""groupid""]]
+             │   Layout: [channel$gid:varchar(7), i_brand_id$gid_1593:integer, i_class_id$gid_1594:integer, i_category_id$gid_1595:integer, groupid:bigint, sum_1692:row(bigint, bigint), sum_1691:varbinary, $hashvalue:bigint]
+             │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [2]]
+                    Layout: [channel$gid:varchar(7), i_brand_id$gid_1593:integer, i_class_id$gid_1594:integer, i_category_id$gid_1595:integer, groupid:bigint, sum_1692:row(bigint, bigint), sum_1691:varbinary, $hashvalue_1711:bigint]
+
+Fragment 2 [HASH]
+    Output layout: [channel$gid, i_brand_id$gid_1593, i_class_id$gid_1594, i_category_id$gid_1595, groupid, sum_1692, sum_1691, $hashvalue_1898]
+    Output partitioning: HASH [channel$gid, i_brand_id$gid_1593, i_class_id$gid_1594, i_category_id$gid_1595, groupid][$hashvalue_1898]
+    Aggregate[type = PARTIAL, keys = [channel$gid, i_brand_id$gid_1593, i_class_id$gid_1594, i_category_id$gid_1595, groupid], hash = [$hashvalue_1898]]
+    │   Layout: [channel$gid:varchar(7), i_brand_id$gid_1593:integer, i_class_id$gid_1594:integer, i_category_id$gid_1595:integer, groupid:bigint, $hashvalue_1898:bigint, sum_1692:row(bigint, bigint), sum_1691:varbinary]
+    │   sum_1692 := sum(""number_sales"")
+    │   sum_1691 := sum(""sales"")
+    └─ Project[]
+       │   Layout: [channel$gid:varchar(7), i_brand_id$gid_1593:integer, i_category_id$gid_1595:integer, i_class_id$gid_1594:integer, sales:decimal(38,2), number_sales:bigint, groupid:bigint, $hashvalue_1898:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   $hashvalue_1898 := combine_hash(combine_hash(combine_hash(combine_hash(combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""channel$gid""), 0)), COALESCE(""$operator$hash_code""(""i_brand_id$gid_1593""), 0)), COALESCE(""$operator$hash_code""(""i_class_id$gid_1594""), 0)), COALESCE(""$operator$hash_code""(""i_category_id$gid_1595""), 0)), COALESCE(""$operator$hash_code""(""groupid""), 0))
+       └─ GroupId[symbols = [[], [channel], [i_brand_id, channel], [i_class_id, i_brand_id, channel], [i_category_id, i_class_id, i_brand_id, channel]]]
+          │   Layout: [channel$gid:varchar(7), i_brand_id$gid_1593:integer, i_category_id$gid_1595:integer, i_class_id$gid_1594:integer, sales:decimal(38,2), number_sales:bigint, groupid:bigint]
+          │   channel$gid := channel
+          │   i_brand_id$gid_1593 := i_brand_id
+          │   i_category_id$gid_1595 := i_category_id
+          │   i_class_id$gid_1594 := i_class_id
+          └─ LocalExchange[partitioning = ROUND_ROBIN]
+             │   Layout: [channel:varchar(7), i_brand_id:integer, i_class_id:integer, i_category_id:integer, sales:decimal(38,2), number_sales:bigint]
+             │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+             ├─ Project[]
+             │  │   Layout: [i_brand_id_6:integer, i_class_id_7:integer, count:bigint, sum:decimal(38,2), i_category_id_8:integer, expr_425:varchar(7)]
+             │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+             │  │   expr_425 := CAST('store' AS varchar(7))
+             │  └─ FilterProject[filterPredicate = (""sum"" > ""expr_1688"")]
+             │     │   Layout: [i_brand_id_6:integer, i_class_id_7:integer, i_category_id_8:integer, sum:decimal(38,2), count:bigint]
+             │     │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}/{rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+             │     └─ CrossJoin[]
+             │        │   Layout: [i_brand_id_6:integer, i_class_id_7:integer, i_category_id_8:integer, sum:decimal(38,2), count:bigint, expr_1688:decimal(38,2)]
+             │        │   Estimates: {rows: ? (?), cpu: ?, memory: 34B, network: 0B}
+             │        │   Distribution: REPLICATED
+             │        ├─ Project[]
+             │        │  │   Layout: [i_brand_id_6:integer, i_class_id_7:integer, i_category_id_8:integer, count:bigint, sum:decimal(38,2)]
+             │        │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+             │        │  └─ Aggregate[type = FINAL, keys = [i_brand_id_6, i_class_id_7, i_category_id_8], hash = [$hashvalue_1712]]
+             │        │     │   Layout: [i_brand_id_6:integer, i_class_id_7:integer, i_category_id_8:integer, $hashvalue_1712:bigint, count:bigint, sum:decimal(38,2)]
+             │        │     │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+             │        │     │   count := count(""count_1694"")
+             │        │     │   sum := sum(""sum_1693"")
+             │        │     └─ LocalExchange[partitioning = HASH, hashColumn = [$hashvalue_1712], arguments = [""i_brand_id_6"", ""i_class_id_7"", ""i_category_id_8""]]
+             │        │        │   Layout: [i_brand_id_6:integer, i_class_id_7:integer, i_category_id_8:integer, sum_1693:varbinary, count_1694:bigint, $hashvalue_1712:bigint]
+             │        │        │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+             │        │        └─ RemoteSource[sourceFragmentIds = [3]]
+             │        │               Layout: [i_brand_id_6:integer, i_class_id_7:integer, i_category_id_8:integer, sum_1693:varbinary, count_1694:bigint, $hashvalue_1713:bigint]
+             │        └─ LocalExchange[partitioning = SINGLE]
+             │           │   Layout: [expr_1688:decimal(38,2)]
+             │           │   Estimates: {rows: 1 (17B), cpu: 0, memory: 0B, network: 0B}
+             │           └─ Project[]
+             │              │   Layout: [expr_1688:decimal(38,2)]
+             │              │   Estimates: {rows: 1 (17B), cpu: 17, memory: 0B, network: 0B}
+             │              │   expr_1688 := CAST(""avg"" AS decimal(38, 2))
+             │              └─ RemoteSource[sourceFragmentIds = [18]]
+             │                     Layout: [avg:decimal(17,2)]
+             ├─ Project[]
+             │  │   Layout: [expr_1008:varchar(7), i_category_id_473:integer, i_class_id_471:integer, sum_813:decimal(38,2), i_brand_id_469:integer, count_814:bigint]
+             │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+             │  │   expr_1008 := 'catalog'
+             │  └─ FilterProject[filterPredicate = (""sum_813"" > ""expr_1689"")]
+             │     │   Layout: [i_brand_id_469:integer, i_class_id_471:integer, i_category_id_473:integer, sum_813:decimal(38,2), count_814:bigint]
+             │     │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}/{rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+             │     └─ CrossJoin[]
+             │        │   Layout: [i_brand_id_469:integer, i_class_id_471:integer, i_category_id_473:integer, sum_813:decimal(38,2), count_814:bigint, expr_1689:decimal(38,2)]
+             │        │   Estimates: {rows: ? (?), cpu: ?, memory: 34B, network: 0B}
+             │        │   Distribution: REPLICATED
+             │        ├─ Project[]
+             │        │  │   Layout: [i_brand_id_469:integer, i_class_id_471:integer, i_category_id_473:integer, sum_813:decimal(38,2), count_814:bigint]
+             │        │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+             │        │  └─ Aggregate[type = FINAL, keys = [i_brand_id_469, i_class_id_471, i_category_id_473], hash = [$hashvalue_1774]]
+             │        │     │   Layout: [i_brand_id_469:integer, i_class_id_471:integer, i_category_id_473:integer, $hashvalue_1774:bigint, sum_813:decimal(38,2), count_814:bigint]
+             │        │     │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+             │        │     │   sum_813 := sum(""sum_1699"")
+             │        │     │   count_814 := count(""count_1700"")
+             │        │     └─ LocalExchange[partitioning = HASH, hashColumn = [$hashvalue_1774], arguments = [""i_brand_id_469"", ""i_class_id_471"", ""i_category_id_473""]]
+             │        │        │   Layout: [i_brand_id_469:integer, i_class_id_471:integer, i_category_id_473:integer, sum_1699:varbinary, count_1700:bigint, $hashvalue_1774:bigint]
+             │        │        │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+             │        │        └─ RemoteSource[sourceFragmentIds = [25]]
+             │        │               Layout: [i_brand_id_469:integer, i_class_id_471:integer, i_category_id_473:integer, sum_1699:varbinary, count_1700:bigint, $hashvalue_1775:bigint]
+             │        └─ LocalExchange[partitioning = SINGLE]
+             │           │   Layout: [expr_1689:decimal(38,2)]
+             │           │   Estimates: {rows: 1 (17B), cpu: 0, memory: 0B, network: 0B}
+             │           └─ Project[]
+             │              │   Layout: [expr_1689:decimal(38,2)]
+             │              │   Estimates: {rows: 1 (17B), cpu: 17, memory: 0B, network: 0B}
+             │              │   expr_1689 := CAST(""avg_1007"" AS decimal(38, 2))
+             │              └─ RemoteSource[sourceFragmentIds = [40]]
+             │                     Layout: [avg_1007:decimal(17,2)]
+             └─ Project[]
+                │   Layout: [i_class_id_1054:integer, sum_1396:decimal(38,2), i_brand_id_1052:integer, i_category_id_1056:integer, expr_1592:varchar(7), count_1397:bigint]
+                │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+                │   expr_1592 := CAST('web' AS varchar(7))
+                └─ FilterProject[filterPredicate = (""sum_1396"" > ""expr_1690"")]
+                   │   Layout: [i_brand_id_1052:integer, i_class_id_1054:integer, i_category_id_1056:integer, sum_1396:decimal(38,2), count_1397:bigint]
+                   │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}/{rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+                   └─ CrossJoin[]
+                      │   Layout: [i_brand_id_1052:integer, i_class_id_1054:integer, i_category_id_1056:integer, sum_1396:decimal(38,2), count_1397:bigint, expr_1690:decimal(38,2)]
+                      │   Estimates: {rows: ? (?), cpu: ?, memory: 34B, network: 0B}
+                      │   Distribution: REPLICATED
+                      ├─ Project[]
+                      │  │   Layout: [i_brand_id_1052:integer, i_class_id_1054:integer, i_category_id_1056:integer, sum_1396:decimal(38,2), count_1397:bigint]
+                      │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+                      │  └─ Aggregate[type = FINAL, keys = [i_brand_id_1052, i_class_id_1054, i_category_id_1056], hash = [$hashvalue_1836]]
+                      │     │   Layout: [i_brand_id_1052:integer, i_class_id_1054:integer, i_category_id_1056:integer, $hashvalue_1836:bigint, sum_1396:decimal(38,2), count_1397:bigint]
+                      │     │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+                      │     │   sum_1396 := sum(""sum_1705"")
+                      │     │   count_1397 := count(""count_1706"")
+                      │     └─ LocalExchange[partitioning = HASH, hashColumn = [$hashvalue_1836], arguments = [""i_brand_id_1052"", ""i_class_id_1054"", ""i_category_id_1056""]]
+                      │        │   Layout: [i_brand_id_1052:integer, i_class_id_1054:integer, i_category_id_1056:integer, count_1706:bigint, sum_1705:varbinary, $hashvalue_1836:bigint]
+                      │        │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+                      │        └─ RemoteSource[sourceFragmentIds = [47]]
+                      │               Layout: [i_brand_id_1052:integer, i_class_id_1054:integer, i_category_id_1056:integer, count_1706:bigint, sum_1705:varbinary, $hashvalue_1837:bigint]
+                      └─ LocalExchange[partitioning = SINGLE]
+                         │   Layout: [expr_1690:decimal(38,2)]
+                         │   Estimates: {rows: 1 (17B), cpu: 0, memory: 0B, network: 0B}
+                         └─ Project[]
+                            │   Layout: [expr_1690:decimal(38,2)]
+                            │   Estimates: {rows: 1 (17B), cpu: 17, memory: 0B, network: 0B}
+                            │   expr_1690 := CAST(""avg_1590"" AS decimal(38, 2))
+                            └─ RemoteSource[sourceFragmentIds = [62]]
+                                   Layout: [avg_1590:decimal(17,2)]
+
+Fragment 3 [HASH]
+    Output layout: [i_brand_id_6, i_class_id_7, i_category_id_8, sum_1693, count_1694, $hashvalue_1761]
+    Output partitioning: HASH [i_brand_id_6, i_class_id_7, i_category_id_8][$hashvalue_1761]
+    Aggregate[type = PARTIAL, keys = [i_brand_id_6, i_class_id_7, i_category_id_8], hash = [$hashvalue_1761]]
+    │   Layout: [i_brand_id_6:integer, i_class_id_7:integer, i_category_id_8:integer, $hashvalue_1761:bigint, sum_1693:varbinary, count_1694:bigint]
+    │   sum_1693 := sum(""expr_233"")
+    │   count_1694 := count(*)
+    └─ Project[]
+       │   Layout: [i_brand_id_6:integer, i_class_id_7:integer, expr_233:decimal(17,2), i_category_id_8:integer, $hashvalue_1761:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   expr_233 := (CAST(""ss_quantity"" AS decimal(10, 0)) * ""ss_list_price"")
+       │   $hashvalue_1761 := combine_hash(combine_hash(combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_brand_id_6""), 0)), COALESCE(""$operator$hash_code""(""i_class_id_7""), 0)), COALESCE(""$operator$hash_code""(""i_category_id_8""), 0))
+       └─ InnerJoin[criteria = (""ss_item_sk"" = ""i_item_sk_13""), hash = [$hashvalue_1714, $hashvalue_1724], distribution = PARTITIONED]
+          │   Layout: [ss_quantity:integer, ss_list_price:decimal(7,2), i_brand_id_6:integer, i_class_id_7:integer, i_category_id_8:integer]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+          │   Distribution: PARTITIONED
+          │   dynamicFilterAssignments = {i_item_sk_13 -> #df_13767}
+          ├─ RemoteSource[sourceFragmentIds = [4]]
+          │      Layout: [ss_item_sk:integer, ss_quantity:integer, ss_list_price:decimal(7,2), i_brand_id_6:integer, i_class_id_7:integer, i_category_id_8:integer, $hashvalue_1714:bigint]
+          └─ Aggregate[type = FINAL, keys = [i_item_sk_13], hash = [$hashvalue_1724]]
+             │   Layout: [i_item_sk_13:integer, $hashvalue_1724:bigint]
+             │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+             └─ LocalExchange[partitioning = HASH, hashColumn = [$hashvalue_1724], arguments = [""i_item_sk_13""]]
+                │   Layout: [i_item_sk_13:integer, $hashvalue_1724:bigint]
+                │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+                └─ RemoteSource[sourceFragmentIds = [7]]
+                       Layout: [i_item_sk_13:integer, $hashvalue_1725:bigint]
+
+Fragment 4 [SOURCE]
+    Output layout: [ss_item_sk, ss_quantity, ss_list_price, i_brand_id_6, i_class_id_7, i_category_id_8, $hashvalue_1723]
+    Output partitioning: HASH [ss_item_sk][$hashvalue_1723]
+    Project[]
+    │   Layout: [ss_item_sk:integer, ss_quantity:integer, ss_list_price:decimal(7,2), i_brand_id_6:integer, i_class_id_7:integer, i_category_id_8:integer, $hashvalue_1723:bigint]
+    │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+    │   $hashvalue_1723 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ss_item_sk""), 0))
+    └─ InnerJoin[criteria = (""ss_sold_date_sk"" = ""d_date_sk""), hash = [$hashvalue_1719, $hashvalue_1720], distribution = REPLICATED]
+       │   Layout: [ss_item_sk:integer, ss_quantity:integer, ss_list_price:decimal(7,2), i_brand_id_6:integer, i_class_id_7:integer, i_category_id_8:integer]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+       │   Distribution: REPLICATED
+       │   dynamicFilterAssignments = {d_date_sk -> #df_13768}
+       ├─ Project[]
+       │  │   Layout: [ss_item_sk:integer, ss_quantity:integer, ss_list_price:decimal(7,2), ss_sold_date_sk:integer, i_brand_id_6:integer, i_class_id_7:integer, i_category_id_8:integer, $hashvalue_1719:bigint]
+       │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │  │   $hashvalue_1719 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ss_sold_date_sk""), 0))
+       │  └─ InnerJoin[criteria = (""ss_item_sk"" = ""i_item_sk""), hash = [$hashvalue_1715, $hashvalue_1716], distribution = REPLICATED]
+       │     │   Layout: [ss_item_sk:integer, ss_quantity:integer, ss_list_price:decimal(7,2), ss_sold_date_sk:integer, i_brand_id_6:integer, i_class_id_7:integer, i_category_id_8:integer]
+       │     │   Estimates: {rows: ? (?), cpu: ?, memory: 1018.28kB, network: 0B}
+       │     │   Distribution: REPLICATED
+       │     │   dynamicFilterAssignments = {i_item_sk -> #df_13769}
+       │     ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.store_sales$data@6526568472398842660, dynamicFilters = {""ss_item_sk"" = #df_13767, ""ss_sold_date_sk"" = #df_13768, ""ss_item_sk"" = #df_13769}]
+       │     │      Layout: [ss_item_sk:integer, ss_quantity:integer, ss_list_price:decimal(7,2), ss_sold_date_sk:integer, $hashvalue_1715:bigint]
+       │     │      Estimates: {rows: 2750838 (85.83MB), cpu: 62.22M, memory: 0B, network: 0B}/{rows: 2750838 (85.83MB), cpu: 62.22M, memory: 0B, network: 0B}/{rows: 2750838 (85.83MB), cpu: 85.83M, memory: 0B, network: 0B}
+       │     │      $hashvalue_1715 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ss_item_sk""), 0))
+       │     │      ss_item_sk := 2:ss_item_sk:integer
+       │     │      ss_sold_date_sk := 23:ss_sold_date_sk:integer
+       │     │      ss_quantity := 10:ss_quantity:integer
+       │     │      ss_list_price := 12:ss_list_price:decimal(7,2)
+       │     └─ LocalExchange[partitioning = SINGLE]
+       │        │   Layout: [i_item_sk:integer, i_brand_id_6:integer, i_class_id_7:integer, i_category_id_8:integer, $hashvalue_1716:bigint]
+       │        │   Estimates: {rows: 18000 (509.14kB), cpu: 0, memory: 0B, network: 0B}
+       │        └─ RemoteSource[sourceFragmentIds = [5]]
+       │               Layout: [i_item_sk:integer, i_brand_id_6:integer, i_class_id_7:integer, i_category_id_8:integer, $hashvalue_1717:bigint]
+       └─ LocalExchange[partitioning = SINGLE]
+          │   Layout: [d_date_sk:integer, $hashvalue_1720:bigint]
+          │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}
+          └─ RemoteSource[sourceFragmentIds = [6]]
+                 Layout: [d_date_sk:integer, $hashvalue_1721:bigint]
+
+Fragment 5 [SOURCE]
+    Output layout: [i_item_sk, i_brand_id_6, i_class_id_7, i_category_id_8, $hashvalue_1718]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.item$data@8481639847816879046, dynamicFilters = {""i_item_sk"" = #df_13767}]
+        Layout: [i_item_sk:integer, i_brand_id_6:integer, i_class_id_7:integer, i_category_id_8:integer, $hashvalue_1718:bigint]
+        Estimates: {rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 509.14k, memory: 0B, network: 0B}
+        $hashvalue_1718 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_item_sk""), 0))
+        i_brand_id_6 := 8:i_brand_id:integer
+        i_category_id_8 := 12:i_category_id:integer
+        i_class_id_7 := 10:i_class_id:integer
+        i_item_sk := 1:i_item_sk:integer
+
+Fragment 6 [SOURCE]
+    Output layout: [d_date_sk, $hashvalue_1722]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = ((""d_year"" = 2001) AND (""d_moy"" = 11))]
+        Layout: [d_date_sk:integer, $hashvalue_1722:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 1.04M, memory: 0B, network: 0B}/{rows: ? (?), cpu: 1.04M, memory: 0B, network: 0B}/{rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+        $hashvalue_1722 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk""), 0))
+        d_moy := 9:d_moy:integer
+        d_date_sk := 1:d_date_sk:integer
+        d_year := 7:d_year:integer
+
+Fragment 7 [HASH]
+    Output layout: [i_item_sk_13, $hashvalue_1760]
+    Output partitioning: HASH [i_item_sk_13][$hashvalue_1760]
+    Aggregate[type = PARTIAL, keys = [i_item_sk_13], hash = [$hashvalue_1760]]
+    │   Layout: [i_item_sk_13:integer, $hashvalue_1760:bigint]
+    └─ Project[]
+       │   Layout: [i_item_sk_13:integer, $hashvalue_1760:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   $hashvalue_1760 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_item_sk_13""), 0))
+       └─ InnerJoin[criteria = (""brand_id"" = ""i_brand_id_20"") AND (""class_id"" = ""i_class_id_22"") AND (""category_id"" = ""i_category_id_24""), hash = [$hashvalue_1726, $hashvalue_1757], distribution = PARTITIONED]
+          │   Layout: [i_item_sk_13:integer]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 509.14kB, network: 0B}
+          │   Distribution: PARTITIONED
+          │   maySkipOutputDuplicates = true
+          │   dynamicFilterAssignments = {i_brand_id_20 -> #df_13779, i_class_id_22 -> #df_13780, i_category_id_24 -> #df_13781}
+          ├─ FilterProject[filterPredicate = ((""count_1637"" >= BIGINT '1') AND (""count_1638"" >= BIGINT '1') AND (""count_1639"" >= BIGINT '1'))]
+          │  │   Layout: [brand_id:integer, class_id:integer, category_id:integer, $hashvalue_1726:bigint]
+          │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}/{rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │  └─ Aggregate[type = FINAL, keys = [brand_id, class_id, category_id], hash = [$hashvalue_1726]]
+          │     │   Layout: [brand_id:integer, class_id:integer, category_id:integer, $hashvalue_1726:bigint, count_1637:bigint, count_1639:bigint, count_1638:bigint]
+          │     │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+          │     │   count_1637 := count(""count_1695"")
+          │     │   count_1639 := count(""count_1697"")
+          │     │   count_1638 := count(""count_1696"")
+          │     └─ LocalExchange[partitioning = HASH, hashColumn = [$hashvalue_1726], arguments = [""brand_id"", ""class_id"", ""category_id""]]
+          │        │   Layout: [brand_id:integer, class_id:integer, category_id:integer, count_1695:bigint, count_1697:bigint, count_1696:bigint, $hashvalue_1726:bigint]
+          │        │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │        ├─ Project[]
+          │        │  │   Layout: [brand_id:integer, class_id:integer, category_id:integer, count_1695:bigint, count_1697:bigint, count_1696:bigint, $hashvalue_1727:bigint]
+          │        │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │        │  │   brand_id := ""i_brand_id_72""
+          │        │  │   class_id := ""i_class_id_74""
+          │        │  │   category_id := ""i_category_id_76""
+          │        │  └─ RemoteSource[sourceFragmentIds = [8]]
+          │        │         Layout: [i_brand_id_72:integer, i_class_id_74:integer, i_category_id_76:integer, count_1695:bigint, count_1697:bigint, count_1696:bigint, $hashvalue_1727:bigint]
+          │        ├─ Project[]
+          │        │  │   Layout: [brand_id:integer, class_id:integer, category_id:integer, count_1695:bigint, count_1697:bigint, count_1696:bigint, $hashvalue_1737:bigint]
+          │        │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │        │  │   brand_id := ""i_brand_id_128""
+          │        │  │   class_id := ""i_class_id_130""
+          │        │  │   category_id := ""i_category_id_132""
+          │        │  └─ RemoteSource[sourceFragmentIds = [11]]
+          │        │         Layout: [i_brand_id_128:integer, i_class_id_130:integer, i_category_id_132:integer, count_1695:bigint, count_1697:bigint, count_1696:bigint, $hashvalue_1737:bigint]
+          │        └─ Project[]
+          │           │   Layout: [brand_id:integer, class_id:integer, category_id:integer, count_1695:bigint, count_1697:bigint, count_1696:bigint, $hashvalue_1747:bigint]
+          │           │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │           │   brand_id := ""i_brand_id_184""
+          │           │   class_id := ""i_class_id_186""
+          │           │   category_id := ""i_category_id_188""
+          │           └─ RemoteSource[sourceFragmentIds = [14]]
+          │                  Layout: [i_brand_id_184:integer, i_class_id_186:integer, i_category_id_188:integer, count_1695:bigint, count_1697:bigint, count_1696:bigint, $hashvalue_1747:bigint]
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [i_item_sk_13:integer, i_brand_id_20:integer, i_class_id_22:integer, i_category_id_24:integer, $hashvalue_1757:bigint]
+             │   Estimates: {rows: 18000 (509.14kB), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [17]]
+                    Layout: [i_item_sk_13:integer, i_brand_id_20:integer, i_class_id_22:integer, i_category_id_24:integer, $hashvalue_1758:bigint]
+
+Fragment 8 [SOURCE]
+    Output layout: [i_brand_id_72, i_class_id_74, i_category_id_76, count_1695, count_1697, count_1696, $hashvalue_1736]
+    Output partitioning: HASH [i_brand_id_72, i_class_id_74, i_category_id_76][$hashvalue_1736]
+    Aggregate[type = PARTIAL, keys = [i_brand_id_72, i_class_id_74, i_category_id_76], hash = [$hashvalue_1736]]
+    │   Layout: [i_brand_id_72:integer, i_class_id_74:integer, i_category_id_76:integer, $hashvalue_1736:bigint, count_1695:bigint, count_1697:bigint, count_1696:bigint]
+    │   count_1695 := count(""marker_1622"")
+    │   count_1697 := count(""marker_1623"")
+    │   count_1696 := count(""marker_1623"")
+    └─ Project[]
+       │   Layout: [i_brand_id_72:integer, i_class_id_74:integer, i_category_id_76:integer, marker_1622:boolean, marker_1623:boolean, $hashvalue_1736:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   marker_1622 := true
+       │   marker_1623 := CAST(null AS boolean)
+       │   $hashvalue_1736 := combine_hash(combine_hash(combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_brand_id_72""), 0)), COALESCE(""$operator$hash_code""(""i_class_id_74""), 0)), COALESCE(""$operator$hash_code""(""i_category_id_76""), 0))
+       └─ InnerJoin[criteria = (""ss_sold_date_sk_62"" = ""d_date_sk_89""), hash = [$hashvalue_1732, $hashvalue_1733], distribution = REPLICATED]
+          │   Layout: [i_brand_id_72:integer, i_class_id_74:integer, i_category_id_76:integer]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 19.97kB, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk_89 -> #df_13782}
+          ├─ Project[]
+          │  │   Layout: [ss_sold_date_sk_62:integer, i_brand_id_72:integer, i_class_id_74:integer, i_category_id_76:integer, $hashvalue_1732:bigint]
+          │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │  │   $hashvalue_1732 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ss_sold_date_sk_62""), 0))
+          │  └─ InnerJoin[criteria = (""ss_item_sk_41"" = ""i_item_sk_65""), hash = [$hashvalue_1728, $hashvalue_1729], distribution = REPLICATED]
+          │     │   Layout: [ss_sold_date_sk_62:integer, i_brand_id_72:integer, i_class_id_74:integer, i_category_id_76:integer]
+          │     │   Estimates: {rows: ? (?), cpu: ?, memory: 1018.28kB, network: 0B}
+          │     │   Distribution: REPLICATED
+          │     │   dynamicFilterAssignments = {i_item_sk_65 -> #df_13783}
+          │     ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.store_sales$data@6526568472398842660, dynamicFilters = {""ss_sold_date_sk_62"" = #df_13782, ""ss_item_sk_41"" = #df_13783}]
+          │     │      Layout: [ss_item_sk_41:integer, ss_sold_date_sk_62:integer, $hashvalue_1728:bigint]
+          │     │      Estimates: {rows: 2750838 (49.84MB), cpu: 26.23M, memory: 0B, network: 0B}/{rows: 2750838 (49.84MB), cpu: 26.23M, memory: 0B, network: 0B}/{rows: 2750838 (49.84MB), cpu: 49.84M, memory: 0B, network: 0B}
+          │     │      $hashvalue_1728 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ss_item_sk_41""), 0))
+          │     │      ss_sold_date_sk_62 := 23:ss_sold_date_sk:integer
+          │     │      ss_item_sk_41 := 2:ss_item_sk:integer
+          │     └─ LocalExchange[partitioning = SINGLE]
+          │        │   Layout: [i_item_sk_65:integer, i_brand_id_72:integer, i_class_id_74:integer, i_category_id_76:integer, $hashvalue_1729:bigint]
+          │        │   Estimates: {rows: 18000 (509.14kB), cpu: 0, memory: 0B, network: 0B}
+          │        └─ RemoteSource[sourceFragmentIds = [9]]
+          │               Layout: [i_item_sk_65:integer, i_brand_id_72:integer, i_class_id_74:integer, i_category_id_76:integer, $hashvalue_1730:bigint]
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk_89:integer, $hashvalue_1733:bigint]
+             │   Estimates: {rows: 730 (9.99kB), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [10]]
+                    Layout: [d_date_sk_89:integer, $hashvalue_1734:bigint]
+
+Fragment 9 [SOURCE]
+    Output layout: [i_item_sk_65, i_brand_id_72, i_class_id_74, i_category_id_76, $hashvalue_1731]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.item$data@8481639847816879046, dynamicFilters = {""i_brand_id_72"" = #df_13779, ""i_class_id_74"" = #df_13780, ""i_category_id_76"" = #df_13781}]
+        Layout: [i_item_sk_65:integer, i_brand_id_72:integer, i_class_id_74:integer, i_category_id_76:integer, $hashvalue_1731:bigint]
+        Estimates: {rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 509.14k, memory: 0B, network: 0B}
+        $hashvalue_1731 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_item_sk_65""), 0))
+        i_item_sk_65 := 1:i_item_sk:integer
+        i_brand_id_72 := 8:i_brand_id:integer
+        i_class_id_74 := 10:i_class_id:integer
+        i_category_id_76 := 12:i_category_id:integer
+
+Fragment 10 [SOURCE]
+    Output layout: [d_date_sk_89, $hashvalue_1735]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year_95"" BETWEEN 1999 AND 2001)]
+        Layout: [d_date_sk_89:integer, $hashvalue_1735:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 9.99k, memory: 0B, network: 0B}
+        $hashvalue_1735 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_89""), 0))
+        d_year_95 := 7:d_year:integer
+        d_date_sk_89 := 1:d_date_sk:integer
+
+Fragment 11 [SOURCE]
+    Output layout: [i_brand_id_128, i_class_id_130, i_category_id_132, count_1695, count_1697, count_1696, $hashvalue_1746]
+    Output partitioning: HASH [i_brand_id_128, i_class_id_130, i_category_id_132][$hashvalue_1746]
+    Aggregate[type = PARTIAL, keys = [i_brand_id_128, i_class_id_130, i_category_id_132], hash = [$hashvalue_1746]]
+    │   Layout: [i_brand_id_128:integer, i_class_id_130:integer, i_category_id_132:integer, $hashvalue_1746:bigint, count_1695:bigint, count_1697:bigint, count_1696:bigint]
+    │   count_1695 := count(""marker_1628"")
+    │   count_1697 := count(""marker_1628"")
+    │   count_1696 := count(""marker_1629"")
+    └─ Project[]
+       │   Layout: [i_brand_id_128:integer, i_class_id_130:integer, i_category_id_132:integer, marker_1628:boolean, marker_1629:boolean, $hashvalue_1746:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   marker_1628 := CAST(null AS boolean)
+       │   marker_1629 := true
+       │   $hashvalue_1746 := combine_hash(combine_hash(combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_brand_id_128""), 0)), COALESCE(""$operator$hash_code""(""i_class_id_130""), 0)), COALESCE(""$operator$hash_code""(""i_category_id_132""), 0))
+       └─ InnerJoin[criteria = (""cs_sold_date_sk"" = ""d_date_sk_145""), hash = [$hashvalue_1742, $hashvalue_1743], distribution = REPLICATED]
+          │   Layout: [i_brand_id_128:integer, i_class_id_130:integer, i_category_id_132:integer]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 19.97kB, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk_145 -> #df_13793}
+          ├─ Project[]
+          │  │   Layout: [cs_sold_date_sk:integer, i_brand_id_128:integer, i_class_id_130:integer, i_category_id_132:integer, $hashvalue_1742:bigint]
+          │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │  │   $hashvalue_1742 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""cs_sold_date_sk""), 0))
+          │  └─ InnerJoin[criteria = (""cs_item_sk"" = ""i_item_sk_121""), hash = [$hashvalue_1738, $hashvalue_1739], distribution = REPLICATED]
+          │     │   Layout: [cs_sold_date_sk:integer, i_brand_id_128:integer, i_class_id_130:integer, i_category_id_132:integer]
+          │     │   Estimates: {rows: ? (?), cpu: ?, memory: 1018.28kB, network: 0B}
+          │     │   Distribution: REPLICATED
+          │     │   dynamicFilterAssignments = {i_item_sk_121 -> #df_13794}
+          │     ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.catalog_sales$data@7343679521195877483, dynamicFilters = {""cs_sold_date_sk"" = #df_13793, ""cs_item_sk"" = #df_13794}]
+          │     │      Layout: [cs_item_sk:integer, cs_sold_date_sk:integer, $hashvalue_1738:bigint]
+          │     │      Estimates: {rows: 1432680 (25.96MB), cpu: 13.66M, memory: 0B, network: 0B}/{rows: 1432680 (25.96MB), cpu: 13.66M, memory: 0B, network: 0B}/{rows: 1432680 (25.96MB), cpu: 25.96M, memory: 0B, network: 0B}
+          │     │      $hashvalue_1738 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""cs_item_sk""), 0))
+          │     │      cs_sold_date_sk := 34:cs_sold_date_sk:integer
+          │     │      cs_item_sk := 15:cs_item_sk:integer
+          │     └─ LocalExchange[partitioning = SINGLE]
+          │        │   Layout: [i_item_sk_121:integer, i_brand_id_128:integer, i_class_id_130:integer, i_category_id_132:integer, $hashvalue_1739:bigint]
+          │        │   Estimates: {rows: 18000 (509.14kB), cpu: 0, memory: 0B, network: 0B}
+          │        └─ RemoteSource[sourceFragmentIds = [12]]
+          │               Layout: [i_item_sk_121:integer, i_brand_id_128:integer, i_class_id_130:integer, i_category_id_132:integer, $hashvalue_1740:bigint]
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk_145:integer, $hashvalue_1743:bigint]
+             │   Estimates: {rows: 730 (9.99kB), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [13]]
+                    Layout: [d_date_sk_145:integer, $hashvalue_1744:bigint]
+
+Fragment 12 [SOURCE]
+    Output layout: [i_item_sk_121, i_brand_id_128, i_class_id_130, i_category_id_132, $hashvalue_1741]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.item$data@8481639847816879046, dynamicFilters = {""i_brand_id_128"" = #df_13779, ""i_class_id_130"" = #df_13780, ""i_category_id_132"" = #df_13781}]
+        Layout: [i_item_sk_121:integer, i_brand_id_128:integer, i_class_id_130:integer, i_category_id_132:integer, $hashvalue_1741:bigint]
+        Estimates: {rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 509.14k, memory: 0B, network: 0B}
+        $hashvalue_1741 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_item_sk_121""), 0))
+        i_item_sk_121 := 1:i_item_sk:integer
+        i_category_id_132 := 12:i_category_id:integer
+        i_brand_id_128 := 8:i_brand_id:integer
+        i_class_id_130 := 10:i_class_id:integer
+
+Fragment 13 [SOURCE]
+    Output layout: [d_date_sk_145, $hashvalue_1745]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year_151"" BETWEEN 1999 AND 2001)]
+        Layout: [d_date_sk_145:integer, $hashvalue_1745:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 9.99k, memory: 0B, network: 0B}
+        $hashvalue_1745 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_145""), 0))
+        d_year_151 := 7:d_year:integer
+        d_date_sk_145 := 1:d_date_sk:integer
+
+Fragment 14 [SOURCE]
+    Output layout: [i_brand_id_184, i_class_id_186, i_category_id_188, count_1695, count_1697, count_1696, $hashvalue_1756]
+    Output partitioning: HASH [i_brand_id_184, i_class_id_186, i_category_id_188][$hashvalue_1756]
+    Aggregate[type = PARTIAL, keys = [i_brand_id_184, i_class_id_186, i_category_id_188], hash = [$hashvalue_1756]]
+    │   Layout: [i_brand_id_184:integer, i_class_id_186:integer, i_category_id_188:integer, $hashvalue_1756:bigint, count_1695:bigint, count_1697:bigint, count_1696:bigint]
+    │   count_1695 := count(""marker_1634"")
+    │   count_1697 := count(""marker_1636"")
+    │   count_1696 := count(""marker_1634"")
+    └─ Project[]
+       │   Layout: [i_brand_id_184:integer, i_class_id_186:integer, i_category_id_188:integer, marker_1634:boolean, marker_1636:boolean, $hashvalue_1756:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   marker_1634 := CAST(null AS boolean)
+       │   marker_1636 := true
+       │   $hashvalue_1756 := combine_hash(combine_hash(combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_brand_id_184""), 0)), COALESCE(""$operator$hash_code""(""i_class_id_186""), 0)), COALESCE(""$operator$hash_code""(""i_category_id_188""), 0))
+       └─ InnerJoin[criteria = (""ws_sold_date_sk"" = ""d_date_sk_201""), hash = [$hashvalue_1752, $hashvalue_1753], distribution = REPLICATED]
+          │   Layout: [i_brand_id_184:integer, i_class_id_186:integer, i_category_id_188:integer]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 19.97kB, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk_201 -> #df_13804}
+          ├─ Project[]
+          │  │   Layout: [ws_sold_date_sk:integer, i_brand_id_184:integer, i_class_id_186:integer, i_category_id_188:integer, $hashvalue_1752:bigint]
+          │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │  │   $hashvalue_1752 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ws_sold_date_sk""), 0))
+          │  └─ InnerJoin[criteria = (""ws_item_sk"" = ""i_item_sk_177""), hash = [$hashvalue_1748, $hashvalue_1749], distribution = REPLICATED]
+          │     │   Layout: [ws_sold_date_sk:integer, i_brand_id_184:integer, i_class_id_186:integer, i_category_id_188:integer]
+          │     │   Estimates: {rows: ? (?), cpu: ?, memory: 1018.28kB, network: 0B}
+          │     │   Distribution: REPLICATED
+          │     │   dynamicFilterAssignments = {i_item_sk_177 -> #df_13805}
+          │     ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.web_sales$data@7618567712963574495, dynamicFilters = {""ws_sold_date_sk"" = #df_13804, ""ws_item_sk"" = #df_13805}]
+          │     │      Layout: [ws_item_sk:integer, ws_sold_date_sk:integer, $hashvalue_1748:bigint]
+          │     │      Estimates: {rows: 718760 (13.02MB), cpu: 6.85M, memory: 0B, network: 0B}/{rows: 718760 (13.02MB), cpu: 6.85M, memory: 0B, network: 0B}/{rows: 718760 (13.02MB), cpu: 13.02M, memory: 0B, network: 0B}
+          │     │      $hashvalue_1748 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ws_item_sk""), 0))
+          │     │      ws_item_sk := 3:ws_item_sk:integer
+          │     │      ws_sold_date_sk := 34:ws_sold_date_sk:integer
+          │     └─ LocalExchange[partitioning = SINGLE]
+          │        │   Layout: [i_item_sk_177:integer, i_brand_id_184:integer, i_class_id_186:integer, i_category_id_188:integer, $hashvalue_1749:bigint]
+          │        │   Estimates: {rows: 18000 (509.14kB), cpu: 0, memory: 0B, network: 0B}
+          │        └─ RemoteSource[sourceFragmentIds = [15]]
+          │               Layout: [i_item_sk_177:integer, i_brand_id_184:integer, i_class_id_186:integer, i_category_id_188:integer, $hashvalue_1750:bigint]
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk_201:integer, $hashvalue_1753:bigint]
+             │   Estimates: {rows: 730 (9.99kB), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [16]]
+                    Layout: [d_date_sk_201:integer, $hashvalue_1754:bigint]
+
+Fragment 15 [SOURCE]
+    Output layout: [i_item_sk_177, i_brand_id_184, i_class_id_186, i_category_id_188, $hashvalue_1751]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.item$data@8481639847816879046, dynamicFilters = {""i_brand_id_184"" = #df_13779, ""i_class_id_186"" = #df_13780, ""i_category_id_188"" = #df_13781}]
+        Layout: [i_item_sk_177:integer, i_brand_id_184:integer, i_class_id_186:integer, i_category_id_188:integer, $hashvalue_1751:bigint]
+        Estimates: {rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 509.14k, memory: 0B, network: 0B}
+        $hashvalue_1751 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_item_sk_177""), 0))
+        i_class_id_186 := 10:i_class_id:integer
+        i_item_sk_177 := 1:i_item_sk:integer
+        i_category_id_188 := 12:i_category_id:integer
+        i_brand_id_184 := 8:i_brand_id:integer
+
+Fragment 16 [SOURCE]
+    Output layout: [d_date_sk_201, $hashvalue_1755]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year_207"" BETWEEN 1999 AND 2001)]
+        Layout: [d_date_sk_201:integer, $hashvalue_1755:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 9.99k, memory: 0B, network: 0B}
+        $hashvalue_1755 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_201""), 0))
+        d_year_207 := 7:d_year:integer
+        d_date_sk_201 := 1:d_date_sk:integer
+
+Fragment 17 [SOURCE]
+    Output layout: [i_item_sk_13, i_brand_id_20, i_class_id_22, i_category_id_24, $hashvalue_1759]
+    Output partitioning: HASH [i_brand_id_20, i_class_id_22, i_category_id_24][$hashvalue_1759]
+    ScanProject[table = iceberg:tpcds_sf1_iceberg.item$data@8481639847816879046]
+        Layout: [i_item_sk_13:integer, i_brand_id_20:integer, i_class_id_22:integer, i_category_id_24:integer, $hashvalue_1759:bigint]
+        Estimates: {rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 509.14k, memory: 0B, network: 0B}
+        $hashvalue_1759 := combine_hash(combine_hash(combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_brand_id_20""), 0)), COALESCE(""$operator$hash_code""(""i_class_id_22""), 0)), COALESCE(""$operator$hash_code""(""i_category_id_24""), 0))
+        i_brand_id_20 := 8:i_brand_id:integer
+        i_class_id_22 := 10:i_class_id:integer
+        i_category_id_24 := 12:i_category_id:integer
+        i_item_sk_13 := 1:i_item_sk:integer
+
+Fragment 18 [SINGLE]
+    Output layout: [avg]
+    Output partitioning: BROADCAST []
+    Aggregate[type = FINAL]
+    │   Layout: [avg:decimal(17,2)]
+    │   Estimates: {rows: 1 (9B), cpu: ?, memory: 9B, network: 0B}
+    │   avg := avg(""avg_1698"")
+    └─ LocalExchange[partitioning = SINGLE]
+       │   Layout: [avg_1698:varbinary]
+       │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}
+       └─ RemoteSource[sourceFragmentIds = [19, 21, 23]]
+              Layout: [avg_1698:varbinary]
+
+Fragment 19 [SOURCE]
+    Output layout: [avg_1698]
+    Output partitioning: SINGLE []
+    Aggregate[type = PARTIAL]
+    │   Layout: [avg_1698:varbinary]
+    │   avg_1698 := avg(""expr_1601"")
+    └─ Project[]
+       │   Layout: [expr_1601:decimal(17,2)]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   expr_1601 := (CAST(""ss_quantity_245"" AS decimal(10, 0)) * ""ss_list_price_247"")
+       └─ InnerJoin[criteria = (""ss_sold_date_sk_258"" = ""d_date_sk_261""), hash = [$hashvalue_1762, $hashvalue_1763], distribution = REPLICATED]
+          │   Layout: [ss_quantity_245:integer, ss_list_price_247:decimal(7,2)]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 19.97kB, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk_261 -> #df_13823}
+          ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.store_sales$data@6526568472398842660, dynamicFilters = {""ss_sold_date_sk_258"" = #df_13823}]
+          │      Layout: [ss_quantity_245:integer, ss_list_price_247:decimal(7,2), ss_sold_date_sk_258:integer, $hashvalue_1762:bigint]
+          │      Estimates: {rows: 2750838 (72.71MB), cpu: 49.10M, memory: 0B, network: 0B}/{rows: 2750838 (72.71MB), cpu: 49.10M, memory: 0B, network: 0B}/{rows: 2750838 (72.71MB), cpu: 72.71M, memory: 0B, network: 0B}
+          │      $hashvalue_1762 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ss_sold_date_sk_258""), 0))
+          │      ss_list_price_247 := 12:ss_list_price:decimal(7,2)
+          │      ss_sold_date_sk_258 := 23:ss_sold_date_sk:integer
+          │      ss_quantity_245 := 10:ss_quantity:integer
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk_261:integer, $hashvalue_1763:bigint]
+             │   Estimates: {rows: 730 (9.99kB), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [20]]
+                    Layout: [d_date_sk_261:integer, $hashvalue_1764:bigint]
+
+Fragment 20 [SOURCE]
+    Output layout: [d_date_sk_261, $hashvalue_1765]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year_267"" BETWEEN 1999 AND 2001)]
+        Layout: [d_date_sk_261:integer, $hashvalue_1765:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 9.99k, memory: 0B, network: 0B}
+        $hashvalue_1765 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_261""), 0))
+        d_date_sk_261 := 1:d_date_sk:integer
+        d_year_267 := 7:d_year:integer
+
+Fragment 21 [SOURCE]
+    Output layout: [avg_1698]
+    Output partitioning: SINGLE []
+    Aggregate[type = PARTIAL]
+    │   Layout: [avg_1698:varbinary]
+    │   avg_1698 := avg(""expr_1602"")
+    └─ Project[]
+       │   Layout: [expr_1602:decimal(17,2)]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   expr_1602 := (CAST(""cs_quantity_308"" AS decimal(10, 0)) * ""cs_list_price_310"")
+       └─ InnerJoin[criteria = (""cs_sold_date_sk_324"" = ""d_date_sk_327""), hash = [$hashvalue_1766, $hashvalue_1767], distribution = REPLICATED]
+          │   Layout: [cs_quantity_308:integer, cs_list_price_310:decimal(7,2)]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 19.97kB, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk_327 -> #df_13829}
+          ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.catalog_sales$data@7343679521195877483, dynamicFilters = {""cs_sold_date_sk_324"" = #df_13829}]
+          │      Layout: [cs_quantity_308:integer, cs_list_price_310:decimal(7,2), cs_sold_date_sk_324:integer, $hashvalue_1766:bigint]
+          │      Estimates: {rows: 1432680 (38.22MB), cpu: 25.92M, memory: 0B, network: 0B}/{rows: 1432680 (38.22MB), cpu: 25.92M, memory: 0B, network: 0B}/{rows: 1432680 (38.22MB), cpu: 38.22M, memory: 0B, network: 0B}
+          │      $hashvalue_1766 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""cs_sold_date_sk_324""), 0))
+          │      cs_quantity_308 := 18:cs_quantity:integer
+          │      cs_sold_date_sk_324 := 34:cs_sold_date_sk:integer
+          │      cs_list_price_310 := 20:cs_list_price:decimal(7,2)
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk_327:integer, $hashvalue_1767:bigint]
+             │   Estimates: {rows: 730 (9.99kB), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [22]]
+                    Layout: [d_date_sk_327:integer, $hashvalue_1768:bigint]
+
+Fragment 22 [SOURCE]
+    Output layout: [d_date_sk_327, $hashvalue_1769]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year_333"" BETWEEN 1999 AND 2001)]
+        Layout: [d_date_sk_327:integer, $hashvalue_1769:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 9.99k, memory: 0B, network: 0B}
+        $hashvalue_1769 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_327""), 0))
+        d_date_sk_327 := 1:d_date_sk:integer
+        d_year_333 := 7:d_year:integer
+
+Fragment 23 [SOURCE]
+    Output layout: [avg_1698]
+    Output partitioning: SINGLE []
+    Aggregate[type = PARTIAL]
+    │   Layout: [avg_1698:varbinary]
+    │   avg_1698 := avg(""expr_1600"")
+    └─ Project[]
+       │   Layout: [expr_1600:decimal(17,2)]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   expr_1600 := (CAST(""ws_quantity_374"" AS decimal(10, 0)) * ""ws_list_price_376"")
+       └─ InnerJoin[criteria = (""ws_sold_date_sk_390"" = ""d_date_sk_393""), hash = [$hashvalue_1770, $hashvalue_1771], distribution = REPLICATED]
+          │   Layout: [ws_quantity_374:integer, ws_list_price_376:decimal(7,2)]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 19.97kB, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk_393 -> #df_13835}
+          ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.web_sales$data@7618567712963574495, dynamicFilters = {""ws_sold_date_sk_390"" = #df_13835}]
+          │      Layout: [ws_quantity_374:integer, ws_list_price_376:decimal(7,2), ws_sold_date_sk_390:integer, $hashvalue_1770:bigint]
+          │      Estimates: {rows: 718760 (19.19MB), cpu: 13.02M, memory: 0B, network: 0B}/{rows: 718760 (19.19MB), cpu: 13.02M, memory: 0B, network: 0B}/{rows: 718760 (19.19MB), cpu: 19.19M, memory: 0B, network: 0B}
+          │      $hashvalue_1770 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ws_sold_date_sk_390""), 0))
+          │      ws_sold_date_sk_390 := 34:ws_sold_date_sk:integer
+          │      ws_quantity_374 := 18:ws_quantity:integer
+          │      ws_list_price_376 := 20:ws_list_price:decimal(7,2)
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk_393:integer, $hashvalue_1771:bigint]
+             │   Estimates: {rows: 730 (9.99kB), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [24]]
+                    Layout: [d_date_sk_393:integer, $hashvalue_1772:bigint]
+
+Fragment 24 [SOURCE]
+    Output layout: [d_date_sk_393, $hashvalue_1773]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year_399"" BETWEEN 1999 AND 2001)]
+        Layout: [d_date_sk_393:integer, $hashvalue_1773:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 9.99k, memory: 0B, network: 0B}
+        $hashvalue_1773 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_393""), 0))
+        d_date_sk_393 := 1:d_date_sk:integer
+        d_year_399 := 7:d_year:integer
+
+Fragment 25 [HASH]
+    Output layout: [i_brand_id_469, i_class_id_471, i_category_id_473, sum_1699, count_1700, $hashvalue_1823]
+    Output partitioning: HASH [i_brand_id_469, i_class_id_471, i_category_id_473][$hashvalue_1823]
+    Aggregate[type = PARTIAL, keys = [i_brand_id_469, i_class_id_471, i_category_id_473], hash = [$hashvalue_1823]]
+    │   Layout: [i_brand_id_469:integer, i_class_id_471:integer, i_category_id_473:integer, $hashvalue_1823:bigint, sum_1699:varbinary, count_1700:bigint]
+    │   sum_1699 := sum(""expr_809"")
+    │   count_1700 := count(*)
+    └─ Project[]
+       │   Layout: [i_category_id_473:integer, expr_809:decimal(17,2), i_class_id_471:integer, i_brand_id_469:integer, $hashvalue_1823:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   expr_809 := (CAST(""cs_quantity_443"" AS decimal(10, 0)) * ""cs_list_price_445"")
+       │   $hashvalue_1823 := combine_hash(combine_hash(combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_brand_id_469""), 0)), COALESCE(""$operator$hash_code""(""i_class_id_471""), 0)), COALESCE(""$operator$hash_code""(""i_category_id_473""), 0))
+       └─ InnerJoin[criteria = (""cs_item_sk_440"" = ""i_item_sk_518""), hash = [$hashvalue_1776, $hashvalue_1786], distribution = PARTITIONED]
+          │   Layout: [cs_quantity_443:integer, cs_list_price_445:decimal(7,2), i_brand_id_469:integer, i_class_id_471:integer, i_category_id_473:integer]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+          │   Distribution: PARTITIONED
+          │   dynamicFilterAssignments = {i_item_sk_518 -> #df_13845}
+          ├─ RemoteSource[sourceFragmentIds = [26]]
+          │      Layout: [cs_item_sk_440:integer, cs_quantity_443:integer, cs_list_price_445:decimal(7,2), i_brand_id_469:integer, i_class_id_471:integer, i_category_id_473:integer, $hashvalue_1776:bigint]
+          └─ Aggregate[type = FINAL, keys = [i_item_sk_518], hash = [$hashvalue_1786]]
+             │   Layout: [i_item_sk_518:integer, $hashvalue_1786:bigint]
+             │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+             └─ LocalExchange[partitioning = HASH, hashColumn = [$hashvalue_1786], arguments = [""i_item_sk_518""]]
+                │   Layout: [i_item_sk_518:integer, $hashvalue_1786:bigint]
+                │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+                └─ RemoteSource[sourceFragmentIds = [29]]
+                       Layout: [i_item_sk_518:integer, $hashvalue_1787:bigint]
+
+Fragment 26 [SOURCE]
+    Output layout: [cs_item_sk_440, cs_quantity_443, cs_list_price_445, i_brand_id_469, i_class_id_471, i_category_id_473, $hashvalue_1785]
+    Output partitioning: HASH [cs_item_sk_440][$hashvalue_1785]
+    Project[]
+    │   Layout: [cs_item_sk_440:integer, cs_quantity_443:integer, cs_list_price_445:decimal(7,2), i_brand_id_469:integer, i_class_id_471:integer, i_category_id_473:integer, $hashvalue_1785:bigint]
+    │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+    │   $hashvalue_1785 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""cs_item_sk_440""), 0))
+    └─ InnerJoin[criteria = (""cs_sold_date_sk_459"" = ""d_date_sk_486""), hash = [$hashvalue_1781, $hashvalue_1782], distribution = REPLICATED]
+       │   Layout: [cs_item_sk_440:integer, cs_quantity_443:integer, cs_list_price_445:decimal(7,2), i_brand_id_469:integer, i_class_id_471:integer, i_category_id_473:integer]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+       │   Distribution: REPLICATED
+       │   dynamicFilterAssignments = {d_date_sk_486 -> #df_13846}
+       ├─ Project[]
+       │  │   Layout: [cs_item_sk_440:integer, cs_quantity_443:integer, cs_list_price_445:decimal(7,2), cs_sold_date_sk_459:integer, i_brand_id_469:integer, i_class_id_471:integer, i_category_id_473:integer, $hashvalue_1781:bigint]
+       │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │  │   $hashvalue_1781 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""cs_sold_date_sk_459""), 0))
+       │  └─ InnerJoin[criteria = (""cs_item_sk_440"" = ""i_item_sk_462""), hash = [$hashvalue_1777, $hashvalue_1778], distribution = REPLICATED]
+       │     │   Layout: [cs_item_sk_440:integer, cs_quantity_443:integer, cs_list_price_445:decimal(7,2), cs_sold_date_sk_459:integer, i_brand_id_469:integer, i_class_id_471:integer, i_category_id_473:integer]
+       │     │   Estimates: {rows: ? (?), cpu: ?, memory: 1018.28kB, network: 0B}
+       │     │   Distribution: REPLICATED
+       │     │   dynamicFilterAssignments = {i_item_sk_462 -> #df_13847}
+       │     ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.catalog_sales$data@7343679521195877483, dynamicFilters = {""cs_item_sk_440"" = #df_13845, ""cs_sold_date_sk_459"" = #df_13846, ""cs_item_sk_440"" = #df_13847}]
+       │     │      Layout: [cs_item_sk_440:integer, cs_quantity_443:integer, cs_list_price_445:decimal(7,2), cs_sold_date_sk_459:integer, $hashvalue_1777:bigint]
+       │     │      Estimates: {rows: 1432680 (45.05MB), cpu: 32.75M, memory: 0B, network: 0B}/{rows: 1432680 (45.05MB), cpu: 32.75M, memory: 0B, network: 0B}/{rows: 1432680 (45.05MB), cpu: 45.05M, memory: 0B, network: 0B}
+       │     │      $hashvalue_1777 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""cs_item_sk_440""), 0))
+       │     │      cs_item_sk_440 := 15:cs_item_sk:integer
+       │     │      cs_quantity_443 := 18:cs_quantity:integer
+       │     │      cs_list_price_445 := 20:cs_list_price:decimal(7,2)
+       │     │      cs_sold_date_sk_459 := 34:cs_sold_date_sk:integer
+       │     └─ LocalExchange[partitioning = SINGLE]
+       │        │   Layout: [i_item_sk_462:integer, i_brand_id_469:integer, i_class_id_471:integer, i_category_id_473:integer, $hashvalue_1778:bigint]
+       │        │   Estimates: {rows: 18000 (509.14kB), cpu: 0, memory: 0B, network: 0B}
+       │        └─ RemoteSource[sourceFragmentIds = [27]]
+       │               Layout: [i_item_sk_462:integer, i_brand_id_469:integer, i_class_id_471:integer, i_category_id_473:integer, $hashvalue_1779:bigint]
+       └─ LocalExchange[partitioning = SINGLE]
+          │   Layout: [d_date_sk_486:integer, $hashvalue_1782:bigint]
+          │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}
+          └─ RemoteSource[sourceFragmentIds = [28]]
+                 Layout: [d_date_sk_486:integer, $hashvalue_1783:bigint]
+
+Fragment 27 [SOURCE]
+    Output layout: [i_item_sk_462, i_brand_id_469, i_class_id_471, i_category_id_473, $hashvalue_1780]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.item$data@8481639847816879046, dynamicFilters = {""i_item_sk_462"" = #df_13845}]
+        Layout: [i_item_sk_462:integer, i_brand_id_469:integer, i_class_id_471:integer, i_category_id_473:integer, $hashvalue_1780:bigint]
+        Estimates: {rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 509.14k, memory: 0B, network: 0B}
+        $hashvalue_1780 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_item_sk_462""), 0))
+        i_item_sk_462 := 1:i_item_sk:integer
+        i_category_id_473 := 12:i_category_id:integer
+        i_brand_id_469 := 8:i_brand_id:integer
+        i_class_id_471 := 10:i_class_id:integer
+
+Fragment 28 [SOURCE]
+    Output layout: [d_date_sk_486, $hashvalue_1784]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = ((""d_year_492"" = 2001) AND (""d_moy_494"" = 11))]
+        Layout: [d_date_sk_486:integer, $hashvalue_1784:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 1.04M, memory: 0B, network: 0B}/{rows: ? (?), cpu: 1.04M, memory: 0B, network: 0B}/{rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+        $hashvalue_1784 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_486""), 0))
+        d_year_492 := 7:d_year:integer
+        d_date_sk_486 := 1:d_date_sk:integer
+        d_moy_494 := 9:d_moy:integer
+
+Fragment 29 [HASH]
+    Output layout: [i_item_sk_518, $hashvalue_1822]
+    Output partitioning: HASH [i_item_sk_518][$hashvalue_1822]
+    Aggregate[type = PARTIAL, keys = [i_item_sk_518], hash = [$hashvalue_1822]]
+    │   Layout: [i_item_sk_518:integer, $hashvalue_1822:bigint]
+    └─ Project[]
+       │   Layout: [i_item_sk_518:integer, $hashvalue_1822:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   $hashvalue_1822 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_item_sk_518""), 0))
+       └─ InnerJoin[criteria = (""brand_id_542"" = ""i_brand_id_525"") AND (""class_id_543"" = ""i_class_id_527"") AND (""category_id_544"" = ""i_category_id_529""), hash = [$hashvalue_1788, $hashvalue_1819], distribution = PARTITIONED]
+          │   Layout: [i_item_sk_518:integer]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 509.14kB, network: 0B}
+          │   Distribution: PARTITIONED
+          │   maySkipOutputDuplicates = true
+          │   dynamicFilterAssignments = {i_brand_id_525 -> #df_13857, i_class_id_527 -> #df_13858, i_category_id_529 -> #df_13859}
+          ├─ FilterProject[filterPredicate = ((""count_1661"" >= BIGINT '1') AND (""count_1662"" >= BIGINT '1') AND (""count_1663"" >= BIGINT '1'))]
+          │  │   Layout: [brand_id_542:integer, class_id_543:integer, category_id_544:integer, $hashvalue_1788:bigint]
+          │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}/{rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │  └─ Aggregate[type = FINAL, keys = [brand_id_542, class_id_543, category_id_544], hash = [$hashvalue_1788]]
+          │     │   Layout: [brand_id_542:integer, class_id_543:integer, category_id_544:integer, $hashvalue_1788:bigint, count_1662:bigint, count_1661:bigint, count_1663:bigint]
+          │     │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+          │     │   count_1662 := count(""count_1702"")
+          │     │   count_1661 := count(""count_1701"")
+          │     │   count_1663 := count(""count_1703"")
+          │     └─ LocalExchange[partitioning = HASH, hashColumn = [$hashvalue_1788], arguments = [""brand_id_542"", ""class_id_543"", ""category_id_544""]]
+          │        │   Layout: [brand_id_542:integer, class_id_543:integer, category_id_544:integer, count_1703:bigint, count_1702:bigint, count_1701:bigint, $hashvalue_1788:bigint]
+          │        │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │        ├─ Project[]
+          │        │  │   Layout: [brand_id_542:integer, class_id_543:integer, category_id_544:integer, count_1703:bigint, count_1702:bigint, count_1701:bigint, $hashvalue_1789:bigint]
+          │        │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │        │  │   brand_id_542 := ""i_brand_id_580""
+          │        │  │   class_id_543 := ""i_class_id_582""
+          │        │  │   category_id_544 := ""i_category_id_584""
+          │        │  └─ RemoteSource[sourceFragmentIds = [30]]
+          │        │         Layout: [i_brand_id_580:integer, i_class_id_582:integer, i_category_id_584:integer, count_1703:bigint, count_1702:bigint, count_1701:bigint, $hashvalue_1789:bigint]
+          │        ├─ Project[]
+          │        │  │   Layout: [brand_id_542:integer, class_id_543:integer, category_id_544:integer, count_1703:bigint, count_1702:bigint, count_1701:bigint, $hashvalue_1799:bigint]
+          │        │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │        │  │   brand_id_542 := ""i_brand_id_670""
+          │        │  │   class_id_543 := ""i_class_id_672""
+          │        │  │   category_id_544 := ""i_category_id_674""
+          │        │  └─ RemoteSource[sourceFragmentIds = [33]]
+          │        │         Layout: [i_brand_id_670:integer, i_class_id_672:integer, i_category_id_674:integer, count_1703:bigint, count_1702:bigint, count_1701:bigint, $hashvalue_1799:bigint]
+          │        └─ Project[]
+          │           │   Layout: [brand_id_542:integer, class_id_543:integer, category_id_544:integer, count_1703:bigint, count_1702:bigint, count_1701:bigint, $hashvalue_1809:bigint]
+          │           │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │           │   brand_id_542 := ""i_brand_id_760""
+          │           │   class_id_543 := ""i_class_id_762""
+          │           │   category_id_544 := ""i_category_id_764""
+          │           └─ RemoteSource[sourceFragmentIds = [36]]
+          │                  Layout: [i_brand_id_760:integer, i_class_id_762:integer, i_category_id_764:integer, count_1703:bigint, count_1702:bigint, count_1701:bigint, $hashvalue_1809:bigint]
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [i_item_sk_518:integer, i_brand_id_525:integer, i_class_id_527:integer, i_category_id_529:integer, $hashvalue_1819:bigint]
+             │   Estimates: {rows: 18000 (509.14kB), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [39]]
+                    Layout: [i_item_sk_518:integer, i_brand_id_525:integer, i_class_id_527:integer, i_category_id_529:integer, $hashvalue_1820:bigint]
+
+Fragment 30 [SOURCE]
+    Output layout: [i_brand_id_580, i_class_id_582, i_category_id_584, count_1703, count_1702, count_1701, $hashvalue_1798]
+    Output partitioning: HASH [i_brand_id_580, i_class_id_582, i_category_id_584][$hashvalue_1798]
+    Aggregate[type = PARTIAL, keys = [i_brand_id_580, i_class_id_582, i_category_id_584], hash = [$hashvalue_1798]]
+    │   Layout: [i_brand_id_580:integer, i_class_id_582:integer, i_category_id_584:integer, $hashvalue_1798:bigint, count_1703:bigint, count_1702:bigint, count_1701:bigint]
+    │   count_1703 := count(""marker_1647"")
+    │   count_1702 := count(""marker_1647"")
+    │   count_1701 := count(""marker_1646"")
+    └─ Project[]
+       │   Layout: [i_brand_id_580:integer, i_class_id_582:integer, i_category_id_584:integer, marker_1646:boolean, marker_1647:boolean, $hashvalue_1798:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   marker_1646 := true
+       │   marker_1647 := CAST(null AS boolean)
+       │   $hashvalue_1798 := combine_hash(combine_hash(combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_brand_id_580""), 0)), COALESCE(""$operator$hash_code""(""i_class_id_582""), 0)), COALESCE(""$operator$hash_code""(""i_category_id_584""), 0))
+       └─ InnerJoin[criteria = (""ss_sold_date_sk_570"" = ""d_date_sk_597""), hash = [$hashvalue_1794, $hashvalue_1795], distribution = REPLICATED]
+          │   Layout: [i_brand_id_580:integer, i_class_id_582:integer, i_category_id_584:integer]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 19.97kB, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk_597 -> #df_13860}
+          ├─ Project[]
+          │  │   Layout: [ss_sold_date_sk_570:integer, i_brand_id_580:integer, i_class_id_582:integer, i_category_id_584:integer, $hashvalue_1794:bigint]
+          │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │  │   $hashvalue_1794 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ss_sold_date_sk_570""), 0))
+          │  └─ InnerJoin[criteria = (""ss_item_sk_549"" = ""i_item_sk_573""), hash = [$hashvalue_1790, $hashvalue_1791], distribution = REPLICATED]
+          │     │   Layout: [ss_sold_date_sk_570:integer, i_brand_id_580:integer, i_class_id_582:integer, i_category_id_584:integer]
+          │     │   Estimates: {rows: ? (?), cpu: ?, memory: 1018.28kB, network: 0B}
+          │     │   Distribution: REPLICATED
+          │     │   dynamicFilterAssignments = {i_item_sk_573 -> #df_13861}
+          │     ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.store_sales$data@6526568472398842660, dynamicFilters = {""ss_sold_date_sk_570"" = #df_13860, ""ss_item_sk_549"" = #df_13861}]
+          │     │      Layout: [ss_item_sk_549:integer, ss_sold_date_sk_570:integer, $hashvalue_1790:bigint]
+          │     │      Estimates: {rows: 2750838 (49.84MB), cpu: 26.23M, memory: 0B, network: 0B}/{rows: 2750838 (49.84MB), cpu: 26.23M, memory: 0B, network: 0B}/{rows: 2750838 (49.84MB), cpu: 49.84M, memory: 0B, network: 0B}
+          │     │      $hashvalue_1790 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ss_item_sk_549""), 0))
+          │     │      ss_item_sk_549 := 2:ss_item_sk:integer
+          │     │      ss_sold_date_sk_570 := 23:ss_sold_date_sk:integer
+          │     └─ LocalExchange[partitioning = SINGLE]
+          │        │   Layout: [i_item_sk_573:integer, i_brand_id_580:integer, i_class_id_582:integer, i_category_id_584:integer, $hashvalue_1791:bigint]
+          │        │   Estimates: {rows: 18000 (509.14kB), cpu: 0, memory: 0B, network: 0B}
+          │        └─ RemoteSource[sourceFragmentIds = [31]]
+          │               Layout: [i_item_sk_573:integer, i_brand_id_580:integer, i_class_id_582:integer, i_category_id_584:integer, $hashvalue_1792:bigint]
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk_597:integer, $hashvalue_1795:bigint]
+             │   Estimates: {rows: 730 (9.99kB), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [32]]
+                    Layout: [d_date_sk_597:integer, $hashvalue_1796:bigint]
+
+Fragment 31 [SOURCE]
+    Output layout: [i_item_sk_573, i_brand_id_580, i_class_id_582, i_category_id_584, $hashvalue_1793]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.item$data@8481639847816879046, dynamicFilters = {""i_brand_id_580"" = #df_13857, ""i_class_id_582"" = #df_13858, ""i_category_id_584"" = #df_13859}]
+        Layout: [i_item_sk_573:integer, i_brand_id_580:integer, i_class_id_582:integer, i_category_id_584:integer, $hashvalue_1793:bigint]
+        Estimates: {rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 509.14k, memory: 0B, network: 0B}
+        $hashvalue_1793 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_item_sk_573""), 0))
+        i_class_id_582 := 10:i_class_id:integer
+        i_item_sk_573 := 1:i_item_sk:integer
+        i_category_id_584 := 12:i_category_id:integer
+        i_brand_id_580 := 8:i_brand_id:integer
+
+Fragment 32 [SOURCE]
+    Output layout: [d_date_sk_597, $hashvalue_1797]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year_603"" BETWEEN 1999 AND 2001)]
+        Layout: [d_date_sk_597:integer, $hashvalue_1797:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 9.99k, memory: 0B, network: 0B}
+        $hashvalue_1797 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_597""), 0))
+        d_year_603 := 7:d_year:integer
+        d_date_sk_597 := 1:d_date_sk:integer
+
+Fragment 33 [SOURCE]
+    Output layout: [i_brand_id_670, i_class_id_672, i_category_id_674, count_1703, count_1702, count_1701, $hashvalue_1808]
+    Output partitioning: HASH [i_brand_id_670, i_class_id_672, i_category_id_674][$hashvalue_1808]
+    Aggregate[type = PARTIAL, keys = [i_brand_id_670, i_class_id_672, i_category_id_674], hash = [$hashvalue_1808]]
+    │   Layout: [i_brand_id_670:integer, i_class_id_672:integer, i_category_id_674:integer, $hashvalue_1808:bigint, count_1703:bigint, count_1702:bigint, count_1701:bigint]
+    │   count_1703 := count(""marker_1652"")
+    │   count_1702 := count(""marker_1653"")
+    │   count_1701 := count(""marker_1652"")
+    └─ Project[]
+       │   Layout: [i_brand_id_670:integer, i_class_id_672:integer, i_category_id_674:integer, marker_1652:boolean, marker_1653:boolean, $hashvalue_1808:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   marker_1652 := CAST(null AS boolean)
+       │   marker_1653 := true
+       │   $hashvalue_1808 := combine_hash(combine_hash(combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_brand_id_670""), 0)), COALESCE(""$operator$hash_code""(""i_class_id_672""), 0)), COALESCE(""$operator$hash_code""(""i_category_id_674""), 0))
+       └─ InnerJoin[criteria = (""cs_sold_date_sk_660"" = ""d_date_sk_687""), hash = [$hashvalue_1804, $hashvalue_1805], distribution = REPLICATED]
+          │   Layout: [i_brand_id_670:integer, i_class_id_672:integer, i_category_id_674:integer]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 19.97kB, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk_687 -> #df_13871}
+          ├─ Project[]
+          │  │   Layout: [cs_sold_date_sk_660:integer, i_brand_id_670:integer, i_class_id_672:integer, i_category_id_674:integer, $hashvalue_1804:bigint]
+          │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │  │   $hashvalue_1804 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""cs_sold_date_sk_660""), 0))
+          │  └─ InnerJoin[criteria = (""cs_item_sk_641"" = ""i_item_sk_663""), hash = [$hashvalue_1800, $hashvalue_1801], distribution = REPLICATED]
+          │     │   Layout: [cs_sold_date_sk_660:integer, i_brand_id_670:integer, i_class_id_672:integer, i_category_id_674:integer]
+          │     │   Estimates: {rows: ? (?), cpu: ?, memory: 1018.28kB, network: 0B}
+          │     │   Distribution: REPLICATED
+          │     │   dynamicFilterAssignments = {i_item_sk_663 -> #df_13872}
+          │     ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.catalog_sales$data@7343679521195877483, dynamicFilters = {""cs_sold_date_sk_660"" = #df_13871, ""cs_item_sk_641"" = #df_13872}]
+          │     │      Layout: [cs_item_sk_641:integer, cs_sold_date_sk_660:integer, $hashvalue_1800:bigint]
+          │     │      Estimates: {rows: 1432680 (25.96MB), cpu: 13.66M, memory: 0B, network: 0B}/{rows: 1432680 (25.96MB), cpu: 13.66M, memory: 0B, network: 0B}/{rows: 1432680 (25.96MB), cpu: 25.96M, memory: 0B, network: 0B}
+          │     │      $hashvalue_1800 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""cs_item_sk_641""), 0))
+          │     │      cs_sold_date_sk_660 := 34:cs_sold_date_sk:integer
+          │     │      cs_item_sk_641 := 15:cs_item_sk:integer
+          │     └─ LocalExchange[partitioning = SINGLE]
+          │        │   Layout: [i_item_sk_663:integer, i_brand_id_670:integer, i_class_id_672:integer, i_category_id_674:integer, $hashvalue_1801:bigint]
+          │        │   Estimates: {rows: 18000 (509.14kB), cpu: 0, memory: 0B, network: 0B}
+          │        └─ RemoteSource[sourceFragmentIds = [34]]
+          │               Layout: [i_item_sk_663:integer, i_brand_id_670:integer, i_class_id_672:integer, i_category_id_674:integer, $hashvalue_1802:bigint]
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk_687:integer, $hashvalue_1805:bigint]
+             │   Estimates: {rows: 730 (9.99kB), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [35]]
+                    Layout: [d_date_sk_687:integer, $hashvalue_1806:bigint]
+
+Fragment 34 [SOURCE]
+    Output layout: [i_item_sk_663, i_brand_id_670, i_class_id_672, i_category_id_674, $hashvalue_1803]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.item$data@8481639847816879046, dynamicFilters = {""i_brand_id_670"" = #df_13857, ""i_class_id_672"" = #df_13858, ""i_category_id_674"" = #df_13859}]
+        Layout: [i_item_sk_663:integer, i_brand_id_670:integer, i_class_id_672:integer, i_category_id_674:integer, $hashvalue_1803:bigint]
+        Estimates: {rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 509.14k, memory: 0B, network: 0B}
+        $hashvalue_1803 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_item_sk_663""), 0))
+        i_brand_id_670 := 8:i_brand_id:integer
+        i_class_id_672 := 10:i_class_id:integer
+        i_item_sk_663 := 1:i_item_sk:integer
+        i_category_id_674 := 12:i_category_id:integer
+
+Fragment 35 [SOURCE]
+    Output layout: [d_date_sk_687, $hashvalue_1807]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year_693"" BETWEEN 1999 AND 2001)]
+        Layout: [d_date_sk_687:integer, $hashvalue_1807:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 9.99k, memory: 0B, network: 0B}
+        $hashvalue_1807 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_687""), 0))
+        d_year_693 := 7:d_year:integer
+        d_date_sk_687 := 1:d_date_sk:integer
+
+Fragment 36 [SOURCE]
+    Output layout: [i_brand_id_760, i_class_id_762, i_category_id_764, count_1703, count_1702, count_1701, $hashvalue_1818]
+    Output partitioning: HASH [i_brand_id_760, i_class_id_762, i_category_id_764][$hashvalue_1818]
+    Aggregate[type = PARTIAL, keys = [i_brand_id_760, i_class_id_762, i_category_id_764], hash = [$hashvalue_1818]]
+    │   Layout: [i_brand_id_760:integer, i_class_id_762:integer, i_category_id_764:integer, $hashvalue_1818:bigint, count_1703:bigint, count_1702:bigint, count_1701:bigint]
+    │   count_1703 := count(""marker_1660"")
+    │   count_1702 := count(""marker_1658"")
+    │   count_1701 := count(""marker_1658"")
+    └─ Project[]
+       │   Layout: [i_brand_id_760:integer, i_class_id_762:integer, i_category_id_764:integer, marker_1658:boolean, marker_1660:boolean, $hashvalue_1818:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   marker_1658 := CAST(null AS boolean)
+       │   marker_1660 := true
+       │   $hashvalue_1818 := combine_hash(combine_hash(combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_brand_id_760""), 0)), COALESCE(""$operator$hash_code""(""i_class_id_762""), 0)), COALESCE(""$operator$hash_code""(""i_category_id_764""), 0))
+       └─ InnerJoin[criteria = (""ws_sold_date_sk_750"" = ""d_date_sk_777""), hash = [$hashvalue_1814, $hashvalue_1815], distribution = REPLICATED]
+          │   Layout: [i_brand_id_760:integer, i_class_id_762:integer, i_category_id_764:integer]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 19.97kB, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk_777 -> #df_13882}
+          ├─ Project[]
+          │  │   Layout: [ws_sold_date_sk_750:integer, i_brand_id_760:integer, i_class_id_762:integer, i_category_id_764:integer, $hashvalue_1814:bigint]
+          │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │  │   $hashvalue_1814 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ws_sold_date_sk_750""), 0))
+          │  └─ InnerJoin[criteria = (""ws_item_sk_719"" = ""i_item_sk_753""), hash = [$hashvalue_1810, $hashvalue_1811], distribution = REPLICATED]
+          │     │   Layout: [ws_sold_date_sk_750:integer, i_brand_id_760:integer, i_class_id_762:integer, i_category_id_764:integer]
+          │     │   Estimates: {rows: ? (?), cpu: ?, memory: 1018.28kB, network: 0B}
+          │     │   Distribution: REPLICATED
+          │     │   dynamicFilterAssignments = {i_item_sk_753 -> #df_13883}
+          │     ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.web_sales$data@7618567712963574495, dynamicFilters = {""ws_sold_date_sk_750"" = #df_13882, ""ws_item_sk_719"" = #df_13883}]
+          │     │      Layout: [ws_item_sk_719:integer, ws_sold_date_sk_750:integer, $hashvalue_1810:bigint]
+          │     │      Estimates: {rows: 718760 (13.02MB), cpu: 6.85M, memory: 0B, network: 0B}/{rows: 718760 (13.02MB), cpu: 6.85M, memory: 0B, network: 0B}/{rows: 718760 (13.02MB), cpu: 13.02M, memory: 0B, network: 0B}
+          │     │      $hashvalue_1810 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ws_item_sk_719""), 0))
+          │     │      ws_item_sk_719 := 3:ws_item_sk:integer
+          │     │      ws_sold_date_sk_750 := 34:ws_sold_date_sk:integer
+          │     └─ LocalExchange[partitioning = SINGLE]
+          │        │   Layout: [i_item_sk_753:integer, i_brand_id_760:integer, i_class_id_762:integer, i_category_id_764:integer, $hashvalue_1811:bigint]
+          │        │   Estimates: {rows: 18000 (509.14kB), cpu: 0, memory: 0B, network: 0B}
+          │        └─ RemoteSource[sourceFragmentIds = [37]]
+          │               Layout: [i_item_sk_753:integer, i_brand_id_760:integer, i_class_id_762:integer, i_category_id_764:integer, $hashvalue_1812:bigint]
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk_777:integer, $hashvalue_1815:bigint]
+             │   Estimates: {rows: 730 (9.99kB), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [38]]
+                    Layout: [d_date_sk_777:integer, $hashvalue_1816:bigint]
+
+Fragment 37 [SOURCE]
+    Output layout: [i_item_sk_753, i_brand_id_760, i_class_id_762, i_category_id_764, $hashvalue_1813]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.item$data@8481639847816879046, dynamicFilters = {""i_brand_id_760"" = #df_13857, ""i_class_id_762"" = #df_13858, ""i_category_id_764"" = #df_13859}]
+        Layout: [i_item_sk_753:integer, i_brand_id_760:integer, i_class_id_762:integer, i_category_id_764:integer, $hashvalue_1813:bigint]
+        Estimates: {rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 509.14k, memory: 0B, network: 0B}
+        $hashvalue_1813 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_item_sk_753""), 0))
+        i_brand_id_760 := 8:i_brand_id:integer
+        i_class_id_762 := 10:i_class_id:integer
+        i_item_sk_753 := 1:i_item_sk:integer
+        i_category_id_764 := 12:i_category_id:integer
+
+Fragment 38 [SOURCE]
+    Output layout: [d_date_sk_777, $hashvalue_1817]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year_783"" BETWEEN 1999 AND 2001)]
+        Layout: [d_date_sk_777:integer, $hashvalue_1817:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 9.99k, memory: 0B, network: 0B}
+        $hashvalue_1817 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_777""), 0))
+        d_year_783 := 7:d_year:integer
+        d_date_sk_777 := 1:d_date_sk:integer
+
+Fragment 39 [SOURCE]
+    Output layout: [i_item_sk_518, i_brand_id_525, i_class_id_527, i_category_id_529, $hashvalue_1821]
+    Output partitioning: HASH [i_brand_id_525, i_class_id_527, i_category_id_529][$hashvalue_1821]
+    ScanProject[table = iceberg:tpcds_sf1_iceberg.item$data@8481639847816879046]
+        Layout: [i_item_sk_518:integer, i_brand_id_525:integer, i_class_id_527:integer, i_category_id_529:integer, $hashvalue_1821:bigint]
+        Estimates: {rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 509.14k, memory: 0B, network: 0B}
+        $hashvalue_1821 := combine_hash(combine_hash(combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_brand_id_525""), 0)), COALESCE(""$operator$hash_code""(""i_class_id_527""), 0)), COALESCE(""$operator$hash_code""(""i_category_id_529""), 0))
+        i_item_sk_518 := 1:i_item_sk:integer
+        i_category_id_529 := 12:i_category_id:integer
+        i_brand_id_525 := 8:i_brand_id:integer
+        i_class_id_527 := 10:i_class_id:integer
+
+Fragment 40 [SINGLE]
+    Output layout: [avg_1007]
+    Output partitioning: BROADCAST []
+    Aggregate[type = FINAL]
+    │   Layout: [avg_1007:decimal(17,2)]
+    │   Estimates: {rows: 1 (9B), cpu: ?, memory: 9B, network: 0B}
+    │   avg_1007 := avg(""avg_1704"")
+    └─ LocalExchange[partitioning = SINGLE]
+       │   Layout: [avg_1704:varbinary]
+       │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}
+       └─ RemoteSource[sourceFragmentIds = [41, 43, 45]]
+              Layout: [avg_1704:varbinary]
+
+Fragment 41 [SOURCE]
+    Output layout: [avg_1704]
+    Output partitioning: SINGLE []
+    Aggregate[type = PARTIAL]
+    │   Layout: [avg_1704:varbinary]
+    │   avg_1704 := avg(""expr_1608"")
+    └─ Project[]
+       │   Layout: [expr_1608:decimal(17,2)]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   expr_1608 := (CAST(""ss_quantity_828"" AS decimal(10, 0)) * ""ss_list_price_830"")
+       └─ InnerJoin[criteria = (""ss_sold_date_sk_841"" = ""d_date_sk_844""), hash = [$hashvalue_1824, $hashvalue_1825], distribution = REPLICATED]
+          │   Layout: [ss_quantity_828:integer, ss_list_price_830:decimal(7,2)]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 19.97kB, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk_844 -> #df_13901}
+          ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.store_sales$data@6526568472398842660, dynamicFilters = {""ss_sold_date_sk_841"" = #df_13901}]
+          │      Layout: [ss_quantity_828:integer, ss_list_price_830:decimal(7,2), ss_sold_date_sk_841:integer, $hashvalue_1824:bigint]
+          │      Estimates: {rows: 2750838 (72.71MB), cpu: 49.10M, memory: 0B, network: 0B}/{rows: 2750838 (72.71MB), cpu: 49.10M, memory: 0B, network: 0B}/{rows: 2750838 (72.71MB), cpu: 72.71M, memory: 0B, network: 0B}
+          │      $hashvalue_1824 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ss_sold_date_sk_841""), 0))
+          │      ss_list_price_830 := 12:ss_list_price:decimal(7,2)
+          │      ss_sold_date_sk_841 := 23:ss_sold_date_sk:integer
+          │      ss_quantity_828 := 10:ss_quantity:integer
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk_844:integer, $hashvalue_1825:bigint]
+             │   Estimates: {rows: 730 (9.99kB), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [42]]
+                    Layout: [d_date_sk_844:integer, $hashvalue_1826:bigint]
+
+Fragment 42 [SOURCE]
+    Output layout: [d_date_sk_844, $hashvalue_1827]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year_850"" BETWEEN 1999 AND 2001)]
+        Layout: [d_date_sk_844:integer, $hashvalue_1827:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 9.99k, memory: 0B, network: 0B}
+        $hashvalue_1827 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_844""), 0))
+        d_date_sk_844 := 1:d_date_sk:integer
+        d_year_850 := 7:d_year:integer
+
+Fragment 43 [SOURCE]
+    Output layout: [avg_1704]
+    Output partitioning: SINGLE []
+    Aggregate[type = PARTIAL]
+    │   Layout: [avg_1704:varbinary]
+    │   avg_1704 := avg(""expr_1609"")
+    └─ Project[]
+       │   Layout: [expr_1609:decimal(17,2)]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   expr_1609 := (CAST(""cs_quantity_891"" AS decimal(10, 0)) * ""cs_list_price_893"")
+       └─ InnerJoin[criteria = (""cs_sold_date_sk_907"" = ""d_date_sk_910""), hash = [$hashvalue_1828, $hashvalue_1829], distribution = REPLICATED]
+          │   Layout: [cs_quantity_891:integer, cs_list_price_893:decimal(7,2)]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 19.97kB, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk_910 -> #df_13907}
+          ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.catalog_sales$data@7343679521195877483, dynamicFilters = {""cs_sold_date_sk_907"" = #df_13907}]
+          │      Layout: [cs_quantity_891:integer, cs_list_price_893:decimal(7,2), cs_sold_date_sk_907:integer, $hashvalue_1828:bigint]
+          │      Estimates: {rows: 1432680 (38.22MB), cpu: 25.92M, memory: 0B, network: 0B}/{rows: 1432680 (38.22MB), cpu: 25.92M, memory: 0B, network: 0B}/{rows: 1432680 (38.22MB), cpu: 38.22M, memory: 0B, network: 0B}
+          │      $hashvalue_1828 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""cs_sold_date_sk_907""), 0))
+          │      cs_sold_date_sk_907 := 34:cs_sold_date_sk:integer
+          │      cs_list_price_893 := 20:cs_list_price:decimal(7,2)
+          │      cs_quantity_891 := 18:cs_quantity:integer
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk_910:integer, $hashvalue_1829:bigint]
+             │   Estimates: {rows: 730 (9.99kB), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [44]]
+                    Layout: [d_date_sk_910:integer, $hashvalue_1830:bigint]
+
+Fragment 44 [SOURCE]
+    Output layout: [d_date_sk_910, $hashvalue_1831]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year_916"" BETWEEN 1999 AND 2001)]
+        Layout: [d_date_sk_910:integer, $hashvalue_1831:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 9.99k, memory: 0B, network: 0B}
+        $hashvalue_1831 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_910""), 0))
+        d_year_916 := 7:d_year:integer
+        d_date_sk_910 := 1:d_date_sk:integer
+
+Fragment 45 [SOURCE]
+    Output layout: [avg_1704]
+    Output partitioning: SINGLE []
+    Aggregate[type = PARTIAL]
+    │   Layout: [avg_1704:varbinary]
+    │   avg_1704 := avg(""expr_1607"")
+    └─ Project[]
+       │   Layout: [expr_1607:decimal(17,2)]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   expr_1607 := (CAST(""ws_quantity_957"" AS decimal(10, 0)) * ""ws_list_price_959"")
+       └─ InnerJoin[criteria = (""ws_sold_date_sk_973"" = ""d_date_sk_976""), hash = [$hashvalue_1832, $hashvalue_1833], distribution = REPLICATED]
+          │   Layout: [ws_quantity_957:integer, ws_list_price_959:decimal(7,2)]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 19.97kB, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk_976 -> #df_13913}
+          ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.web_sales$data@7618567712963574495, dynamicFilters = {""ws_sold_date_sk_973"" = #df_13913}]
+          │      Layout: [ws_quantity_957:integer, ws_list_price_959:decimal(7,2), ws_sold_date_sk_973:integer, $hashvalue_1832:bigint]
+          │      Estimates: {rows: 718760 (19.19MB), cpu: 13.02M, memory: 0B, network: 0B}/{rows: 718760 (19.19MB), cpu: 13.02M, memory: 0B, network: 0B}/{rows: 718760 (19.19MB), cpu: 19.19M, memory: 0B, network: 0B}
+          │      $hashvalue_1832 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ws_sold_date_sk_973""), 0))
+          │      ws_quantity_957 := 18:ws_quantity:integer
+          │      ws_sold_date_sk_973 := 34:ws_sold_date_sk:integer
+          │      ws_list_price_959 := 20:ws_list_price:decimal(7,2)
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk_976:integer, $hashvalue_1833:bigint]
+             │   Estimates: {rows: 730 (9.99kB), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [46]]
+                    Layout: [d_date_sk_976:integer, $hashvalue_1834:bigint]
+
+Fragment 46 [SOURCE]
+    Output layout: [d_date_sk_976, $hashvalue_1835]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year_982"" BETWEEN 1999 AND 2001)]
+        Layout: [d_date_sk_976:integer, $hashvalue_1835:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 9.99k, memory: 0B, network: 0B}
+        $hashvalue_1835 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_976""), 0))
+        d_date_sk_976 := 1:d_date_sk:integer
+        d_year_982 := 7:d_year:integer
+
+Fragment 47 [HASH]
+    Output layout: [i_brand_id_1052, i_class_id_1054, i_category_id_1056, count_1706, sum_1705, $hashvalue_1885]
+    Output partitioning: HASH [i_brand_id_1052, i_class_id_1054, i_category_id_1056][$hashvalue_1885]
+    Aggregate[type = PARTIAL, keys = [i_brand_id_1052, i_class_id_1054, i_category_id_1056], hash = [$hashvalue_1885]]
+    │   Layout: [i_brand_id_1052:integer, i_class_id_1054:integer, i_category_id_1056:integer, $hashvalue_1885:bigint, count_1706:bigint, sum_1705:varbinary]
+    │   count_1706 := count(*)
+    │   sum_1705 := sum(""expr_1392"")
+    └─ Project[]
+       │   Layout: [i_class_id_1054:integer, i_brand_id_1052:integer, i_category_id_1056:integer, expr_1392:decimal(17,2), $hashvalue_1885:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   expr_1392 := (CAST(""ws_quantity_1026"" AS decimal(10, 0)) * ""ws_list_price_1028"")
+       │   $hashvalue_1885 := combine_hash(combine_hash(combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_brand_id_1052""), 0)), COALESCE(""$operator$hash_code""(""i_class_id_1054""), 0)), COALESCE(""$operator$hash_code""(""i_category_id_1056""), 0))
+       └─ InnerJoin[criteria = (""ws_item_sk_1011"" = ""i_item_sk_1101""), hash = [$hashvalue_1838, $hashvalue_1848], distribution = PARTITIONED]
+          │   Layout: [ws_quantity_1026:integer, ws_list_price_1028:decimal(7,2), i_brand_id_1052:integer, i_class_id_1054:integer, i_category_id_1056:integer]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+          │   Distribution: PARTITIONED
+          │   dynamicFilterAssignments = {i_item_sk_1101 -> #df_13923}
+          ├─ RemoteSource[sourceFragmentIds = [48]]
+          │      Layout: [ws_item_sk_1011:integer, ws_quantity_1026:integer, ws_list_price_1028:decimal(7,2), i_brand_id_1052:integer, i_class_id_1054:integer, i_category_id_1056:integer, $hashvalue_1838:bigint]
+          └─ Aggregate[type = FINAL, keys = [i_item_sk_1101], hash = [$hashvalue_1848]]
+             │   Layout: [i_item_sk_1101:integer, $hashvalue_1848:bigint]
+             │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+             └─ LocalExchange[partitioning = HASH, hashColumn = [$hashvalue_1848], arguments = [""i_item_sk_1101""]]
+                │   Layout: [i_item_sk_1101:integer, $hashvalue_1848:bigint]
+                │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+                └─ RemoteSource[sourceFragmentIds = [51]]
+                       Layout: [i_item_sk_1101:integer, $hashvalue_1849:bigint]
+
+Fragment 48 [SOURCE]
+    Output layout: [ws_item_sk_1011, ws_quantity_1026, ws_list_price_1028, i_brand_id_1052, i_class_id_1054, i_category_id_1056, $hashvalue_1847]
+    Output partitioning: HASH [ws_item_sk_1011][$hashvalue_1847]
+    Project[]
+    │   Layout: [ws_item_sk_1011:integer, ws_quantity_1026:integer, ws_list_price_1028:decimal(7,2), i_brand_id_1052:integer, i_class_id_1054:integer, i_category_id_1056:integer, $hashvalue_1847:bigint]
+    │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+    │   $hashvalue_1847 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ws_item_sk_1011""), 0))
+    └─ InnerJoin[criteria = (""ws_sold_date_sk_1042"" = ""d_date_sk_1069""), hash = [$hashvalue_1843, $hashvalue_1844], distribution = REPLICATED]
+       │   Layout: [ws_item_sk_1011:integer, ws_quantity_1026:integer, ws_list_price_1028:decimal(7,2), i_brand_id_1052:integer, i_class_id_1054:integer, i_category_id_1056:integer]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+       │   Distribution: REPLICATED
+       │   dynamicFilterAssignments = {d_date_sk_1069 -> #df_13924}
+       ├─ Project[]
+       │  │   Layout: [ws_item_sk_1011:integer, ws_quantity_1026:integer, ws_list_price_1028:decimal(7,2), ws_sold_date_sk_1042:integer, i_brand_id_1052:integer, i_class_id_1054:integer, i_category_id_1056:integer, $hashvalue_1843:bigint]
+       │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │  │   $hashvalue_1843 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ws_sold_date_sk_1042""), 0))
+       │  └─ InnerJoin[criteria = (""ws_item_sk_1011"" = ""i_item_sk_1045""), hash = [$hashvalue_1839, $hashvalue_1840], distribution = REPLICATED]
+       │     │   Layout: [ws_item_sk_1011:integer, ws_quantity_1026:integer, ws_list_price_1028:decimal(7,2), ws_sold_date_sk_1042:integer, i_brand_id_1052:integer, i_class_id_1054:integer, i_category_id_1056:integer]
+       │     │   Estimates: {rows: ? (?), cpu: ?, memory: 1018.28kB, network: 0B}
+       │     │   Distribution: REPLICATED
+       │     │   dynamicFilterAssignments = {i_item_sk_1045 -> #df_13925}
+       │     ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.web_sales$data@7618567712963574495, dynamicFilters = {""ws_item_sk_1011"" = #df_13923, ""ws_sold_date_sk_1042"" = #df_13924, ""ws_item_sk_1011"" = #df_13925}]
+       │     │      Layout: [ws_item_sk_1011:integer, ws_quantity_1026:integer, ws_list_price_1028:decimal(7,2), ws_sold_date_sk_1042:integer, $hashvalue_1839:bigint]
+       │     │      Estimates: {rows: 718760 (22.62MB), cpu: 16.45M, memory: 0B, network: 0B}/{rows: 718760 (22.62MB), cpu: 16.45M, memory: 0B, network: 0B}/{rows: 718760 (22.62MB), cpu: 22.62M, memory: 0B, network: 0B}
+       │     │      $hashvalue_1839 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ws_item_sk_1011""), 0))
+       │     │      ws_quantity_1026 := 18:ws_quantity:integer
+       │     │      ws_item_sk_1011 := 3:ws_item_sk:integer
+       │     │      ws_list_price_1028 := 20:ws_list_price:decimal(7,2)
+       │     │      ws_sold_date_sk_1042 := 34:ws_sold_date_sk:integer
+       │     └─ LocalExchange[partitioning = SINGLE]
+       │        │   Layout: [i_item_sk_1045:integer, i_brand_id_1052:integer, i_class_id_1054:integer, i_category_id_1056:integer, $hashvalue_1840:bigint]
+       │        │   Estimates: {rows: 18000 (509.14kB), cpu: 0, memory: 0B, network: 0B}
+       │        └─ RemoteSource[sourceFragmentIds = [49]]
+       │               Layout: [i_item_sk_1045:integer, i_brand_id_1052:integer, i_class_id_1054:integer, i_category_id_1056:integer, $hashvalue_1841:bigint]
+       └─ LocalExchange[partitioning = SINGLE]
+          │   Layout: [d_date_sk_1069:integer, $hashvalue_1844:bigint]
+          │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}
+          └─ RemoteSource[sourceFragmentIds = [50]]
+                 Layout: [d_date_sk_1069:integer, $hashvalue_1845:bigint]
+
+Fragment 49 [SOURCE]
+    Output layout: [i_item_sk_1045, i_brand_id_1052, i_class_id_1054, i_category_id_1056, $hashvalue_1842]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.item$data@8481639847816879046, dynamicFilters = {""i_item_sk_1045"" = #df_13923}]
+        Layout: [i_item_sk_1045:integer, i_brand_id_1052:integer, i_class_id_1054:integer, i_category_id_1056:integer, $hashvalue_1842:bigint]
+        Estimates: {rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 509.14k, memory: 0B, network: 0B}
+        $hashvalue_1842 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_item_sk_1045""), 0))
+        i_brand_id_1052 := 8:i_brand_id:integer
+        i_class_id_1054 := 10:i_class_id:integer
+        i_item_sk_1045 := 1:i_item_sk:integer
+        i_category_id_1056 := 12:i_category_id:integer
+
+Fragment 50 [SOURCE]
+    Output layout: [d_date_sk_1069, $hashvalue_1846]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = ((""d_year_1075"" = 2001) AND (""d_moy_1077"" = 11))]
+        Layout: [d_date_sk_1069:integer, $hashvalue_1846:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 1.04M, memory: 0B, network: 0B}/{rows: ? (?), cpu: 1.04M, memory: 0B, network: 0B}/{rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+        $hashvalue_1846 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_1069""), 0))
+        d_moy_1077 := 9:d_moy:integer
+        d_year_1075 := 7:d_year:integer
+        d_date_sk_1069 := 1:d_date_sk:integer
+
+Fragment 51 [HASH]
+    Output layout: [i_item_sk_1101, $hashvalue_1884]
+    Output partitioning: HASH [i_item_sk_1101][$hashvalue_1884]
+    Aggregate[type = PARTIAL, keys = [i_item_sk_1101], hash = [$hashvalue_1884]]
+    │   Layout: [i_item_sk_1101:integer, $hashvalue_1884:bigint]
+    └─ Project[]
+       │   Layout: [i_item_sk_1101:integer, $hashvalue_1884:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   $hashvalue_1884 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_item_sk_1101""), 0))
+       └─ InnerJoin[criteria = (""brand_id_1125"" = ""i_brand_id_1108"") AND (""class_id_1126"" = ""i_class_id_1110"") AND (""category_id_1127"" = ""i_category_id_1112""), hash = [$hashvalue_1850, $hashvalue_1881], distribution = PARTITIONED]
+          │   Layout: [i_item_sk_1101:integer]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 509.14kB, network: 0B}
+          │   Distribution: PARTITIONED
+          │   maySkipOutputDuplicates = true
+          │   dynamicFilterAssignments = {i_brand_id_1108 -> #df_13935, i_class_id_1110 -> #df_13936, i_category_id_1112 -> #df_13937}
+          ├─ FilterProject[filterPredicate = ((""count_1685"" >= BIGINT '1') AND (""count_1686"" >= BIGINT '1') AND (""count_1687"" >= BIGINT '1'))]
+          │  │   Layout: [brand_id_1125:integer, class_id_1126:integer, category_id_1127:integer, $hashvalue_1850:bigint]
+          │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}/{rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │  └─ Aggregate[type = FINAL, keys = [brand_id_1125, class_id_1126, category_id_1127], hash = [$hashvalue_1850]]
+          │     │   Layout: [brand_id_1125:integer, class_id_1126:integer, category_id_1127:integer, $hashvalue_1850:bigint, count_1687:bigint, count_1686:bigint, count_1685:bigint]
+          │     │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+          │     │   count_1687 := count(""count_1709"")
+          │     │   count_1686 := count(""count_1708"")
+          │     │   count_1685 := count(""count_1707"")
+          │     └─ LocalExchange[partitioning = HASH, hashColumn = [$hashvalue_1850], arguments = [""brand_id_1125"", ""class_id_1126"", ""category_id_1127""]]
+          │        │   Layout: [brand_id_1125:integer, class_id_1126:integer, category_id_1127:integer, count_1707:bigint, count_1709:bigint, count_1708:bigint, $hashvalue_1850:bigint]
+          │        │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │        ├─ Project[]
+          │        │  │   Layout: [brand_id_1125:integer, class_id_1126:integer, category_id_1127:integer, count_1707:bigint, count_1709:bigint, count_1708:bigint, $hashvalue_1851:bigint]
+          │        │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │        │  │   brand_id_1125 := ""i_brand_id_1163""
+          │        │  │   class_id_1126 := ""i_class_id_1165""
+          │        │  │   category_id_1127 := ""i_category_id_1167""
+          │        │  └─ RemoteSource[sourceFragmentIds = [52]]
+          │        │         Layout: [i_brand_id_1163:integer, i_class_id_1165:integer, i_category_id_1167:integer, count_1707:bigint, count_1709:bigint, count_1708:bigint, $hashvalue_1851:bigint]
+          │        ├─ Project[]
+          │        │  │   Layout: [brand_id_1125:integer, class_id_1126:integer, category_id_1127:integer, count_1707:bigint, count_1709:bigint, count_1708:bigint, $hashvalue_1861:bigint]
+          │        │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │        │  │   brand_id_1125 := ""i_brand_id_1253""
+          │        │  │   class_id_1126 := ""i_class_id_1255""
+          │        │  │   category_id_1127 := ""i_category_id_1257""
+          │        │  └─ RemoteSource[sourceFragmentIds = [55]]
+          │        │         Layout: [i_brand_id_1253:integer, i_class_id_1255:integer, i_category_id_1257:integer, count_1707:bigint, count_1709:bigint, count_1708:bigint, $hashvalue_1861:bigint]
+          │        └─ Project[]
+          │           │   Layout: [brand_id_1125:integer, class_id_1126:integer, category_id_1127:integer, count_1707:bigint, count_1709:bigint, count_1708:bigint, $hashvalue_1871:bigint]
+          │           │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │           │   brand_id_1125 := ""i_brand_id_1343""
+          │           │   class_id_1126 := ""i_class_id_1345""
+          │           │   category_id_1127 := ""i_category_id_1347""
+          │           └─ RemoteSource[sourceFragmentIds = [58]]
+          │                  Layout: [i_brand_id_1343:integer, i_class_id_1345:integer, i_category_id_1347:integer, count_1707:bigint, count_1709:bigint, count_1708:bigint, $hashvalue_1871:bigint]
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [i_item_sk_1101:integer, i_brand_id_1108:integer, i_class_id_1110:integer, i_category_id_1112:integer, $hashvalue_1881:bigint]
+             │   Estimates: {rows: 18000 (509.14kB), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [61]]
+                    Layout: [i_item_sk_1101:integer, i_brand_id_1108:integer, i_class_id_1110:integer, i_category_id_1112:integer, $hashvalue_1882:bigint]
+
+Fragment 52 [SOURCE]
+    Output layout: [i_brand_id_1163, i_class_id_1165, i_category_id_1167, count_1707, count_1709, count_1708, $hashvalue_1860]
+    Output partitioning: HASH [i_brand_id_1163, i_class_id_1165, i_category_id_1167][$hashvalue_1860]
+    Aggregate[type = PARTIAL, keys = [i_brand_id_1163, i_class_id_1165, i_category_id_1167], hash = [$hashvalue_1860]]
+    │   Layout: [i_brand_id_1163:integer, i_class_id_1165:integer, i_category_id_1167:integer, $hashvalue_1860:bigint, count_1707:bigint, count_1709:bigint, count_1708:bigint]
+    │   count_1707 := count(""marker_1670"")
+    │   count_1709 := count(""marker_1671"")
+    │   count_1708 := count(""marker_1671"")
+    └─ Project[]
+       │   Layout: [i_brand_id_1163:integer, i_class_id_1165:integer, i_category_id_1167:integer, marker_1670:boolean, marker_1671:boolean, $hashvalue_1860:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   marker_1670 := true
+       │   marker_1671 := CAST(null AS boolean)
+       │   $hashvalue_1860 := combine_hash(combine_hash(combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_brand_id_1163""), 0)), COALESCE(""$operator$hash_code""(""i_class_id_1165""), 0)), COALESCE(""$operator$hash_code""(""i_category_id_1167""), 0))
+       └─ InnerJoin[criteria = (""ss_sold_date_sk_1153"" = ""d_date_sk_1180""), hash = [$hashvalue_1856, $hashvalue_1857], distribution = REPLICATED]
+          │   Layout: [i_brand_id_1163:integer, i_class_id_1165:integer, i_category_id_1167:integer]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 19.97kB, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk_1180 -> #df_13938}
+          ├─ Project[]
+          │  │   Layout: [ss_sold_date_sk_1153:integer, i_brand_id_1163:integer, i_class_id_1165:integer, i_category_id_1167:integer, $hashvalue_1856:bigint]
+          │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │  │   $hashvalue_1856 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ss_sold_date_sk_1153""), 0))
+          │  └─ InnerJoin[criteria = (""ss_item_sk_1132"" = ""i_item_sk_1156""), hash = [$hashvalue_1852, $hashvalue_1853], distribution = REPLICATED]
+          │     │   Layout: [ss_sold_date_sk_1153:integer, i_brand_id_1163:integer, i_class_id_1165:integer, i_category_id_1167:integer]
+          │     │   Estimates: {rows: ? (?), cpu: ?, memory: 1018.28kB, network: 0B}
+          │     │   Distribution: REPLICATED
+          │     │   dynamicFilterAssignments = {i_item_sk_1156 -> #df_13939}
+          │     ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.store_sales$data@6526568472398842660, dynamicFilters = {""ss_sold_date_sk_1153"" = #df_13938, ""ss_item_sk_1132"" = #df_13939}]
+          │     │      Layout: [ss_item_sk_1132:integer, ss_sold_date_sk_1153:integer, $hashvalue_1852:bigint]
+          │     │      Estimates: {rows: 2750838 (49.84MB), cpu: 26.23M, memory: 0B, network: 0B}/{rows: 2750838 (49.84MB), cpu: 26.23M, memory: 0B, network: 0B}/{rows: 2750838 (49.84MB), cpu: 49.84M, memory: 0B, network: 0B}
+          │     │      $hashvalue_1852 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ss_item_sk_1132""), 0))
+          │     │      ss_sold_date_sk_1153 := 23:ss_sold_date_sk:integer
+          │     │      ss_item_sk_1132 := 2:ss_item_sk:integer
+          │     └─ LocalExchange[partitioning = SINGLE]
+          │        │   Layout: [i_item_sk_1156:integer, i_brand_id_1163:integer, i_class_id_1165:integer, i_category_id_1167:integer, $hashvalue_1853:bigint]
+          │        │   Estimates: {rows: 18000 (509.14kB), cpu: 0, memory: 0B, network: 0B}
+          │        └─ RemoteSource[sourceFragmentIds = [53]]
+          │               Layout: [i_item_sk_1156:integer, i_brand_id_1163:integer, i_class_id_1165:integer, i_category_id_1167:integer, $hashvalue_1854:bigint]
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk_1180:integer, $hashvalue_1857:bigint]
+             │   Estimates: {rows: 730 (9.99kB), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [54]]
+                    Layout: [d_date_sk_1180:integer, $hashvalue_1858:bigint]
+
+Fragment 53 [SOURCE]
+    Output layout: [i_item_sk_1156, i_brand_id_1163, i_class_id_1165, i_category_id_1167, $hashvalue_1855]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.item$data@8481639847816879046, dynamicFilters = {""i_brand_id_1163"" = #df_13935, ""i_class_id_1165"" = #df_13936, ""i_category_id_1167"" = #df_13937}]
+        Layout: [i_item_sk_1156:integer, i_brand_id_1163:integer, i_class_id_1165:integer, i_category_id_1167:integer, $hashvalue_1855:bigint]
+        Estimates: {rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 509.14k, memory: 0B, network: 0B}
+        $hashvalue_1855 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_item_sk_1156""), 0))
+        i_item_sk_1156 := 1:i_item_sk:integer
+        i_brand_id_1163 := 8:i_brand_id:integer
+        i_class_id_1165 := 10:i_class_id:integer
+        i_category_id_1167 := 12:i_category_id:integer
+
+Fragment 54 [SOURCE]
+    Output layout: [d_date_sk_1180, $hashvalue_1859]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year_1186"" BETWEEN 1999 AND 2001)]
+        Layout: [d_date_sk_1180:integer, $hashvalue_1859:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 9.99k, memory: 0B, network: 0B}
+        $hashvalue_1859 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_1180""), 0))
+        d_date_sk_1180 := 1:d_date_sk:integer
+        d_year_1186 := 7:d_year:integer
+
+Fragment 55 [SOURCE]
+    Output layout: [i_brand_id_1253, i_class_id_1255, i_category_id_1257, count_1707, count_1709, count_1708, $hashvalue_1870]
+    Output partitioning: HASH [i_brand_id_1253, i_class_id_1255, i_category_id_1257][$hashvalue_1870]
+    Aggregate[type = PARTIAL, keys = [i_brand_id_1253, i_class_id_1255, i_category_id_1257], hash = [$hashvalue_1870]]
+    │   Layout: [i_brand_id_1253:integer, i_class_id_1255:integer, i_category_id_1257:integer, $hashvalue_1870:bigint, count_1707:bigint, count_1709:bigint, count_1708:bigint]
+    │   count_1707 := count(""marker_1676"")
+    │   count_1709 := count(""marker_1676"")
+    │   count_1708 := count(""marker_1677"")
+    └─ Project[]
+       │   Layout: [i_brand_id_1253:integer, i_class_id_1255:integer, i_category_id_1257:integer, marker_1676:boolean, marker_1677:boolean, $hashvalue_1870:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   marker_1676 := CAST(null AS boolean)
+       │   marker_1677 := true
+       │   $hashvalue_1870 := combine_hash(combine_hash(combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_brand_id_1253""), 0)), COALESCE(""$operator$hash_code""(""i_class_id_1255""), 0)), COALESCE(""$operator$hash_code""(""i_category_id_1257""), 0))
+       └─ InnerJoin[criteria = (""cs_sold_date_sk_1243"" = ""d_date_sk_1270""), hash = [$hashvalue_1866, $hashvalue_1867], distribution = REPLICATED]
+          │   Layout: [i_brand_id_1253:integer, i_class_id_1255:integer, i_category_id_1257:integer]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 19.97kB, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk_1270 -> #df_13949}
+          ├─ Project[]
+          │  │   Layout: [cs_sold_date_sk_1243:integer, i_brand_id_1253:integer, i_class_id_1255:integer, i_category_id_1257:integer, $hashvalue_1866:bigint]
+          │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │  │   $hashvalue_1866 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""cs_sold_date_sk_1243""), 0))
+          │  └─ InnerJoin[criteria = (""cs_item_sk_1224"" = ""i_item_sk_1246""), hash = [$hashvalue_1862, $hashvalue_1863], distribution = REPLICATED]
+          │     │   Layout: [cs_sold_date_sk_1243:integer, i_brand_id_1253:integer, i_class_id_1255:integer, i_category_id_1257:integer]
+          │     │   Estimates: {rows: ? (?), cpu: ?, memory: 1018.28kB, network: 0B}
+          │     │   Distribution: REPLICATED
+          │     │   dynamicFilterAssignments = {i_item_sk_1246 -> #df_13950}
+          │     ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.catalog_sales$data@7343679521195877483, dynamicFilters = {""cs_sold_date_sk_1243"" = #df_13949, ""cs_item_sk_1224"" = #df_13950}]
+          │     │      Layout: [cs_item_sk_1224:integer, cs_sold_date_sk_1243:integer, $hashvalue_1862:bigint]
+          │     │      Estimates: {rows: 1432680 (25.96MB), cpu: 13.66M, memory: 0B, network: 0B}/{rows: 1432680 (25.96MB), cpu: 13.66M, memory: 0B, network: 0B}/{rows: 1432680 (25.96MB), cpu: 25.96M, memory: 0B, network: 0B}
+          │     │      $hashvalue_1862 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""cs_item_sk_1224""), 0))
+          │     │      cs_item_sk_1224 := 15:cs_item_sk:integer
+          │     │      cs_sold_date_sk_1243 := 34:cs_sold_date_sk:integer
+          │     └─ LocalExchange[partitioning = SINGLE]
+          │        │   Layout: [i_item_sk_1246:integer, i_brand_id_1253:integer, i_class_id_1255:integer, i_category_id_1257:integer, $hashvalue_1863:bigint]
+          │        │   Estimates: {rows: 18000 (509.14kB), cpu: 0, memory: 0B, network: 0B}
+          │        └─ RemoteSource[sourceFragmentIds = [56]]
+          │               Layout: [i_item_sk_1246:integer, i_brand_id_1253:integer, i_class_id_1255:integer, i_category_id_1257:integer, $hashvalue_1864:bigint]
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk_1270:integer, $hashvalue_1867:bigint]
+             │   Estimates: {rows: 730 (9.99kB), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [57]]
+                    Layout: [d_date_sk_1270:integer, $hashvalue_1868:bigint]
+
+Fragment 56 [SOURCE]
+    Output layout: [i_item_sk_1246, i_brand_id_1253, i_class_id_1255, i_category_id_1257, $hashvalue_1865]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.item$data@8481639847816879046, dynamicFilters = {""i_brand_id_1253"" = #df_13935, ""i_class_id_1255"" = #df_13936, ""i_category_id_1257"" = #df_13937}]
+        Layout: [i_item_sk_1246:integer, i_brand_id_1253:integer, i_class_id_1255:integer, i_category_id_1257:integer, $hashvalue_1865:bigint]
+        Estimates: {rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 509.14k, memory: 0B, network: 0B}
+        $hashvalue_1865 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_item_sk_1246""), 0))
+        i_item_sk_1246 := 1:i_item_sk:integer
+        i_brand_id_1253 := 8:i_brand_id:integer
+        i_class_id_1255 := 10:i_class_id:integer
+        i_category_id_1257 := 12:i_category_id:integer
+
+Fragment 57 [SOURCE]
+    Output layout: [d_date_sk_1270, $hashvalue_1869]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year_1276"" BETWEEN 1999 AND 2001)]
+        Layout: [d_date_sk_1270:integer, $hashvalue_1869:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 9.99k, memory: 0B, network: 0B}
+        $hashvalue_1869 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_1270""), 0))
+        d_date_sk_1270 := 1:d_date_sk:integer
+        d_year_1276 := 7:d_year:integer
+
+Fragment 58 [SOURCE]
+    Output layout: [i_brand_id_1343, i_class_id_1345, i_category_id_1347, count_1707, count_1709, count_1708, $hashvalue_1880]
+    Output partitioning: HASH [i_brand_id_1343, i_class_id_1345, i_category_id_1347][$hashvalue_1880]
+    Aggregate[type = PARTIAL, keys = [i_brand_id_1343, i_class_id_1345, i_category_id_1347], hash = [$hashvalue_1880]]
+    │   Layout: [i_brand_id_1343:integer, i_class_id_1345:integer, i_category_id_1347:integer, $hashvalue_1880:bigint, count_1707:bigint, count_1709:bigint, count_1708:bigint]
+    │   count_1707 := count(""marker_1682"")
+    │   count_1709 := count(""marker_1684"")
+    │   count_1708 := count(""marker_1682"")
+    └─ Project[]
+       │   Layout: [i_brand_id_1343:integer, i_class_id_1345:integer, i_category_id_1347:integer, marker_1682:boolean, marker_1684:boolean, $hashvalue_1880:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   marker_1682 := CAST(null AS boolean)
+       │   marker_1684 := true
+       │   $hashvalue_1880 := combine_hash(combine_hash(combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_brand_id_1343""), 0)), COALESCE(""$operator$hash_code""(""i_class_id_1345""), 0)), COALESCE(""$operator$hash_code""(""i_category_id_1347""), 0))
+       └─ InnerJoin[criteria = (""ws_sold_date_sk_1333"" = ""d_date_sk_1360""), hash = [$hashvalue_1876, $hashvalue_1877], distribution = REPLICATED]
+          │   Layout: [i_brand_id_1343:integer, i_class_id_1345:integer, i_category_id_1347:integer]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 19.97kB, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk_1360 -> #df_13960}
+          ├─ Project[]
+          │  │   Layout: [ws_sold_date_sk_1333:integer, i_brand_id_1343:integer, i_class_id_1345:integer, i_category_id_1347:integer, $hashvalue_1876:bigint]
+          │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │  │   $hashvalue_1876 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ws_sold_date_sk_1333""), 0))
+          │  └─ InnerJoin[criteria = (""ws_item_sk_1302"" = ""i_item_sk_1336""), hash = [$hashvalue_1872, $hashvalue_1873], distribution = REPLICATED]
+          │     │   Layout: [ws_sold_date_sk_1333:integer, i_brand_id_1343:integer, i_class_id_1345:integer, i_category_id_1347:integer]
+          │     │   Estimates: {rows: ? (?), cpu: ?, memory: 1018.28kB, network: 0B}
+          │     │   Distribution: REPLICATED
+          │     │   dynamicFilterAssignments = {i_item_sk_1336 -> #df_13961}
+          │     ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.web_sales$data@7618567712963574495, dynamicFilters = {""ws_sold_date_sk_1333"" = #df_13960, ""ws_item_sk_1302"" = #df_13961}]
+          │     │      Layout: [ws_item_sk_1302:integer, ws_sold_date_sk_1333:integer, $hashvalue_1872:bigint]
+          │     │      Estimates: {rows: 718760 (13.02MB), cpu: 6.85M, memory: 0B, network: 0B}/{rows: 718760 (13.02MB), cpu: 6.85M, memory: 0B, network: 0B}/{rows: 718760 (13.02MB), cpu: 13.02M, memory: 0B, network: 0B}
+          │     │      $hashvalue_1872 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ws_item_sk_1302""), 0))
+          │     │      ws_sold_date_sk_1333 := 34:ws_sold_date_sk:integer
+          │     │      ws_item_sk_1302 := 3:ws_item_sk:integer
+          │     └─ LocalExchange[partitioning = SINGLE]
+          │        │   Layout: [i_item_sk_1336:integer, i_brand_id_1343:integer, i_class_id_1345:integer, i_category_id_1347:integer, $hashvalue_1873:bigint]
+          │        │   Estimates: {rows: 18000 (509.14kB), cpu: 0, memory: 0B, network: 0B}
+          │        └─ RemoteSource[sourceFragmentIds = [59]]
+          │               Layout: [i_item_sk_1336:integer, i_brand_id_1343:integer, i_class_id_1345:integer, i_category_id_1347:integer, $hashvalue_1874:bigint]
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk_1360:integer, $hashvalue_1877:bigint]
+             │   Estimates: {rows: 730 (9.99kB), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [60]]
+                    Layout: [d_date_sk_1360:integer, $hashvalue_1878:bigint]
+
+Fragment 59 [SOURCE]
+    Output layout: [i_item_sk_1336, i_brand_id_1343, i_class_id_1345, i_category_id_1347, $hashvalue_1875]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.item$data@8481639847816879046, dynamicFilters = {""i_brand_id_1343"" = #df_13935, ""i_class_id_1345"" = #df_13936, ""i_category_id_1347"" = #df_13937}]
+        Layout: [i_item_sk_1336:integer, i_brand_id_1343:integer, i_class_id_1345:integer, i_category_id_1347:integer, $hashvalue_1875:bigint]
+        Estimates: {rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 509.14k, memory: 0B, network: 0B}
+        $hashvalue_1875 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_item_sk_1336""), 0))
+        i_item_sk_1336 := 1:i_item_sk:integer
+        i_brand_id_1343 := 8:i_brand_id:integer
+        i_class_id_1345 := 10:i_class_id:integer
+        i_category_id_1347 := 12:i_category_id:integer
+
+Fragment 60 [SOURCE]
+    Output layout: [d_date_sk_1360, $hashvalue_1879]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year_1366"" BETWEEN 1999 AND 2001)]
+        Layout: [d_date_sk_1360:integer, $hashvalue_1879:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 9.99k, memory: 0B, network: 0B}
+        $hashvalue_1879 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_1360""), 0))
+        d_year_1366 := 7:d_year:integer
+        d_date_sk_1360 := 1:d_date_sk:integer
+
+Fragment 61 [SOURCE]
+    Output layout: [i_item_sk_1101, i_brand_id_1108, i_class_id_1110, i_category_id_1112, $hashvalue_1883]
+    Output partitioning: HASH [i_brand_id_1108, i_class_id_1110, i_category_id_1112][$hashvalue_1883]
+    ScanProject[table = iceberg:tpcds_sf1_iceberg.item$data@8481639847816879046]
+        Layout: [i_item_sk_1101:integer, i_brand_id_1108:integer, i_class_id_1110:integer, i_category_id_1112:integer, $hashvalue_1883:bigint]
+        Estimates: {rows: 18000 (509.14kB), cpu: 350.94k, memory: 0B, network: 0B}/{rows: 18000 (509.14kB), cpu: 509.14k, memory: 0B, network: 0B}
+        $hashvalue_1883 := combine_hash(combine_hash(combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""i_brand_id_1108""), 0)), COALESCE(""$operator$hash_code""(""i_class_id_1110""), 0)), COALESCE(""$operator$hash_code""(""i_category_id_1112""), 0))
+        i_item_sk_1101 := 1:i_item_sk:integer
+        i_class_id_1110 := 10:i_class_id:integer
+        i_brand_id_1108 := 8:i_brand_id:integer
+        i_category_id_1112 := 12:i_category_id:integer
+
+Fragment 62 [SINGLE]
+    Output layout: [avg_1590]
+    Output partitioning: BROADCAST []
+    Aggregate[type = FINAL]
+    │   Layout: [avg_1590:decimal(17,2)]
+    │   Estimates: {rows: 1 (9B), cpu: ?, memory: 9B, network: 0B}
+    │   avg_1590 := avg(""avg_1710"")
+    └─ LocalExchange[partitioning = SINGLE]
+       │   Layout: [avg_1710:varbinary]
+       │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}
+       └─ RemoteSource[sourceFragmentIds = [63, 65, 67]]
+              Layout: [avg_1710:varbinary]
+
+Fragment 63 [SOURCE]
+    Output layout: [avg_1710]
+    Output partitioning: SINGLE []
+    Aggregate[type = PARTIAL]
+    │   Layout: [avg_1710:varbinary]
+    │   avg_1710 := avg(""expr_1615"")
+    └─ Project[]
+       │   Layout: [expr_1615:decimal(17,2)]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   expr_1615 := (CAST(""ss_quantity_1411"" AS decimal(10, 0)) * ""ss_list_price_1413"")
+       └─ InnerJoin[criteria = (""ss_sold_date_sk_1424"" = ""d_date_sk_1427""), hash = [$hashvalue_1886, $hashvalue_1887], distribution = REPLICATED]
+          │   Layout: [ss_quantity_1411:integer, ss_list_price_1413:decimal(7,2)]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 19.97kB, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk_1427 -> #df_13979}
+          ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.store_sales$data@6526568472398842660, dynamicFilters = {""ss_sold_date_sk_1424"" = #df_13979}]
+          │      Layout: [ss_quantity_1411:integer, ss_list_price_1413:decimal(7,2), ss_sold_date_sk_1424:integer, $hashvalue_1886:bigint]
+          │      Estimates: {rows: 2750838 (72.71MB), cpu: 49.10M, memory: 0B, network: 0B}/{rows: 2750838 (72.71MB), cpu: 49.10M, memory: 0B, network: 0B}/{rows: 2750838 (72.71MB), cpu: 72.71M, memory: 0B, network: 0B}
+          │      $hashvalue_1886 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ss_sold_date_sk_1424""), 0))
+          │      ss_quantity_1411 := 10:ss_quantity:integer
+          │      ss_list_price_1413 := 12:ss_list_price:decimal(7,2)
+          │      ss_sold_date_sk_1424 := 23:ss_sold_date_sk:integer
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk_1427:integer, $hashvalue_1887:bigint]
+             │   Estimates: {rows: 730 (9.99kB), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [64]]
+                    Layout: [d_date_sk_1427:integer, $hashvalue_1888:bigint]
+
+Fragment 64 [SOURCE]
+    Output layout: [d_date_sk_1427, $hashvalue_1889]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year_1433"" BETWEEN 1999 AND 2001)]
+        Layout: [d_date_sk_1427:integer, $hashvalue_1889:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 9.99k, memory: 0B, network: 0B}
+        $hashvalue_1889 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_1427""), 0))
+        d_date_sk_1427 := 1:d_date_sk:integer
+        d_year_1433 := 7:d_year:integer
+
+Fragment 65 [SOURCE]
+    Output layout: [avg_1710]
+    Output partitioning: SINGLE []
+    Aggregate[type = PARTIAL]
+    │   Layout: [avg_1710:varbinary]
+    │   avg_1710 := avg(""expr_1616"")
+    └─ Project[]
+       │   Layout: [expr_1616:decimal(17,2)]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   expr_1616 := (CAST(""cs_quantity_1474"" AS decimal(10, 0)) * ""cs_list_price_1476"")
+       └─ InnerJoin[criteria = (""cs_sold_date_sk_1490"" = ""d_date_sk_1493""), hash = [$hashvalue_1890, $hashvalue_1891], distribution = REPLICATED]
+          │   Layout: [cs_quantity_1474:integer, cs_list_price_1476:decimal(7,2)]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 19.97kB, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk_1493 -> #df_13985}
+          ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.catalog_sales$data@7343679521195877483, dynamicFilters = {""cs_sold_date_sk_1490"" = #df_13985}]
+          │      Layout: [cs_quantity_1474:integer, cs_list_price_1476:decimal(7,2), cs_sold_date_sk_1490:integer, $hashvalue_1890:bigint]
+          │      Estimates: {rows: 1432680 (38.22MB), cpu: 25.92M, memory: 0B, network: 0B}/{rows: 1432680 (38.22MB), cpu: 25.92M, memory: 0B, network: 0B}/{rows: 1432680 (38.22MB), cpu: 38.22M, memory: 0B, network: 0B}
+          │      $hashvalue_1890 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""cs_sold_date_sk_1490""), 0))
+          │      cs_quantity_1474 := 18:cs_quantity:integer
+          │      cs_sold_date_sk_1490 := 34:cs_sold_date_sk:integer
+          │      cs_list_price_1476 := 20:cs_list_price:decimal(7,2)
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk_1493:integer, $hashvalue_1891:bigint]
+             │   Estimates: {rows: 730 (9.99kB), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [66]]
+                    Layout: [d_date_sk_1493:integer, $hashvalue_1892:bigint]
+
+Fragment 66 [SOURCE]
+    Output layout: [d_date_sk_1493, $hashvalue_1893]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year_1499"" BETWEEN 1999 AND 2001)]
+        Layout: [d_date_sk_1493:integer, $hashvalue_1893:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 9.99k, memory: 0B, network: 0B}
+        $hashvalue_1893 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_1493""), 0))
+        d_date_sk_1493 := 1:d_date_sk:integer
+        d_year_1499 := 7:d_year:integer
+
+Fragment 67 [SOURCE]
+    Output layout: [avg_1710]
+    Output partitioning: SINGLE []
+    Aggregate[type = PARTIAL]
+    │   Layout: [avg_1710:varbinary]
+    │   avg_1710 := avg(""expr_1614"")
+    └─ Project[]
+       │   Layout: [expr_1614:decimal(17,2)]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   expr_1614 := (CAST(""ws_quantity_1540"" AS decimal(10, 0)) * ""ws_list_price_1542"")
+       └─ InnerJoin[criteria = (""ws_sold_date_sk_1556"" = ""d_date_sk_1559""), hash = [$hashvalue_1894, $hashvalue_1895], distribution = REPLICATED]
+          │   Layout: [ws_quantity_1540:integer, ws_list_price_1542:decimal(7,2)]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 19.97kB, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk_1559 -> #df_13991}
+          ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.web_sales$data@7618567712963574495, dynamicFilters = {""ws_sold_date_sk_1556"" = #df_13991}]
+          │      Layout: [ws_quantity_1540:integer, ws_list_price_1542:decimal(7,2), ws_sold_date_sk_1556:integer, $hashvalue_1894:bigint]
+          │      Estimates: {rows: 718760 (19.19MB), cpu: 13.02M, memory: 0B, network: 0B}/{rows: 718760 (19.19MB), cpu: 13.02M, memory: 0B, network: 0B}/{rows: 718760 (19.19MB), cpu: 19.19M, memory: 0B, network: 0B}
+          │      $hashvalue_1894 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ws_sold_date_sk_1556""), 0))
+          │      ws_sold_date_sk_1556 := 34:ws_sold_date_sk:integer
+          │      ws_quantity_1540 := 18:ws_quantity:integer
+          │      ws_list_price_1542 := 20:ws_list_price:decimal(7,2)
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk_1559:integer, $hashvalue_1895:bigint]
+             │   Estimates: {rows: 730 (9.99kB), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [68]]
+                    Layout: [d_date_sk_1559:integer, $hashvalue_1896:bigint]
+
+Fragment 68 [SOURCE]
+    Output layout: [d_date_sk_1559, $hashvalue_1897]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year_1565"" BETWEEN 1999 AND 2001)]
+        Layout: [d_date_sk_1559:integer, $hashvalue_1897:bigint]
+        Estimates: {rows: 73049 (998.72kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: 730 (9.99kB), cpu: 9.99k, memory: 0B, network: 0B}
+        $hashvalue_1897 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_1559""), 0))
+        d_date_sk_1559 := 1:d_date_sk:integer
+        d_year_1565 := 7:d_year:integer
+
+"

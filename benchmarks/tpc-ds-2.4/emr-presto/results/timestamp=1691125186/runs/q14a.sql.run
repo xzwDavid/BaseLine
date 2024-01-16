@@ -1,0 +1,6 @@
+Aug 04, 2023 5:01:01 AM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+SET SESSION
+
+WARNING: Number of stages in the query (69) exceeds the soft limit (50). If the query contains multiple aggregates with DISTINCT over different columns, please set the 'use_mark_distinct' session property to false. If the query contains WITH clauses that are referenced more than once, please create temporary table(s) for the queries in those clauses.
+Query aborted by user

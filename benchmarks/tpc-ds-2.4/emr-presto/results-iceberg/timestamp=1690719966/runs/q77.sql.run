@@ -1,0 +1,56 @@
+SET SESSION
+
+[33mWARNING: lineNumber 12:43: returns should be a reserved word, please use double quote ("returns"). This will be made a reserved word in future release.[39m
+[33mWARNING: lineNumber 27:53: returns should be a reserved word, please use double quote ("returns"). This will be made a reserved word in future release.[39m
+[33mWARNING: lineNumber 42:47: returns should be a reserved word, please use double quote ("returns"). This will be made a reserved word in future release.[39m
+[33mWARNING: lineNumber 49:46: returns should be a reserved word, please use double quote ("returns"). This will be made a reserved word in future release.[39m
+[33mWARNING: lineNumber 49:58: returns should be a reserved word, please use double quote ("returns"). This will be made a reserved word in future release.[39m
+[33mWARNING: lineNumber 53:13: returns should be a reserved word, please use double quote ("returns"). This will be made a reserved word in future release.[39m
+[33mWARNING: lineNumber 53:28: returns should be a reserved word, please use double quote ("returns"). This will be made a reserved word in future release.[39m
+[33mWARNING: lineNumber 59:4: returns should be a reserved word, please use double quote ("returns"). This will be made a reserved word in future release.[39m
+[33mWARNING: lineNumber 64:13: returns should be a reserved word, please use double quote ("returns"). This will be made a reserved word in future release.[39m
+[33mWARNING: lineNumber 64:25: returns should be a reserved word, please use double quote ("returns"). This will be made a reserved word in future release.[39m
+"catalog channel","1","138916865.80","1869038.58","-13586883.29"
+"catalog channel","2","136317813.65","1869038.58","-15387825.89"
+"catalog channel","5","132617843.95","1869038.58","-16717535.99"
+"catalog channel","","408277780.90","7476154.32","-46972487.71"
+"catalog channel","","425257.50","1869038.58","-1280242.54"
+"store channel","1","18678929.79","523511.87","-8383337.23"
+"store channel","2","18505923.11","545184.64","-8547956.86"
+"store channel","4","19360886.96","536385.37","-8441105.38"
+"store channel","7","18407785.93","551790.90","-8275346.09"
+"store channel","8","19778238.48","545260.79","-9178858.96"
+"store channel","10","19048611.23","541922.58","-8381979.99"
+"store channel","","113780375.50","3244056.15","-51208584.51"
+"web channel","1","1141500.49","60581.86","-157944.79"
+"web channel","2","1268079.45","73848.96","-186722.73"
+"web channel","5","1381784.53","11599.25","-93060.96"
+"web channel","7","1346946.77","31765.54","-166768.20"
+"web channel","8","1363028.69","58067.78","-163431.34"
+"web channel","11","1470296.35","27402.12","-123148.31"
+"web channel","13","1571997.68","61797.90","-30379.47"
+"web channel","14","1332915.41","42947.77","-132612.92"
+"web channel","17","1391559.99","20363.38","-104596.59"
+"web channel","19","1283949.79","61447.67","-88977.08"
+"web channel","20","1330687.10","26883.01","-116074.72"
+"web channel","23","1417665.36","21219.64","-214627.08"
+"web channel","25","1252163.64","31773.97","-171232.39"
+"web channel","26","1233297.45","39823.36","-246879.42"
+"web channel","29","1189730.61","20964.06","-132266.13"
+"web channel","31","1243336.97","53187.82","-101059.74"
+"web channel","32","1367304.37","30045.59","-73215.37"
+"web channel","35","1180198.94","27924.60","-98819.27"
+"web channel","37","1504996.60","39018.82","-95934.01"
+"web channel","38","1259348.22","43073.41","-212025.31"
+"web channel","41","1480766.04","14512.54","-108026.61"
+"web channel","43","1317637.40","38332.16","-164602.01"
+"web channel","44","1134795.74","49282.60","-208748.81"
+"web channel","47","1343037.24","17924.95","-133633.57"
+"web channel","49","1341318.20","58999.04","-103081.83"
+"web channel","50","1304154.44","54729.45","-106227.14"
+"web channel","53","1318040.65","27497.33","-171112.12"
+"web channel","55","1240343.28","25509.50","-210714.72"
+"web channel","56","1189845.04","41909.97","-229285.73"
+"web channel","59","1395151.54","24596.43","-124922.29"
+"web channel","","39595877.98","1137030.48","-4270130.66"
+"","","561654034.38","11857240.95","-102451202.88"

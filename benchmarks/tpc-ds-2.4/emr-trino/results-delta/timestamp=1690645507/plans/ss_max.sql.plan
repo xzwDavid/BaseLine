@@ -1,0 +1,60 @@
+"- Output[total, not_null_total, unique_days, max_ss_sold_date_sk, max_ss_sold_time_sk, max_ss_item_sk, max_ss_customer_sk, max_ss_cdemo_sk, max_ss_hdemo_sk, max_ss_addr_sk, max_ss_store_sk, max_ss_promo_sk] => [count:bigint, count_11:bigint, count_12:bigint, max:integer, max_13:integer, max_14:integer, max_15:integer, max_16:integer, max_17:integer, max_18:integer, max_19:integer, max_20:integer]
+        total := count (4:3)
+        not_null_total := count_11 (5:3)
+        unique_days := count_12 (6:3)
+        max_ss_sold_date_sk := max (7:3)
+        max_ss_sold_time_sk := max_13 (8:3)
+        max_ss_item_sk := max_14 (9:3)
+        max_ss_customer_sk := max_15 (10:3)
+        max_ss_cdemo_sk := max_16 (11:3)
+        max_ss_hdemo_sk := max_17 (12:3)
+        max_ss_addr_sk := max_18 (13:3)
+        max_ss_store_sk := max_19 (14:3)
+        max_ss_promo_sk := max_20 (15:3)
+    - Aggregate(FINAL) => [count_11:bigint, max_20:integer, max_14:integer, max_13:integer, max_16:integer, max_15:integer, max_18:integer, max_17:integer, count:bigint, max_19:integer, count_12:bigint, max:integer]
+            count_11 := ""presto.default.count""((count_69)) (5:3)
+            max_20 := ""presto.default.max""((max_70)) (15:3)
+            max_14 := ""presto.default.max""((max_71)) (9:3)
+            max_13 := ""presto.default.max""((max_72)) (8:3)
+            max_16 := ""presto.default.max""((max_73)) (11:3)
+            max_15 := ""presto.default.max""((max_74)) (10:3)
+            max_18 := ""presto.default.max""((max_75)) (13:3)
+            max_17 := ""presto.default.max""((max_76)) (12:3)
+            count := ""presto.default.count""((count_77)) (4:3)
+            max_19 := ""presto.default.max""((max_78)) (14:3)
+            count_12 := ""presto.default.count""((count_79)) (6:3)
+            max := ""presto.default.max""((max_80)) (7:3)
+        - LocalExchange[SINGLE] () => [count_77:bigint, max_80:bigint, max_70:bigint, max_71:bigint, max_72:bigint, max_73:bigint, max_74:bigint, max_75:bigint, max_76:bigint, max_78:bigint, count_69:bigint, count_79:bigint]
+            - RemoteStreamingExchange[GATHER] => [count_77:bigint, max_80:bigint, max_70:bigint, max_71:bigint, max_72:bigint, max_73:bigint, max_74:bigint, max_75:bigint, max_76:bigint, max_78:bigint, count_69:bigint, count_79:bigint]
+                - Aggregate(PARTIAL) => [count_77:bigint, max_80:bigint, max_70:bigint, max_71:bigint, max_72:bigint, max_73:bigint, max_74:bigint, max_75:bigint, max_76:bigint, max_78:bigint, count_69:bigint, count_79:bigint]
+                        count_77 := ""presto.default.count""(*) (4:3)
+                        max_80 := ""presto.default.max""((ss_sold_date_sk)) (7:3)
+                        max_70 := ""presto.default.max""((ss_promo_sk)) (15:3)
+                        max_71 := ""presto.default.max""((ss_item_sk)) (9:3)
+                        max_72 := ""presto.default.max""((ss_sold_time_sk)) (8:3)
+                        max_73 := ""presto.default.max""((ss_cdemo_sk)) (11:3)
+                        max_74 := ""presto.default.max""((ss_customer_sk)) (10:3)
+                        max_75 := ""presto.default.max""((ss_addr_sk)) (13:3)
+                        max_76 := ""presto.default.max""((ss_hdemo_sk)) (12:3)
+                        max_78 := ""presto.default.max""((ss_store_sk)) (14:3)
+                        count_69 := ""presto.default.count""((ss_sold_date_sk)) (5:3)
+                        count_79 := ""presto.default.count""((ss_sold_date_sk)) (mask = ss_sold_date_sk_68) (6:3)
+                    - MarkDistinct[distinct=ss_sold_date_sk:integer marker=ss_sold_date_sk_68][$hashvalue] => [ss_sold_time_sk:integer, ss_item_sk:integer, ss_customer_sk:integer, ss_cdemo_sk:integer, ss_hdemo_sk:integer, ss_addr_sk:integer, ss_store_sk:integer, ss_promo_sk:integer, ss_sold_date_sk:integer, $hashvalue:bigint, ss_sold_date_sk_68:boolean]
+                        - LocalExchange[HASH][$hashvalue] (ss_sold_date_sk) => [ss_sold_time_sk:integer, ss_item_sk:integer, ss_customer_sk:integer, ss_cdemo_sk:integer, ss_hdemo_sk:integer, ss_addr_sk:integer, ss_store_sk:integer, ss_promo_sk:integer, ss_sold_date_sk:integer, $hashvalue:bigint]
+                                Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                            - RemoteStreamingExchange[REPARTITION][$hashvalue_81] => [ss_sold_time_sk:integer, ss_item_sk:integer, ss_customer_sk:integer, ss_cdemo_sk:integer, ss_hdemo_sk:integer, ss_addr_sk:integer, ss_store_sk:integer, ss_promo_sk:integer, ss_sold_date_sk:integer, $hashvalue_81:bigint]
+                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                - ScanProject[table = TableHandle {connectorId='delta', connectorHandle='DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.store_sales}', layout='Optional[DeltaTableLayoutHandle{table=DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.store_sales}, predicate=Optional[ALL]}]'}, projectLocality = LOCAL] => [ss_sold_time_sk:integer, ss_item_sk:integer, ss_customer_sk:integer, ss_cdemo_sk:integer, ss_hdemo_sk:integer, ss_addr_sk:integer, ss_store_sk:integer, ss_promo_sk:integer, ss_sold_date_sk:integer, $hashvalue_82:bigint]
+                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                        $hashvalue_82 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(ss_sold_date_sk), BIGINT'0')) (16:6)
+                                        LAYOUT: DeltaTableLayoutHandle{table=DeltaTableHandle{connectorId=delta, table=tpcds_sf1_delta.store_sales}, predicate=Optional[ALL]}
+                                        ss_store_sk := DeltaColumnHandle{name=ss_store_sk, dataType=integer, columnType=REGULAR} (16:6)
+                                        ss_promo_sk := DeltaColumnHandle{name=ss_promo_sk, dataType=integer, columnType=REGULAR} (16:6)
+                                        ss_customer_sk := DeltaColumnHandle{name=ss_customer_sk, dataType=integer, columnType=REGULAR} (16:6)
+                                        ss_cdemo_sk := DeltaColumnHandle{name=ss_cdemo_sk, dataType=integer, columnType=REGULAR} (16:6)
+                                        ss_sold_date_sk := DeltaColumnHandle{name=ss_sold_date_sk, dataType=integer, columnType=PARTITION} (16:6)
+                                        ss_item_sk := DeltaColumnHandle{name=ss_item_sk, dataType=integer, columnType=REGULAR} (16:6)
+                                        ss_addr_sk := DeltaColumnHandle{name=ss_addr_sk, dataType=integer, columnType=REGULAR} (16:6)
+                                        ss_sold_time_sk := DeltaColumnHandle{name=ss_sold_time_sk, dataType=integer, columnType=REGULAR} (16:6)
+                                        ss_hdemo_sk := DeltaColumnHandle{name=ss_hdemo_sk, dataType=integer, columnType=REGULAR} (16:6)
+"

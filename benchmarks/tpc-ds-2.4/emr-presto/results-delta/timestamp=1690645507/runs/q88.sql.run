@@ -1,0 +1,4 @@
+SET SESSION
+
+[33mWARNING: Number of stages in the query (57) exceeds the soft limit (50). If the query contains multiple DISTINCTs, please set the 'use_mark_distinct' session property to false. If the query contains multiple CTEs that are referenced more than once, please create temporary table(s) for one or more of the CTEs.[39m
+"2342","4638","4806","7405","6962","3864","4051","4895"

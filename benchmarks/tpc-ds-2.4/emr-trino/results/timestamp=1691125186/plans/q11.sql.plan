@@ -1,0 +1,413 @@
+"Trino version: 422
+Fragment 0 [SINGLE]
+    Output layout: [c_customer_id, c_first_name_87, c_last_name_88, c_preferred_cust_flag_89]
+    Output partitioning: SINGLE []
+    Output[columnNames = [customer_id, customer_first_name, customer_last_name, customer_preferred_cust_flag]]
+    │   Layout: [c_customer_id:varchar, c_first_name_87:varchar, c_last_name_88:varchar, c_preferred_cust_flag_89:varchar]
+    │   Estimates: {rows: 100 (21.48kB), cpu: 0, memory: 0B, network: 0B}
+    │   customer_id := c_customer_id
+    │   customer_first_name := c_first_name_87
+    │   customer_last_name := c_last_name_88
+    │   customer_preferred_cust_flag := c_preferred_cust_flag_89
+    └─ TopN[count = 100, orderBy = [c_customer_id ASC NULLS LAST, c_first_name_87 ASC NULLS LAST, c_last_name_88 ASC NULLS LAST, c_preferred_cust_flag_89 ASC NULLS LAST]]
+       │   Layout: [c_customer_id:varchar, c_first_name_87:varchar, c_last_name_88:varchar, c_preferred_cust_flag_89:varchar]
+       │   Estimates: {rows: 100 (21.48kB), cpu: ?, memory: ?, network: ?}
+       └─ LocalExchange[partitioning = SINGLE]
+          │   Layout: [c_customer_id:varchar, c_first_name_87:varchar, c_last_name_88:varchar, c_preferred_cust_flag_89:varchar]
+          │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}
+          └─ RemoteSource[sourceFragmentIds = [1]]
+                 Layout: [c_customer_id:varchar, c_first_name_87:varchar, c_last_name_88:varchar, c_preferred_cust_flag_89:varchar]
+
+Fragment 1 [HASH]
+    Output layout: [c_customer_id, c_first_name_87, c_last_name_88, c_preferred_cust_flag_89]
+    Output partitioning: SINGLE []
+    TopNPartial[count = 100, orderBy = [c_customer_id ASC NULLS LAST, c_first_name_87 ASC NULLS LAST, c_last_name_88 ASC NULLS LAST, c_preferred_cust_flag_89 ASC NULLS LAST]]
+    │   Layout: [c_customer_id:varchar, c_first_name_87:varchar, c_last_name_88:varchar, c_preferred_cust_flag_89:varchar]
+    └─ InnerJoin[criteria = (""c_customer_id"" = ""c_customer_id_557"") AND ((CASE WHEN (""sum_457"" > CAST(DECIMAL '0.00' AS decimal(38, 2))) THEN (""sum_652"" / ""sum_457"") ELSE CAST(DECIMAL '0.00' AS decimal(38, 2)) END) > (CASE WHEN (""sum"" > CAST(DECIMAL '0.00' AS decimal(38, 2))) THEN (""sum_164"" / ""sum"") ELSE CAST(DECIMAL '0.00' AS decimal(38, 2)) END)), hash = [$hashvalue, $hashvalue_698], distribution = PARTITIONED]
+       │   Layout: [c_customer_id:varchar, c_first_name_87:varchar, c_last_name_88:varchar, c_preferred_cust_flag_89:varchar]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+       │   Distribution: PARTITIONED
+       │   dynamicFilterAssignments = {c_customer_id_557 -> #df_5138}
+       ├─ InnerJoin[criteria = (""c_customer_id"" = ""c_customer_id_362""), hash = [$hashvalue, $hashvalue_684], distribution = PARTITIONED]
+       │  │   Layout: [c_customer_id:varchar, sum:decimal(38,2), $hashvalue:bigint, c_first_name_87:varchar, c_last_name_88:varchar, c_preferred_cust_flag_89:varchar, sum_164:decimal(38,2), sum_457:decimal(38,2)]
+       │  │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+       │  │   Distribution: PARTITIONED
+       │  │   dynamicFilterAssignments = {c_customer_id_362 -> #df_5139}
+       │  ├─ InnerJoin[criteria = (""c_customer_id"" = ""c_customer_id_80""), hash = [$hashvalue, $hashvalue_670], distribution = PARTITIONED]
+       │  │  │   Layout: [c_customer_id:varchar, sum:decimal(38,2), $hashvalue:bigint, c_first_name_87:varchar, c_last_name_88:varchar, c_preferred_cust_flag_89:varchar, sum_164:decimal(38,2)]
+       │  │  │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+       │  │  │   Distribution: PARTITIONED
+       │  │  │   dynamicFilterAssignments = {c_customer_id_80 -> #df_5140}
+       │  │  ├─ RemoteSource[sourceFragmentIds = [2]]
+       │  │  │      Layout: [c_customer_id:varchar, sum:decimal(38,2), $hashvalue:bigint]
+       │  │  └─ LocalExchange[partitioning = HASH, hashColumn = [$hashvalue_670], arguments = [""c_customer_id_80""]]
+       │  │     │   Layout: [c_customer_id_80:varchar, c_first_name_87:varchar, c_last_name_88:varchar, c_preferred_cust_flag_89:varchar, sum_164:decimal(38,2), $hashvalue_670:bigint]
+       │  │     │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │  │     └─ RemoteSource[sourceFragmentIds = [6]]
+       │  │            Layout: [c_customer_id_80:varchar, c_first_name_87:varchar, c_last_name_88:varchar, c_preferred_cust_flag_89:varchar, sum_164:decimal(38,2), $hashvalue_671:bigint]
+       │  └─ LocalExchange[partitioning = HASH, hashColumn = [$hashvalue_684], arguments = [""c_customer_id_362""]]
+       │     │   Layout: [c_customer_id_362:varchar, sum_457:decimal(38,2), $hashvalue_684:bigint]
+       │     │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │     └─ RemoteSource[sourceFragmentIds = [10]]
+       │            Layout: [c_customer_id_362:varchar, sum_457:decimal(38,2), $hashvalue_685:bigint]
+       └─ LocalExchange[partitioning = HASH, hashColumn = [$hashvalue_698], arguments = [""c_customer_id_557""]]
+          │   Layout: [c_customer_id_557:varchar, sum_652:decimal(38,2), $hashvalue_698:bigint]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          └─ RemoteSource[sourceFragmentIds = [14]]
+                 Layout: [c_customer_id_557:varchar, sum_652:decimal(38,2), $hashvalue_699:bigint]
+
+Fragment 2 [HASH]
+    Output layout: [c_customer_id, sum, $hashvalue_669]
+    Output partitioning: HASH [c_customer_id][$hashvalue_669]
+    Filter[filterPredicate = (""sum"" > CAST(DECIMAL '0.00' AS decimal(38, 2)))]
+    │   Layout: [c_customer_id:varchar, sum:decimal(38,2), $hashvalue_669:bigint]
+    │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+    └─ Project[]
+       │   Layout: [c_customer_id:varchar, sum:decimal(38,2), $hashvalue_669:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   $hashvalue_669 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""c_customer_id""), 0))
+       └─ Aggregate[type = FINAL, keys = [c_customer_id, c_first_name, c_last_name, c_preferred_cust_flag, c_birth_country, c_login, c_email_address, d_year], hash = [$hashvalue_658]]
+          │   Layout: [c_customer_id:varchar, c_first_name:varchar, c_last_name:varchar, c_preferred_cust_flag:varchar, c_birth_country:varchar, c_login:varchar, c_email_address:varchar, d_year:integer, $hashvalue_658:bigint, sum:decimal(38,2)]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+          │   sum := sum(""sum_654"")
+          └─ LocalExchange[partitioning = HASH, hashColumn = [$hashvalue_658], arguments = [""c_customer_id"", ""c_first_name"", ""c_last_name"", ""c_preferred_cust_flag"", ""c_birth_country"", ""c_login"", ""c_email_address"", ""d_year""]]
+             │   Layout: [c_customer_id:varchar, c_first_name:varchar, c_last_name:varchar, c_preferred_cust_flag:varchar, c_birth_country:varchar, c_login:varchar, c_email_address:varchar, d_year:integer, sum_654:varbinary, $hashvalue_658:bigint]
+             │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [3]]
+                    Layout: [c_customer_id:varchar, c_first_name:varchar, c_last_name:varchar, c_preferred_cust_flag:varchar, c_birth_country:varchar, c_login:varchar, c_email_address:varchar, d_year:integer, sum_654:varbinary, $hashvalue_659:bigint]
+
+Fragment 3 [SOURCE]
+    Output layout: [c_customer_id, c_first_name, c_last_name, c_preferred_cust_flag, c_birth_country, c_login, c_email_address, d_year, sum_654, $hashvalue_668]
+    Output partitioning: HASH [c_customer_id, c_first_name, c_last_name, c_preferred_cust_flag, c_birth_country, c_login, c_email_address, d_year][$hashvalue_668]
+    Aggregate[type = PARTIAL, keys = [c_customer_id, c_first_name, c_last_name, c_preferred_cust_flag, c_birth_country, c_login, c_email_address, d_year], hash = [$hashvalue_668]]
+    │   Layout: [c_customer_id:varchar, c_first_name:varchar, c_last_name:varchar, c_preferred_cust_flag:varchar, c_birth_country:varchar, c_login:varchar, c_email_address:varchar, d_year:integer, $hashvalue_668:bigint, sum_654:varbinary]
+    │   sum_654 := sum(""expr"")
+    └─ Project[]
+       │   Layout: [c_first_name:varchar, c_last_name:varchar, d_year:integer, c_email_address:varchar, c_customer_id:varchar, c_preferred_cust_flag:varchar, c_login:varchar, expr:decimal(8,2), c_birth_country:varchar, $hashvalue_668:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   expr := (""ss_ext_list_price"" - ""ss_ext_discount_amt"")
+       │   $hashvalue_668 := combine_hash(combine_hash(combine_hash(combine_hash(combine_hash(combine_hash(combine_hash(combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""c_customer_id""), 0)), COALESCE(""$operator$hash_code""(""c_first_name""), 0)), COALESCE(""$operator$hash_code""(""c_last_name""), 0)), COALESCE(""$operator$hash_code""(""c_preferred_cust_flag""), 0)), COALESCE(""$operator$hash_code""(""c_birth_country""), 0)), COALESCE(""$operator$hash_code""(""c_login""), 0)), COALESCE(""$operator$hash_code""(""c_email_address""), 0)), COALESCE(""$operator$hash_code""(""d_year""), 0))
+       └─ InnerJoin[criteria = (""ss_sold_date_sk"" = ""d_date_sk""), hash = [$hashvalue_664, $hashvalue_665], distribution = REPLICATED]
+          │   Layout: [ss_ext_discount_amt:decimal(7,2), ss_ext_list_price:decimal(7,2), c_customer_id:varchar, c_first_name:varchar, c_last_name:varchar, c_preferred_cust_flag:varchar, c_birth_country:varchar, c_login:varchar, c_email_address:varchar, d_year:integer]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk -> #df_5141}
+          ├─ Project[]
+          │  │   Layout: [ss_ext_discount_amt:decimal(7,2), ss_ext_list_price:decimal(7,2), ss_sold_date_sk:integer, c_customer_id:varchar, c_first_name:varchar, c_last_name:varchar, c_preferred_cust_flag:varchar, c_birth_country:varchar, c_login:varchar, c_email_address:varchar, $hashvalue_664:bigint]
+          │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │  │   $hashvalue_664 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ss_sold_date_sk""), 0))
+          │  └─ InnerJoin[criteria = (""ss_customer_sk"" = ""c_customer_sk""), hash = [$hashvalue_660, $hashvalue_661], distribution = REPLICATED]
+          │     │   Layout: [ss_ext_discount_amt:decimal(7,2), ss_ext_list_price:decimal(7,2), ss_sold_date_sk:integer, c_customer_id:varchar, c_first_name:varchar, c_last_name:varchar, c_preferred_cust_flag:varchar, c_birth_country:varchar, c_login:varchar, c_email_address:varchar]
+          │     │   Estimates: {rows: ? (?), cpu: ?, memory: 20.67MB, network: 0B}
+          │     │   Distribution: REPLICATED
+          │     │   dynamicFilterAssignments = {c_customer_sk -> #df_5142}
+          │     ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.store_sales$data@6526568472398842660, dynamicFilters = {""ss_sold_date_sk"" = #df_5141, ""ss_customer_sk"" = #df_5142}]
+          │     │      Layout: [ss_customer_sk:integer, ss_ext_discount_amt:decimal(7,2), ss_ext_list_price:decimal(7,2), ss_sold_date_sk:integer, $hashvalue_660:bigint]
+          │     │      Estimates: {rows: 2750838 (95.83MB), cpu: 72.22M, memory: 0B, network: 0B}/{rows: 2750838 (95.83MB), cpu: 72.22M, memory: 0B, network: 0B}/{rows: 2750838 (95.83MB), cpu: 95.83M, memory: 0B, network: 0B}
+          │     │      $hashvalue_660 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ss_customer_sk""), 0))
+          │     │      ss_customer_sk := 3:ss_customer_sk:integer
+          │     │      ss_ext_discount_amt := 14:ss_ext_discount_amt:decimal(7,2)
+          │     │      ss_ext_list_price := 17:ss_ext_list_price:decimal(7,2)
+          │     │      ss_sold_date_sk := 23:ss_sold_date_sk:integer
+          │     └─ LocalExchange[partitioning = SINGLE]
+          │        │   Layout: [c_customer_sk:integer, c_customer_id:varchar, c_first_name:varchar, c_last_name:varchar, c_preferred_cust_flag:varchar, c_birth_country:varchar, c_login:varchar, c_email_address:varchar, $hashvalue_661:bigint]
+          │        │   Estimates: {rows: 100000 (10.34MB), cpu: 0, memory: 0B, network: 0B}
+          │        └─ RemoteSource[sourceFragmentIds = [4]]
+          │               Layout: [c_customer_sk:integer, c_customer_id:varchar, c_first_name:varchar, c_last_name:varchar, c_preferred_cust_flag:varchar, c_birth_country:varchar, c_login:varchar, c_email_address:varchar, $hashvalue_662:bigint]
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk:integer, d_year:integer, $hashvalue_665:bigint]
+             │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [5]]
+                    Layout: [d_date_sk:integer, d_year:integer, $hashvalue_666:bigint]
+
+Fragment 4 [SOURCE]
+    Output layout: [c_customer_sk, c_customer_id, c_first_name, c_last_name, c_preferred_cust_flag, c_birth_country, c_login, c_email_address, $hashvalue_663]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.customer$data@139077337131383881, dynamicFilters = {""c_customer_id"" = #df_5138, ""c_customer_id"" = #df_5139, ""c_customer_id"" = #df_5140}]
+        Layout: [c_customer_sk:integer, c_customer_id:varchar, c_first_name:varchar, c_last_name:varchar, c_preferred_cust_flag:varchar, c_birth_country:varchar, c_login:varchar, c_email_address:varchar, $hashvalue_663:bigint]
+        Estimates: {rows: 100000 (10.34MB), cpu: 9.48M, memory: 0B, network: 0B}/{rows: 100000 (10.34MB), cpu: 9.48M, memory: 0B, network: 0B}/{rows: 100000 (10.34MB), cpu: 10.34M, memory: 0B, network: 0B}
+        $hashvalue_663 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""c_customer_sk""), 0))
+        c_preferred_cust_flag := 11:c_preferred_cust_flag:varchar
+        c_customer_sk := 1:c_customer_sk:integer
+        c_login := 16:c_login:varchar
+        c_last_name := 10:c_last_name:varchar
+        c_customer_id := 2:c_customer_id:varchar
+        c_birth_country := 15:c_birth_country:varchar
+        c_first_name := 9:c_first_name:varchar
+        c_email_address := 17:c_email_address:varchar
+
+Fragment 5 [SOURCE]
+    Output layout: [d_date_sk, d_year, $hashvalue_667]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year"" = 2001)]
+        Layout: [d_date_sk:integer, d_year:integer, $hashvalue_667:bigint]
+        Estimates: {rows: 73049 (1.32MB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: ? (?), cpu: 713.37k, memory: 0B, network: 0B}/{rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+        $hashvalue_667 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk""), 0))
+        d_date_sk := 1:d_date_sk:integer
+        d_year := 7:d_year:integer
+
+Fragment 6 [HASH]
+    Output layout: [c_customer_id_80, c_first_name_87, c_last_name_88, c_preferred_cust_flag_89, sum_164, $hashvalue_683]
+    Output partitioning: HASH [c_customer_id_80][$hashvalue_683]
+    Project[]
+    │   Layout: [c_customer_id_80:varchar, c_first_name_87:varchar, c_last_name_88:varchar, c_preferred_cust_flag_89:varchar, sum_164:decimal(38,2), $hashvalue_683:bigint]
+    │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+    │   $hashvalue_683 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""c_customer_id_80""), 0))
+    └─ Aggregate[type = FINAL, keys = [c_customer_id_80, c_first_name_87, c_last_name_88, c_preferred_cust_flag_89, c_birth_country_93, c_login_94, c_email_address_95, d_year_131], hash = [$hashvalue_672]]
+       │   Layout: [c_customer_id_80:varchar, c_first_name_87:varchar, c_last_name_88:varchar, c_preferred_cust_flag_89:varchar, c_birth_country_93:varchar, c_login_94:varchar, c_email_address_95:varchar, d_year_131:integer, $hashvalue_672:bigint, sum_164:decimal(38,2)]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+       │   sum_164 := sum(""sum_655"")
+       └─ LocalExchange[partitioning = HASH, hashColumn = [$hashvalue_672], arguments = [""c_customer_id_80"", ""c_first_name_87"", ""c_last_name_88"", ""c_preferred_cust_flag_89"", ""c_birth_country_93"", ""c_login_94"", ""c_email_address_95"", ""d_year_131""]]
+          │   Layout: [c_customer_id_80:varchar, c_first_name_87:varchar, c_last_name_88:varchar, c_preferred_cust_flag_89:varchar, c_birth_country_93:varchar, c_login_94:varchar, c_email_address_95:varchar, d_year_131:integer, sum_655:varbinary, $hashvalue_672:bigint]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          └─ RemoteSource[sourceFragmentIds = [7]]
+                 Layout: [c_customer_id_80:varchar, c_first_name_87:varchar, c_last_name_88:varchar, c_preferred_cust_flag_89:varchar, c_birth_country_93:varchar, c_login_94:varchar, c_email_address_95:varchar, d_year_131:integer, sum_655:varbinary, $hashvalue_673:bigint]
+
+Fragment 7 [SOURCE]
+    Output layout: [c_customer_id_80, c_first_name_87, c_last_name_88, c_preferred_cust_flag_89, c_birth_country_93, c_login_94, c_email_address_95, d_year_131, sum_655, $hashvalue_682]
+    Output partitioning: HASH [c_customer_id_80, c_first_name_87, c_last_name_88, c_preferred_cust_flag_89, c_birth_country_93, c_login_94, c_email_address_95, d_year_131][$hashvalue_682]
+    Aggregate[type = PARTIAL, keys = [c_customer_id_80, c_first_name_87, c_last_name_88, c_preferred_cust_flag_89, c_birth_country_93, c_login_94, c_email_address_95, d_year_131], hash = [$hashvalue_682]]
+    │   Layout: [c_customer_id_80:varchar, c_first_name_87:varchar, c_last_name_88:varchar, c_preferred_cust_flag_89:varchar, c_birth_country_93:varchar, c_login_94:varchar, c_email_address_95:varchar, d_year_131:integer, $hashvalue_682:bigint, sum_655:varbinary]
+    │   sum_655 := sum(""expr_155"")
+    └─ Project[]
+       │   Layout: [c_first_name_87:varchar, d_year_131:integer, expr_155:decimal(8,2), c_last_name_88:varchar, c_preferred_cust_flag_89:varchar, c_customer_id_80:varchar, c_email_address_95:varchar, c_birth_country_93:varchar, c_login_94:varchar, $hashvalue_682:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   expr_155 := (""ss_ext_list_price_116"" - ""ss_ext_discount_amt_113"")
+       │   $hashvalue_682 := combine_hash(combine_hash(combine_hash(combine_hash(combine_hash(combine_hash(combine_hash(combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""c_customer_id_80""), 0)), COALESCE(""$operator$hash_code""(""c_first_name_87""), 0)), COALESCE(""$operator$hash_code""(""c_last_name_88""), 0)), COALESCE(""$operator$hash_code""(""c_preferred_cust_flag_89""), 0)), COALESCE(""$operator$hash_code""(""c_birth_country_93""), 0)), COALESCE(""$operator$hash_code""(""c_login_94""), 0)), COALESCE(""$operator$hash_code""(""c_email_address_95""), 0)), COALESCE(""$operator$hash_code""(""d_year_131""), 0))
+       └─ InnerJoin[criteria = (""ss_sold_date_sk_122"" = ""d_date_sk_125""), hash = [$hashvalue_678, $hashvalue_679], distribution = REPLICATED]
+          │   Layout: [ss_ext_discount_amt_113:decimal(7,2), ss_ext_list_price_116:decimal(7,2), c_customer_id_80:varchar, c_first_name_87:varchar, c_last_name_88:varchar, c_preferred_cust_flag_89:varchar, c_birth_country_93:varchar, c_login_94:varchar, c_email_address_95:varchar, d_year_131:integer]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk_125 -> #df_5153}
+          ├─ Project[]
+          │  │   Layout: [ss_ext_discount_amt_113:decimal(7,2), ss_ext_list_price_116:decimal(7,2), ss_sold_date_sk_122:integer, c_customer_id_80:varchar, c_first_name_87:varchar, c_last_name_88:varchar, c_preferred_cust_flag_89:varchar, c_birth_country_93:varchar, c_login_94:varchar, c_email_address_95:varchar, $hashvalue_678:bigint]
+          │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │  │   $hashvalue_678 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ss_sold_date_sk_122""), 0))
+          │  └─ InnerJoin[criteria = (""ss_customer_sk_102"" = ""c_customer_sk_79""), hash = [$hashvalue_674, $hashvalue_675], distribution = REPLICATED]
+          │     │   Layout: [ss_ext_discount_amt_113:decimal(7,2), ss_ext_list_price_116:decimal(7,2), ss_sold_date_sk_122:integer, c_customer_id_80:varchar, c_first_name_87:varchar, c_last_name_88:varchar, c_preferred_cust_flag_89:varchar, c_birth_country_93:varchar, c_login_94:varchar, c_email_address_95:varchar]
+          │     │   Estimates: {rows: ? (?), cpu: ?, memory: 20.67MB, network: 0B}
+          │     │   Distribution: REPLICATED
+          │     │   dynamicFilterAssignments = {c_customer_sk_79 -> #df_5154}
+          │     ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.store_sales$data@6526568472398842660, dynamicFilters = {""ss_sold_date_sk_122"" = #df_5153, ""ss_customer_sk_102"" = #df_5154}]
+          │     │      Layout: [ss_customer_sk_102:integer, ss_ext_discount_amt_113:decimal(7,2), ss_ext_list_price_116:decimal(7,2), ss_sold_date_sk_122:integer, $hashvalue_674:bigint]
+          │     │      Estimates: {rows: 2750838 (95.83MB), cpu: 72.22M, memory: 0B, network: 0B}/{rows: 2750838 (95.83MB), cpu: 72.22M, memory: 0B, network: 0B}/{rows: 2750838 (95.83MB), cpu: 95.83M, memory: 0B, network: 0B}
+          │     │      $hashvalue_674 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ss_customer_sk_102""), 0))
+          │     │      ss_customer_sk_102 := 3:ss_customer_sk:integer
+          │     │      ss_ext_list_price_116 := 17:ss_ext_list_price:decimal(7,2)
+          │     │      ss_ext_discount_amt_113 := 14:ss_ext_discount_amt:decimal(7,2)
+          │     │      ss_sold_date_sk_122 := 23:ss_sold_date_sk:integer
+          │     └─ LocalExchange[partitioning = SINGLE]
+          │        │   Layout: [c_customer_sk_79:integer, c_customer_id_80:varchar, c_first_name_87:varchar, c_last_name_88:varchar, c_preferred_cust_flag_89:varchar, c_birth_country_93:varchar, c_login_94:varchar, c_email_address_95:varchar, $hashvalue_675:bigint]
+          │        │   Estimates: {rows: 100000 (10.34MB), cpu: 0, memory: 0B, network: 0B}
+          │        └─ RemoteSource[sourceFragmentIds = [8]]
+          │               Layout: [c_customer_sk_79:integer, c_customer_id_80:varchar, c_first_name_87:varchar, c_last_name_88:varchar, c_preferred_cust_flag_89:varchar, c_birth_country_93:varchar, c_login_94:varchar, c_email_address_95:varchar, $hashvalue_676:bigint]
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk_125:integer, d_year_131:integer, $hashvalue_679:bigint]
+             │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [9]]
+                    Layout: [d_date_sk_125:integer, d_year_131:integer, $hashvalue_680:bigint]
+
+Fragment 8 [SOURCE]
+    Output layout: [c_customer_sk_79, c_customer_id_80, c_first_name_87, c_last_name_88, c_preferred_cust_flag_89, c_birth_country_93, c_login_94, c_email_address_95, $hashvalue_677]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.customer$data@139077337131383881, dynamicFilters = {""c_customer_id_80"" = #df_5138, ""c_customer_id_80"" = #df_5139}]
+        Layout: [c_customer_sk_79:integer, c_customer_id_80:varchar, c_first_name_87:varchar, c_last_name_88:varchar, c_preferred_cust_flag_89:varchar, c_birth_country_93:varchar, c_login_94:varchar, c_email_address_95:varchar, $hashvalue_677:bigint]
+        Estimates: {rows: 100000 (10.34MB), cpu: 9.48M, memory: 0B, network: 0B}/{rows: 100000 (10.34MB), cpu: 9.48M, memory: 0B, network: 0B}/{rows: 100000 (10.34MB), cpu: 10.34M, memory: 0B, network: 0B}
+        $hashvalue_677 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""c_customer_sk_79""), 0))
+        c_customer_sk_79 := 1:c_customer_sk:integer
+        c_login_94 := 16:c_login:varchar
+        c_customer_id_80 := 2:c_customer_id:varchar
+        c_email_address_95 := 17:c_email_address:varchar
+        c_last_name_88 := 10:c_last_name:varchar
+        c_first_name_87 := 9:c_first_name:varchar
+        c_preferred_cust_flag_89 := 11:c_preferred_cust_flag:varchar
+        c_birth_country_93 := 15:c_birth_country:varchar
+
+Fragment 9 [SOURCE]
+    Output layout: [d_date_sk_125, d_year_131, $hashvalue_681]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year_131"" = 2002)]
+        Layout: [d_date_sk_125:integer, d_year_131:integer, $hashvalue_681:bigint]
+        Estimates: {rows: 73049 (1.32MB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: ? (?), cpu: 713.37k, memory: 0B, network: 0B}/{rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+        $hashvalue_681 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_125""), 0))
+        d_date_sk_125 := 1:d_date_sk:integer
+        d_year_131 := 7:d_year:integer
+
+Fragment 10 [HASH]
+    Output layout: [c_customer_id_362, sum_457, $hashvalue_697]
+    Output partitioning: HASH [c_customer_id_362][$hashvalue_697]
+    Filter[filterPredicate = (""sum_457"" > CAST(DECIMAL '0.00' AS decimal(38, 2)))]
+    │   Layout: [c_customer_id_362:varchar, sum_457:decimal(38,2), $hashvalue_697:bigint]
+    │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+    └─ Project[]
+       │   Layout: [c_customer_id_362:varchar, sum_457:decimal(38,2), $hashvalue_697:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   $hashvalue_697 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""c_customer_id_362""), 0))
+       └─ Aggregate[type = FINAL, keys = [c_customer_id_362, c_first_name_369, c_last_name_370, c_preferred_cust_flag_371, c_birth_country_375, c_login_376, c_email_address_377, d_year_424], hash = [$hashvalue_686]]
+          │   Layout: [c_customer_id_362:varchar, c_first_name_369:varchar, c_last_name_370:varchar, c_preferred_cust_flag_371:varchar, c_birth_country_375:varchar, c_login_376:varchar, c_email_address_377:varchar, d_year_424:integer, $hashvalue_686:bigint, sum_457:decimal(38,2)]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+          │   sum_457 := sum(""sum_656"")
+          └─ LocalExchange[partitioning = HASH, hashColumn = [$hashvalue_686], arguments = [""c_customer_id_362"", ""c_first_name_369"", ""c_last_name_370"", ""c_preferred_cust_flag_371"", ""c_birth_country_375"", ""c_login_376"", ""c_email_address_377"", ""d_year_424""]]
+             │   Layout: [c_customer_id_362:varchar, c_first_name_369:varchar, c_last_name_370:varchar, c_preferred_cust_flag_371:varchar, c_birth_country_375:varchar, c_login_376:varchar, c_email_address_377:varchar, d_year_424:integer, sum_656:varbinary, $hashvalue_686:bigint]
+             │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [11]]
+                    Layout: [c_customer_id_362:varchar, c_first_name_369:varchar, c_last_name_370:varchar, c_preferred_cust_flag_371:varchar, c_birth_country_375:varchar, c_login_376:varchar, c_email_address_377:varchar, d_year_424:integer, sum_656:varbinary, $hashvalue_687:bigint]
+
+Fragment 11 [SOURCE]
+    Output layout: [c_customer_id_362, c_first_name_369, c_last_name_370, c_preferred_cust_flag_371, c_birth_country_375, c_login_376, c_email_address_377, d_year_424, sum_656, $hashvalue_696]
+    Output partitioning: HASH [c_customer_id_362, c_first_name_369, c_last_name_370, c_preferred_cust_flag_371, c_birth_country_375, c_login_376, c_email_address_377, d_year_424][$hashvalue_696]
+    Aggregate[type = PARTIAL, keys = [c_customer_id_362, c_first_name_369, c_last_name_370, c_preferred_cust_flag_371, c_birth_country_375, c_login_376, c_email_address_377, d_year_424], hash = [$hashvalue_696]]
+    │   Layout: [c_customer_id_362:varchar, c_first_name_369:varchar, c_last_name_370:varchar, c_preferred_cust_flag_371:varchar, c_birth_country_375:varchar, c_login_376:varchar, c_email_address_377:varchar, d_year_424:integer, $hashvalue_696:bigint, sum_656:varbinary]
+    │   sum_656 := sum(""expr_448"")
+    └─ Project[]
+       │   Layout: [c_birth_country_375:varchar, c_customer_id_362:varchar, c_email_address_377:varchar, c_preferred_cust_flag_371:varchar, c_login_376:varchar, c_last_name_370:varchar, d_year_424:integer, c_first_name_369:varchar, expr_448:decimal(8,2), $hashvalue_696:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   expr_448 := (""ws_ext_list_price_406"" - ""ws_ext_discount_amt_403"")
+       │   $hashvalue_696 := combine_hash(combine_hash(combine_hash(combine_hash(combine_hash(combine_hash(combine_hash(combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""c_customer_id_362""), 0)), COALESCE(""$operator$hash_code""(""c_first_name_369""), 0)), COALESCE(""$operator$hash_code""(""c_last_name_370""), 0)), COALESCE(""$operator$hash_code""(""c_preferred_cust_flag_371""), 0)), COALESCE(""$operator$hash_code""(""c_birth_country_375""), 0)), COALESCE(""$operator$hash_code""(""c_login_376""), 0)), COALESCE(""$operator$hash_code""(""c_email_address_377""), 0)), COALESCE(""$operator$hash_code""(""d_year_424""), 0))
+       └─ InnerJoin[criteria = (""ws_sold_date_sk_415"" = ""d_date_sk_418""), hash = [$hashvalue_692, $hashvalue_693], distribution = REPLICATED]
+          │   Layout: [ws_ext_discount_amt_403:decimal(7,2), ws_ext_list_price_406:decimal(7,2), c_customer_id_362:varchar, c_first_name_369:varchar, c_last_name_370:varchar, c_preferred_cust_flag_371:varchar, c_birth_country_375:varchar, c_login_376:varchar, c_email_address_377:varchar, d_year_424:integer]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk_418 -> #df_5166}
+          ├─ Project[]
+          │  │   Layout: [ws_ext_discount_amt_403:decimal(7,2), ws_ext_list_price_406:decimal(7,2), ws_sold_date_sk_415:integer, c_customer_id_362:varchar, c_first_name_369:varchar, c_last_name_370:varchar, c_preferred_cust_flag_371:varchar, c_birth_country_375:varchar, c_login_376:varchar, c_email_address_377:varchar, $hashvalue_692:bigint]
+          │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │  │   $hashvalue_692 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ws_sold_date_sk_415""), 0))
+          │  └─ InnerJoin[criteria = (""ws_bill_customer_sk_385"" = ""c_customer_sk_361""), hash = [$hashvalue_688, $hashvalue_689], distribution = REPLICATED]
+          │     │   Layout: [ws_ext_discount_amt_403:decimal(7,2), ws_ext_list_price_406:decimal(7,2), ws_sold_date_sk_415:integer, c_customer_id_362:varchar, c_first_name_369:varchar, c_last_name_370:varchar, c_preferred_cust_flag_371:varchar, c_birth_country_375:varchar, c_login_376:varchar, c_email_address_377:varchar]
+          │     │   Estimates: {rows: ? (?), cpu: ?, memory: 20.67MB, network: 0B}
+          │     │   Distribution: REPLICATED
+          │     │   dynamicFilterAssignments = {c_customer_sk_361 -> #df_5167}
+          │     ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.web_sales$data@7618567712963574495, dynamicFilters = {""ws_sold_date_sk_415"" = #df_5166, ""ws_bill_customer_sk_385"" = #df_5167}]
+          │     │      Layout: [ws_bill_customer_sk_385:integer, ws_ext_discount_amt_403:decimal(7,2), ws_ext_list_price_406:decimal(7,2), ws_sold_date_sk_415:integer, $hashvalue_688:bigint]
+          │     │      Estimates: {rows: 718760 (25.36MB), cpu: 19.19M, memory: 0B, network: 0B}/{rows: 718760 (25.36MB), cpu: 19.19M, memory: 0B, network: 0B}/{rows: 718760 (25.36MB), cpu: 25.36M, memory: 0B, network: 0B}
+          │     │      $hashvalue_688 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ws_bill_customer_sk_385""), 0))
+          │     │      ws_sold_date_sk_415 := 34:ws_sold_date_sk:integer
+          │     │      ws_bill_customer_sk_385 := 4:ws_bill_customer_sk:integer
+          │     │      ws_ext_list_price_406 := 25:ws_ext_list_price:decimal(7,2)
+          │     │      ws_ext_discount_amt_403 := 22:ws_ext_discount_amt:decimal(7,2)
+          │     └─ LocalExchange[partitioning = SINGLE]
+          │        │   Layout: [c_customer_sk_361:integer, c_customer_id_362:varchar, c_first_name_369:varchar, c_last_name_370:varchar, c_preferred_cust_flag_371:varchar, c_birth_country_375:varchar, c_login_376:varchar, c_email_address_377:varchar, $hashvalue_689:bigint]
+          │        │   Estimates: {rows: 100000 (10.34MB), cpu: 0, memory: 0B, network: 0B}
+          │        └─ RemoteSource[sourceFragmentIds = [12]]
+          │               Layout: [c_customer_sk_361:integer, c_customer_id_362:varchar, c_first_name_369:varchar, c_last_name_370:varchar, c_preferred_cust_flag_371:varchar, c_birth_country_375:varchar, c_login_376:varchar, c_email_address_377:varchar, $hashvalue_690:bigint]
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk_418:integer, d_year_424:integer, $hashvalue_693:bigint]
+             │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [13]]
+                    Layout: [d_date_sk_418:integer, d_year_424:integer, $hashvalue_694:bigint]
+
+Fragment 12 [SOURCE]
+    Output layout: [c_customer_sk_361, c_customer_id_362, c_first_name_369, c_last_name_370, c_preferred_cust_flag_371, c_birth_country_375, c_login_376, c_email_address_377, $hashvalue_691]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.customer$data@139077337131383881, dynamicFilters = {""c_customer_id_362"" = #df_5138}]
+        Layout: [c_customer_sk_361:integer, c_customer_id_362:varchar, c_first_name_369:varchar, c_last_name_370:varchar, c_preferred_cust_flag_371:varchar, c_birth_country_375:varchar, c_login_376:varchar, c_email_address_377:varchar, $hashvalue_691:bigint]
+        Estimates: {rows: 100000 (10.34MB), cpu: 9.48M, memory: 0B, network: 0B}/{rows: 100000 (10.34MB), cpu: 9.48M, memory: 0B, network: 0B}/{rows: 100000 (10.34MB), cpu: 10.34M, memory: 0B, network: 0B}
+        $hashvalue_691 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""c_customer_sk_361""), 0))
+        c_customer_id_362 := 2:c_customer_id:varchar
+        c_birth_country_375 := 15:c_birth_country:varchar
+        c_first_name_369 := 9:c_first_name:varchar
+        c_last_name_370 := 10:c_last_name:varchar
+        c_email_address_377 := 17:c_email_address:varchar
+        c_customer_sk_361 := 1:c_customer_sk:integer
+        c_preferred_cust_flag_371 := 11:c_preferred_cust_flag:varchar
+        c_login_376 := 16:c_login:varchar
+
+Fragment 13 [SOURCE]
+    Output layout: [d_date_sk_418, d_year_424, $hashvalue_695]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year_424"" = 2001)]
+        Layout: [d_date_sk_418:integer, d_year_424:integer, $hashvalue_695:bigint]
+        Estimates: {rows: 73049 (1.32MB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: ? (?), cpu: 713.37k, memory: 0B, network: 0B}/{rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+        $hashvalue_695 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_418""), 0))
+        d_date_sk_418 := 1:d_date_sk:integer
+        d_year_424 := 7:d_year:integer
+
+Fragment 14 [HASH]
+    Output layout: [c_customer_id_557, sum_652, $hashvalue_711]
+    Output partitioning: HASH [c_customer_id_557][$hashvalue_711]
+    Project[]
+    │   Layout: [c_customer_id_557:varchar, sum_652:decimal(38,2), $hashvalue_711:bigint]
+    │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+    │   $hashvalue_711 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""c_customer_id_557""), 0))
+    └─ Aggregate[type = FINAL, keys = [c_customer_id_557, c_first_name_564, c_last_name_565, c_preferred_cust_flag_566, c_birth_country_570, c_login_571, c_email_address_572, d_year_619], hash = [$hashvalue_700]]
+       │   Layout: [c_customer_id_557:varchar, c_first_name_564:varchar, c_last_name_565:varchar, c_preferred_cust_flag_566:varchar, c_birth_country_570:varchar, c_login_571:varchar, c_email_address_572:varchar, d_year_619:integer, $hashvalue_700:bigint, sum_652:decimal(38,2)]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+       │   sum_652 := sum(""sum_657"")
+       └─ LocalExchange[partitioning = HASH, hashColumn = [$hashvalue_700], arguments = [""c_customer_id_557"", ""c_first_name_564"", ""c_last_name_565"", ""c_preferred_cust_flag_566"", ""c_birth_country_570"", ""c_login_571"", ""c_email_address_572"", ""d_year_619""]]
+          │   Layout: [c_customer_id_557:varchar, c_first_name_564:varchar, c_last_name_565:varchar, c_preferred_cust_flag_566:varchar, c_birth_country_570:varchar, c_login_571:varchar, c_email_address_572:varchar, d_year_619:integer, sum_657:varbinary, $hashvalue_700:bigint]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          └─ RemoteSource[sourceFragmentIds = [15]]
+                 Layout: [c_customer_id_557:varchar, c_first_name_564:varchar, c_last_name_565:varchar, c_preferred_cust_flag_566:varchar, c_birth_country_570:varchar, c_login_571:varchar, c_email_address_572:varchar, d_year_619:integer, sum_657:varbinary, $hashvalue_701:bigint]
+
+Fragment 15 [SOURCE]
+    Output layout: [c_customer_id_557, c_first_name_564, c_last_name_565, c_preferred_cust_flag_566, c_birth_country_570, c_login_571, c_email_address_572, d_year_619, sum_657, $hashvalue_710]
+    Output partitioning: HASH [c_customer_id_557, c_first_name_564, c_last_name_565, c_preferred_cust_flag_566, c_birth_country_570, c_login_571, c_email_address_572, d_year_619][$hashvalue_710]
+    Aggregate[type = PARTIAL, keys = [c_customer_id_557, c_first_name_564, c_last_name_565, c_preferred_cust_flag_566, c_birth_country_570, c_login_571, c_email_address_572, d_year_619], hash = [$hashvalue_710]]
+    │   Layout: [c_customer_id_557:varchar, c_first_name_564:varchar, c_last_name_565:varchar, c_preferred_cust_flag_566:varchar, c_birth_country_570:varchar, c_login_571:varchar, c_email_address_572:varchar, d_year_619:integer, $hashvalue_710:bigint, sum_657:varbinary]
+    │   sum_657 := sum(""expr_643"")
+    └─ Project[]
+       │   Layout: [c_login_571:varchar, c_last_name_565:varchar, c_first_name_564:varchar, expr_643:decimal(8,2), c_birth_country_570:varchar, c_email_address_572:varchar, c_preferred_cust_flag_566:varchar, c_customer_id_557:varchar, d_year_619:integer, $hashvalue_710:bigint]
+       │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+       │   expr_643 := (""ws_ext_list_price_601"" - ""ws_ext_discount_amt_598"")
+       │   $hashvalue_710 := combine_hash(combine_hash(combine_hash(combine_hash(combine_hash(combine_hash(combine_hash(combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""c_customer_id_557""), 0)), COALESCE(""$operator$hash_code""(""c_first_name_564""), 0)), COALESCE(""$operator$hash_code""(""c_last_name_565""), 0)), COALESCE(""$operator$hash_code""(""c_preferred_cust_flag_566""), 0)), COALESCE(""$operator$hash_code""(""c_birth_country_570""), 0)), COALESCE(""$operator$hash_code""(""c_login_571""), 0)), COALESCE(""$operator$hash_code""(""c_email_address_572""), 0)), COALESCE(""$operator$hash_code""(""d_year_619""), 0))
+       └─ InnerJoin[criteria = (""ws_sold_date_sk_610"" = ""d_date_sk_613""), hash = [$hashvalue_706, $hashvalue_707], distribution = REPLICATED]
+          │   Layout: [ws_ext_discount_amt_598:decimal(7,2), ws_ext_list_price_601:decimal(7,2), c_customer_id_557:varchar, c_first_name_564:varchar, c_last_name_565:varchar, c_preferred_cust_flag_566:varchar, c_birth_country_570:varchar, c_login_571:varchar, c_email_address_572:varchar, d_year_619:integer]
+          │   Estimates: {rows: ? (?), cpu: ?, memory: ?, network: 0B}
+          │   Distribution: REPLICATED
+          │   dynamicFilterAssignments = {d_date_sk_613 -> #df_5180}
+          ├─ Project[]
+          │  │   Layout: [ws_ext_discount_amt_598:decimal(7,2), ws_ext_list_price_601:decimal(7,2), ws_sold_date_sk_610:integer, c_customer_id_557:varchar, c_first_name_564:varchar, c_last_name_565:varchar, c_preferred_cust_flag_566:varchar, c_birth_country_570:varchar, c_login_571:varchar, c_email_address_572:varchar, $hashvalue_706:bigint]
+          │  │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+          │  │   $hashvalue_706 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ws_sold_date_sk_610""), 0))
+          │  └─ InnerJoin[criteria = (""ws_bill_customer_sk_580"" = ""c_customer_sk_556""), hash = [$hashvalue_702, $hashvalue_703], distribution = REPLICATED]
+          │     │   Layout: [ws_ext_discount_amt_598:decimal(7,2), ws_ext_list_price_601:decimal(7,2), ws_sold_date_sk_610:integer, c_customer_id_557:varchar, c_first_name_564:varchar, c_last_name_565:varchar, c_preferred_cust_flag_566:varchar, c_birth_country_570:varchar, c_login_571:varchar, c_email_address_572:varchar]
+          │     │   Estimates: {rows: ? (?), cpu: ?, memory: 20.67MB, network: 0B}
+          │     │   Distribution: REPLICATED
+          │     │   dynamicFilterAssignments = {c_customer_sk_556 -> #df_5181}
+          │     ├─ ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.web_sales$data@7618567712963574495, dynamicFilters = {""ws_sold_date_sk_610"" = #df_5180, ""ws_bill_customer_sk_580"" = #df_5181}]
+          │     │      Layout: [ws_bill_customer_sk_580:integer, ws_ext_discount_amt_598:decimal(7,2), ws_ext_list_price_601:decimal(7,2), ws_sold_date_sk_610:integer, $hashvalue_702:bigint]
+          │     │      Estimates: {rows: 718760 (25.36MB), cpu: 19.19M, memory: 0B, network: 0B}/{rows: 718760 (25.36MB), cpu: 19.19M, memory: 0B, network: 0B}/{rows: 718760 (25.36MB), cpu: 25.36M, memory: 0B, network: 0B}
+          │     │      $hashvalue_702 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""ws_bill_customer_sk_580""), 0))
+          │     │      ws_bill_customer_sk_580 := 4:ws_bill_customer_sk:integer
+          │     │      ws_ext_list_price_601 := 25:ws_ext_list_price:decimal(7,2)
+          │     │      ws_sold_date_sk_610 := 34:ws_sold_date_sk:integer
+          │     │      ws_ext_discount_amt_598 := 22:ws_ext_discount_amt:decimal(7,2)
+          │     └─ LocalExchange[partitioning = SINGLE]
+          │        │   Layout: [c_customer_sk_556:integer, c_customer_id_557:varchar, c_first_name_564:varchar, c_last_name_565:varchar, c_preferred_cust_flag_566:varchar, c_birth_country_570:varchar, c_login_571:varchar, c_email_address_572:varchar, $hashvalue_703:bigint]
+          │        │   Estimates: {rows: 100000 (10.34MB), cpu: 0, memory: 0B, network: 0B}
+          │        └─ RemoteSource[sourceFragmentIds = [16]]
+          │               Layout: [c_customer_sk_556:integer, c_customer_id_557:varchar, c_first_name_564:varchar, c_last_name_565:varchar, c_preferred_cust_flag_566:varchar, c_birth_country_570:varchar, c_login_571:varchar, c_email_address_572:varchar, $hashvalue_704:bigint]
+          └─ LocalExchange[partitioning = SINGLE]
+             │   Layout: [d_date_sk_613:integer, d_year_619:integer, $hashvalue_707:bigint]
+             │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}
+             └─ RemoteSource[sourceFragmentIds = [17]]
+                    Layout: [d_date_sk_613:integer, d_year_619:integer, $hashvalue_708:bigint]
+
+Fragment 16 [SOURCE]
+    Output layout: [c_customer_sk_556, c_customer_id_557, c_first_name_564, c_last_name_565, c_preferred_cust_flag_566, c_birth_country_570, c_login_571, c_email_address_572, $hashvalue_705]
+    Output partitioning: BROADCAST []
+    ScanProject[table = iceberg:tpcds_sf1_iceberg.customer$data@139077337131383881]
+        Layout: [c_customer_sk_556:integer, c_customer_id_557:varchar, c_first_name_564:varchar, c_last_name_565:varchar, c_preferred_cust_flag_566:varchar, c_birth_country_570:varchar, c_login_571:varchar, c_email_address_572:varchar, $hashvalue_705:bigint]
+        Estimates: {rows: 100000 (10.34MB), cpu: 9.48M, memory: 0B, network: 0B}/{rows: 100000 (10.34MB), cpu: 10.34M, memory: 0B, network: 0B}
+        $hashvalue_705 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""c_customer_sk_556""), 0))
+        c_customer_sk_556 := 1:c_customer_sk:integer
+        c_preferred_cust_flag_566 := 11:c_preferred_cust_flag:varchar
+        c_login_571 := 16:c_login:varchar
+        c_first_name_564 := 9:c_first_name:varchar
+        c_birth_country_570 := 15:c_birth_country:varchar
+        c_email_address_572 := 17:c_email_address:varchar
+        c_customer_id_557 := 2:c_customer_id:varchar
+        c_last_name_565 := 10:c_last_name:varchar
+
+Fragment 17 [SOURCE]
+    Output layout: [d_date_sk_613, d_year_619, $hashvalue_709]
+    Output partitioning: BROADCAST []
+    ScanFilterProject[table = iceberg:tpcds_sf1_iceberg.date_dim$data@1154205875244276767, filterPredicate = (""d_year_619"" = 2002)]
+        Layout: [d_date_sk_613:integer, d_year_619:integer, $hashvalue_709:bigint]
+        Estimates: {rows: 73049 (1.32MB), cpu: 713.37k, memory: 0B, network: 0B}/{rows: ? (?), cpu: 713.37k, memory: 0B, network: 0B}/{rows: ? (?), cpu: ?, memory: 0B, network: 0B}
+        $hashvalue_709 := combine_hash(bigint '0', COALESCE(""$operator$hash_code""(""d_date_sk_613""), 0))
+        d_year_619 := 7:d_year:integer
+        d_date_sk_613 := 1:d_date_sk:integer
+
+"

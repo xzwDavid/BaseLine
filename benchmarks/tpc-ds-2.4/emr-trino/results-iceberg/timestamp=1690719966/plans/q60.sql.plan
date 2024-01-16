@@ -1,0 +1,225 @@
+"- Output[i_item_id, total_sales] => [expr_266:varchar, sum_274:decimal(38,2)]
+        i_item_id := expr_266 (40:9)
+        total_sales := sum_274 (40:20)
+    - TopN[100 by (expr_266 ASC_NULLS_LAST, sum_274 ASC_NULLS_LAST)] => [expr_266:varchar, sum_274:decimal(38,2)]
+        - LocalExchange[SINGLE] () => [expr_266:varchar, sum_274:decimal(38,2)]
+            - RemoteStreamingExchange[GATHER] => [expr_266:varchar, sum_274:decimal(38,2)]
+                - TopNPartial[100 by (expr_266 ASC_NULLS_LAST, sum_274 ASC_NULLS_LAST)] => [expr_266:varchar, sum_274:decimal(38,2)]
+                    - Project[projectLocality = LOCAL] => [expr_266:varchar, sum_274:decimal(38,2)]
+                        - Aggregate(FINAL)[expr_266][$hashvalue] => [expr_266:varchar, $hashvalue:bigint, sum_274:decimal(38,2)]
+                                sum_274 := ""presto.default.sum""((sum_284)) (40:20)
+                            - LocalExchange[HASH][$hashvalue] (expr_266) => [expr_266:varchar, sum_284:varbinary, $hashvalue:bigint]
+                                - Project[projectLocality = LOCAL] => [expr_266:varchar, sum_284:varbinary, $hashvalue_306:bigint]
+                                        $hashvalue_306 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(expr_266), BIGINT'0')) (46:11)
+                                    - Project[projectLocality = LOCAL] => [expr_266:varchar, sum_284:varbinary, $hashvalue_288:bigint]
+                                            expr_266 := i_item_id (46:11)
+                                        - Aggregate(PARTIAL)[i_item_id][$hashvalue_288] => [i_item_id:varchar, $hashvalue_288:bigint, sum_284:varbinary]
+                                                sum_284 := ""presto.default.sum""((sum)) (40:20)
+                                            - Aggregate(FINAL)[i_item_id][$hashvalue_288] => [i_item_id:varchar, $hashvalue_288:bigint, sum:decimal(38,2)]
+                                                    sum := ""presto.default.sum""((sum_285)) (5:22)
+                                                - LocalExchange[HASH][$hashvalue_288] (i_item_id) => [i_item_id:varchar, sum_285:varbinary, $hashvalue_288:bigint]
+                                                    - RemoteStreamingExchange[REPARTITION][$hashvalue_289] => [i_item_id:varchar, sum_285:varbinary, $hashvalue_289:bigint]
+                                                        - Aggregate(PARTIAL)[i_item_id][$hashvalue_302] => [i_item_id:varchar, $hashvalue_302:bigint, sum_285:varbinary]
+                                                                sum_285 := ""presto.default.sum""((ss_ext_sales_price)) (5:22)
+                                                            - FilterProject[filterPredicate = expr_27, projectLocality = LOCAL] => [i_item_id:varchar, ss_ext_sales_price:decimal(7,2), $hashvalue_302:bigint]
+                                                                - SemiJoin[i_item_id = i_item_id_2][$hashvalue_302, $hashvalue_303] => [ss_ext_sales_price:decimal(7,2), i_item_id:varchar, $hashvalue_302:bigint, expr_27:boolean]
+                                                                        Distribution: REPLICATED
+                                                                    - Project[projectLocality = LOCAL] => [ss_ext_sales_price:decimal(7,2), i_item_id:varchar, $hashvalue_302:bigint]
+                                                                            $hashvalue_302 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(i_item_id), BIGINT'0')) (8:19)
+                                                                        - InnerJoin[(""ss_item_sk"" = ""i_item_sk"")][$hashvalue_298, $hashvalue_299] => [ss_ext_sales_price:decimal(7,2), i_item_id:varchar]
+                                                                                Distribution: REPLICATED
+                                                                            - Project[projectLocality = LOCAL] => [ss_item_sk:integer, ss_ext_sales_price:decimal(7,2), $hashvalue_298:bigint]
+                                                                                    $hashvalue_298 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(ss_item_sk), BIGINT'0')) (6:11)
+                                                                                - InnerJoin[(""ss_addr_sk"" = ""ca_address_sk"")][$hashvalue_294, $hashvalue_295] => [ss_item_sk:integer, ss_ext_sales_price:decimal(7,2)]
+                                                                                        Distribution: REPLICATED
+                                                                                    - Project[projectLocality = LOCAL] => [ss_item_sk:integer, ss_addr_sk:integer, ss_ext_sales_price:decimal(7,2), $hashvalue_294:bigint]
+                                                                                            $hashvalue_294 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(ss_addr_sk), BIGINT'0')) (6:11)
+                                                                                        - InnerJoin[(""ss_sold_date_sk"" = ""d_date_sk"")][$hashvalue_290, $hashvalue_291] => [ss_item_sk:integer, ss_addr_sk:integer, ss_ext_sales_price:decimal(7,2)]
+                                                                                                Distribution: REPLICATED
+                                                                                            - ScanProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]', layout='Optional[tpcds_sf1_iceberg.store_sales$data@Optional[6526568472398842660]]'}, projectLocality = LOCAL] => [ss_item_sk:integer, ss_addr_sk:integer, ss_ext_sales_price:decimal(7,2), ss_sold_date_sk:integer, $hashvalue_290:bigint]
+                                                                                                    Estimates: {rows: 2750838 (188.89MB), cpu: 27630748.00, memory: 0.00, network: 0.00}/{rows: 2750838 (188.89MB), cpu: 80019038.00, memory: 0.00, network: 0.00}
+                                                                                                    $hashvalue_290 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(ss_sold_date_sk), BIGINT'0')) (6:11)
+                                                                                                    ss_ext_sales_price := 15:ss_ext_sales_price:decimal(7,2) (6:10)
+                                                                                                    ss_addr_sk := 6:ss_addr_sk:integer (6:10)
+                                                                                                    ss_sold_date_sk := 23:ss_sold_date_sk:integer (6:10)
+                                                                                                    ss_item_sk := 2:ss_item_sk:integer (6:10)
+                                                                                            - LocalExchange[HASH][$hashvalue_291] (d_date_sk) => [d_date_sk:integer, $hashvalue_291:bigint]
+                                                                                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                                - RemoteStreamingExchange[REPLICATE] => [d_date_sk:integer, $hashvalue_292:bigint]
+                                                                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                                    - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.date_dim$data@Optional[1154205875244276767]', layout='Optional[tpcds_sf1_iceberg.date_dim$data@Optional[1154205875244276767]]'}, filterPredicate = ((d_year) = (INTEGER'1998')) AND ((d_moy) = (INTEGER'9')), projectLocality = LOCAL] => [d_date_sk:integer, $hashvalue_293:bigint]
+                                                                                                            Estimates: {rows: 73049 (5.02MB), cpu: 321972.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 643944.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                                            $hashvalue_293 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(d_date_sk), BIGINT'0')) (6:23)
+                                                                                                            d_date_sk := 1:d_date_sk:integer (6:23)
+                                                                                                            d_year := 7:d_year:integer (6:23)
+                                                                                                            d_moy := 9:d_moy:integer (6:23)
+                                                                                    - LocalExchange[HASH][$hashvalue_295] (ca_address_sk) => [ca_address_sk:integer, $hashvalue_295:bigint]
+                                                                                            Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                        - RemoteStreamingExchange[REPLICATE] => [ca_address_sk:integer, $hashvalue_296:bigint]
+                                                                                                Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                            - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.customer_address$data@Optional[1405840002351874863]', layout='Optional[tpcds_sf1_iceberg.customer_address$data@Optional[1405840002351874863]]'}, filterPredicate = (ca_gmt_offset) = (DECIMAL'-5.00'), projectLocality = LOCAL] => [ca_address_sk:integer, $hashvalue_297:bigint]
+                                                                                                    Estimates: {rows: 50000 (3.43MB), cpu: 185943.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 371886.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                                    $hashvalue_297 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(ca_address_sk), BIGINT'0')) (6:33)
+                                                                                                    ca_address_sk := 1:ca_address_sk:integer (6:33)
+                                                                                                    ca_gmt_offset := 12:ca_gmt_offset:decimal(5,2) (6:33)
+                                                                            - LocalExchange[HASH][$hashvalue_299] (i_item_sk) => [i_item_sk:integer, i_item_id:varchar, $hashvalue_299:bigint]
+                                                                                    Estimates: {rows: 18000 (1.24MB), cpu: 848805.00, memory: 0.00, network: 673870.00}
+                                                                                - RemoteStreamingExchange[REPLICATE] => [i_item_sk:integer, i_item_id:varchar, $hashvalue_300:bigint]
+                                                                                        Estimates: {rows: 18000 (1.24MB), cpu: 511870.00, memory: 0.00, network: 673870.00}
+                                                                                    - ScanProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.item$data@Optional[8481639847816879046]', layout='Optional[tpcds_sf1_iceberg.item$data@Optional[8481639847816879046]]'}, projectLocality = LOCAL] => [i_item_sk:integer, i_item_id:varchar, $hashvalue_301:bigint]
+                                                                                            Estimates: {rows: 18000 (1.24MB), cpu: 174935.00, memory: 0.00, network: 0.00}/{rows: 18000 (1.24MB), cpu: 511870.00, memory: 0.00, network: 0.00}
+                                                                                            $hashvalue_301 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(i_item_sk), BIGINT'0')) (6:51)
+                                                                                            i_item_sk := 1:i_item_sk:integer (6:51)
+                                                                                            i_item_id := 2:i_item_id:varchar (6:51)
+                                                                    - LocalExchange[SINGLE] () => [i_item_id_2:varchar, $hashvalue_303:bigint]
+                                                                            Estimates: {rows: 8974 (630.98kB), cpu: 606375.44, memory: 0.00, network: 293074.89}
+                                                                        - RemoteStreamingExchange[REPLICATE] => [i_item_id_2:varchar, $hashvalue_304:bigint]
+                                                                                Estimates: {rows: 8974 (630.98kB), cpu: 606375.44, memory: 0.00, network: 293074.89}
+                                                                            - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.item$data@Optional[8481639847816879046]', layout='Optional[tpcds_sf1_iceberg.item$data@Optional[8481639847816879046]]'}, filterPredicate = (i_category_13) = (VARCHAR'Music'), projectLocality = LOCAL] => [i_item_id_2:varchar, $hashvalue_305:bigint]
+                                                                                    Estimates: {rows: 18000 (1.24MB), cpu: 229919.00, memory: 0.00, network: 0.00}/{rows: 8974 (630.98kB), cpu: 459838.00, memory: 0.00, network: 0.00}/{rows: 8974 (630.98kB), cpu: 606375.44, memory: 0.00, network: 0.00}
+                                                                                    $hashvalue_305 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(i_item_id_2), BIGINT'0')) (8:46)
+                                                                                    i_category_13 := 13:i_category:varchar (8:45)
+                                                                                    i_item_id_2 := 2:i_item_id:varchar (8:45)
+                                - Project[projectLocality = LOCAL] => [expr_266:varchar, sum_284:varbinary, $hashvalue_325:bigint]
+                                        $hashvalue_325 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(expr_266), BIGINT'0')) (46:11)
+                                    - Project[projectLocality = LOCAL] => [expr_266:varchar, sum_284:varbinary, $hashvalue_307:bigint]
+                                            expr_266 := i_item_id_86 (46:11)
+                                        - Aggregate(PARTIAL)[i_item_id_86][$hashvalue_307] => [i_item_id_86:varchar, $hashvalue_307:bigint, sum_284:varbinary]
+                                                sum_284 := ""presto.default.sum""((sum_139)) (40:20)
+                                            - Aggregate(FINAL)[i_item_id_86][$hashvalue_307] => [i_item_id_86:varchar, $hashvalue_307:bigint, sum_139:decimal(38,2)]
+                                                    sum_139 := ""presto.default.sum""((sum_286)) (17:22)
+                                                - LocalExchange[HASH][$hashvalue_307] (i_item_id_86) => [i_item_id_86:varchar, sum_286:varbinary, $hashvalue_307:bigint]
+                                                    - RemoteStreamingExchange[REPARTITION][$hashvalue_308] => [i_item_id_86:varchar, sum_286:varbinary, $hashvalue_308:bigint]
+                                                        - Aggregate(PARTIAL)[i_item_id_86][$hashvalue_321] => [i_item_id_86:varchar, $hashvalue_321:bigint, sum_286:varbinary]
+                                                                sum_286 := ""presto.default.sum""((cs_ext_sales_price)) (17:22)
+                                                            - FilterProject[filterPredicate = expr_135, projectLocality = LOCAL] => [i_item_id_86:varchar, cs_ext_sales_price:decimal(7,2), $hashvalue_321:bigint]
+                                                                - SemiJoin[i_item_id_86 = i_item_id_109][$hashvalue_321, $hashvalue_322] => [cs_ext_sales_price:decimal(7,2), i_item_id_86:varchar, $hashvalue_321:bigint, expr_135:boolean]
+                                                                        Distribution: REPLICATED
+                                                                    - Project[projectLocality = LOCAL] => [cs_ext_sales_price:decimal(7,2), i_item_id_86:varchar, $hashvalue_321:bigint]
+                                                                            $hashvalue_321 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(i_item_id_86), BIGINT'0')) (20:19)
+                                                                        - InnerJoin[(""cs_item_sk"" = ""i_item_sk_85"")][$hashvalue_317, $hashvalue_318] => [cs_ext_sales_price:decimal(7,2), i_item_id_86:varchar]
+                                                                                Distribution: REPLICATED
+                                                                            - Project[projectLocality = LOCAL] => [cs_item_sk:integer, cs_ext_sales_price:decimal(7,2), $hashvalue_317:bigint]
+                                                                                    $hashvalue_317 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(cs_item_sk), BIGINT'0')) (18:11)
+                                                                                - InnerJoin[(""cs_bill_addr_sk"" = ""ca_address_sk_72"")][$hashvalue_313, $hashvalue_314] => [cs_item_sk:integer, cs_ext_sales_price:decimal(7,2)]
+                                                                                        Distribution: REPLICATED
+                                                                                    - Project[projectLocality = LOCAL] => [cs_bill_addr_sk:integer, cs_item_sk:integer, cs_ext_sales_price:decimal(7,2), $hashvalue_313:bigint]
+                                                                                            $hashvalue_313 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(cs_bill_addr_sk), BIGINT'0')) (18:11)
+                                                                                        - InnerJoin[(""cs_sold_date_sk"" = ""d_date_sk_44"")][$hashvalue_309, $hashvalue_310] => [cs_bill_addr_sk:integer, cs_item_sk:integer, cs_ext_sales_price:decimal(7,2)]
+                                                                                                Distribution: REPLICATED
+                                                                                            - ScanProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.catalog_sales$data@Optional[7343679521195877483]', layout='Optional[tpcds_sf1_iceberg.catalog_sales$data@Optional[7343679521195877483]]'}, projectLocality = LOCAL] => [cs_bill_addr_sk:integer, cs_item_sk:integer, cs_ext_sales_price:decimal(7,2), cs_sold_date_sk:integer, $hashvalue_309:bigint]
+                                                                                                    Estimates: {rows: 1432680 (98.37MB), cpu: 15186023.00, memory: 0.00, network: 0.00}/{rows: 1432680 (98.37MB), cpu: 43266166.00, memory: 0.00, network: 0.00}
+                                                                                                    $hashvalue_309 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(cs_sold_date_sk), BIGINT'0')) (18:11)
+                                                                                                    cs_bill_addr_sk := 6:cs_bill_addr_sk:integer (18:10)
+                                                                                                    cs_ext_sales_price := 23:cs_ext_sales_price:decimal(7,2) (18:10)
+                                                                                                    cs_item_sk := 15:cs_item_sk:integer (18:10)
+                                                                                                    cs_sold_date_sk := 34:cs_sold_date_sk:integer (18:10)
+                                                                                            - LocalExchange[HASH][$hashvalue_310] (d_date_sk_44) => [d_date_sk_44:integer, $hashvalue_310:bigint]
+                                                                                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                                - RemoteStreamingExchange[REPLICATE] => [d_date_sk_44:integer, $hashvalue_311:bigint]
+                                                                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                                    - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.date_dim$data@Optional[1154205875244276767]', layout='Optional[tpcds_sf1_iceberg.date_dim$data@Optional[1154205875244276767]]'}, filterPredicate = ((d_year_50) = (INTEGER'1998')) AND ((d_moy_52) = (INTEGER'9')), projectLocality = LOCAL] => [d_date_sk_44:integer, $hashvalue_312:bigint]
+                                                                                                            Estimates: {rows: 73049 (5.02MB), cpu: 321972.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 643944.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                                            $hashvalue_312 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(d_date_sk_44), BIGINT'0')) (18:25)
+                                                                                                            d_moy_52 := 9:d_moy:integer (18:25)
+                                                                                                            d_date_sk_44 := 1:d_date_sk:integer (18:25)
+                                                                                                            d_year_50 := 7:d_year:integer (18:25)
+                                                                                    - LocalExchange[HASH][$hashvalue_314] (ca_address_sk_72) => [ca_address_sk_72:integer, $hashvalue_314:bigint]
+                                                                                            Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                        - RemoteStreamingExchange[REPLICATE] => [ca_address_sk_72:integer, $hashvalue_315:bigint]
+                                                                                                Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                            - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.customer_address$data@Optional[1405840002351874863]', layout='Optional[tpcds_sf1_iceberg.customer_address$data@Optional[1405840002351874863]]'}, filterPredicate = (ca_gmt_offset_83) = (DECIMAL'-5.00'), projectLocality = LOCAL] => [ca_address_sk_72:integer, $hashvalue_316:bigint]
+                                                                                                    Estimates: {rows: 50000 (3.43MB), cpu: 185943.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 371886.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                                    $hashvalue_316 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(ca_address_sk_72), BIGINT'0')) (18:35)
+                                                                                                    ca_address_sk_72 := 1:ca_address_sk:integer (18:35)
+                                                                                                    ca_gmt_offset_83 := 12:ca_gmt_offset:decimal(5,2) (18:35)
+                                                                            - LocalExchange[HASH][$hashvalue_318] (i_item_sk_85) => [i_item_sk_85:integer, i_item_id_86:varchar, $hashvalue_318:bigint]
+                                                                                    Estimates: {rows: 18000 (1.24MB), cpu: 848805.00, memory: 0.00, network: 673870.00}
+                                                                                - RemoteStreamingExchange[REPLICATE] => [i_item_sk_85:integer, i_item_id_86:varchar, $hashvalue_319:bigint]
+                                                                                        Estimates: {rows: 18000 (1.24MB), cpu: 511870.00, memory: 0.00, network: 673870.00}
+                                                                                    - ScanProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.item$data@Optional[8481639847816879046]', layout='Optional[tpcds_sf1_iceberg.item$data@Optional[8481639847816879046]]'}, projectLocality = LOCAL] => [i_item_sk_85:integer, i_item_id_86:varchar, $hashvalue_320:bigint]
+                                                                                            Estimates: {rows: 18000 (1.24MB), cpu: 174935.00, memory: 0.00, network: 0.00}/{rows: 18000 (1.24MB), cpu: 511870.00, memory: 0.00, network: 0.00}
+                                                                                            $hashvalue_320 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(i_item_sk_85), BIGINT'0')) (18:53)
+                                                                                            i_item_sk_85 := 1:i_item_sk:integer (18:53)
+                                                                                            i_item_id_86 := 2:i_item_id:varchar (18:53)
+                                                                    - LocalExchange[SINGLE] () => [i_item_id_109:varchar, $hashvalue_322:bigint]
+                                                                            Estimates: {rows: 8974 (630.98kB), cpu: 606375.44, memory: 0.00, network: 293074.89}
+                                                                        - RemoteStreamingExchange[REPLICATE] => [i_item_id_109:varchar, $hashvalue_323:bigint]
+                                                                                Estimates: {rows: 8974 (630.98kB), cpu: 606375.44, memory: 0.00, network: 293074.89}
+                                                                            - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.item$data@Optional[8481639847816879046]', layout='Optional[tpcds_sf1_iceberg.item$data@Optional[8481639847816879046]]'}, filterPredicate = (i_category_120) = (VARCHAR'Music'), projectLocality = LOCAL] => [i_item_id_109:varchar, $hashvalue_324:bigint]
+                                                                                    Estimates: {rows: 18000 (1.24MB), cpu: 229919.00, memory: 0.00, network: 0.00}/{rows: 8974 (630.98kB), cpu: 459838.00, memory: 0.00, network: 0.00}/{rows: 8974 (630.98kB), cpu: 606375.44, memory: 0.00, network: 0.00}
+                                                                                    $hashvalue_324 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(i_item_id_109), BIGINT'0')) (20:46)
+                                                                                    i_category_120 := 13:i_category:varchar (20:45)
+                                                                                    i_item_id_109 := 2:i_item_id:varchar (20:45)
+                                - Project[projectLocality = LOCAL] => [expr_266:varchar, sum_284:varbinary, $hashvalue_344:bigint]
+                                        $hashvalue_344 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(expr_266), BIGINT'0')) (46:11)
+                                    - Project[projectLocality = LOCAL] => [expr_266:varchar, sum_284:varbinary, $hashvalue_326:bigint]
+                                            expr_266 := i_item_id_198 (46:11)
+                                        - Aggregate(PARTIAL)[i_item_id_198][$hashvalue_326] => [i_item_id_198:varchar, $hashvalue_326:bigint, sum_284:varbinary]
+                                                sum_284 := ""presto.default.sum""((sum_251)) (40:20)
+                                            - Aggregate(FINAL)[i_item_id_198][$hashvalue_326] => [i_item_id_198:varchar, $hashvalue_326:bigint, sum_251:decimal(38,2)]
+                                                    sum_251 := ""presto.default.sum""((sum_287)) (29:22)
+                                                - LocalExchange[HASH][$hashvalue_326] (i_item_id_198) => [i_item_id_198:varchar, sum_287:varbinary, $hashvalue_326:bigint]
+                                                    - RemoteStreamingExchange[REPARTITION][$hashvalue_327] => [i_item_id_198:varchar, sum_287:varbinary, $hashvalue_327:bigint]
+                                                        - Aggregate(PARTIAL)[i_item_id_198][$hashvalue_340] => [i_item_id_198:varchar, $hashvalue_340:bigint, sum_287:varbinary]
+                                                                sum_287 := ""presto.default.sum""((ws_ext_sales_price)) (29:22)
+                                                            - FilterProject[filterPredicate = expr_247, projectLocality = LOCAL] => [i_item_id_198:varchar, ws_ext_sales_price:decimal(7,2), $hashvalue_340:bigint]
+                                                                - SemiJoin[i_item_id_198 = i_item_id_221][$hashvalue_340, $hashvalue_341] => [ws_ext_sales_price:decimal(7,2), i_item_id_198:varchar, $hashvalue_340:bigint, expr_247:boolean]
+                                                                        Distribution: REPLICATED
+                                                                    - Project[projectLocality = LOCAL] => [ws_ext_sales_price:decimal(7,2), i_item_id_198:varchar, $hashvalue_340:bigint]
+                                                                            $hashvalue_340 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(i_item_id_198), BIGINT'0')) (32:19)
+                                                                        - InnerJoin[(""ws_item_sk"" = ""i_item_sk_197"")][$hashvalue_336, $hashvalue_337] => [ws_ext_sales_price:decimal(7,2), i_item_id_198:varchar]
+                                                                                Distribution: REPLICATED
+                                                                            - Project[projectLocality = LOCAL] => [ws_item_sk:integer, ws_ext_sales_price:decimal(7,2), $hashvalue_336:bigint]
+                                                                                    $hashvalue_336 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(ws_item_sk), BIGINT'0')) (30:11)
+                                                                                - InnerJoin[(""ws_bill_addr_sk"" = ""ca_address_sk_184"")][$hashvalue_332, $hashvalue_333] => [ws_item_sk:integer, ws_ext_sales_price:decimal(7,2)]
+                                                                                        Distribution: REPLICATED
+                                                                                    - Project[projectLocality = LOCAL] => [ws_item_sk:integer, ws_bill_addr_sk:integer, ws_ext_sales_price:decimal(7,2), $hashvalue_332:bigint]
+                                                                                            $hashvalue_332 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(ws_bill_addr_sk), BIGINT'0')) (30:11)
+                                                                                        - InnerJoin[(""ws_sold_date_sk"" = ""d_date_sk_156"")][$hashvalue_328, $hashvalue_329] => [ws_item_sk:integer, ws_bill_addr_sk:integer, ws_ext_sales_price:decimal(7,2)]
+                                                                                                Distribution: REPLICATED
+                                                                                            - ScanProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.web_sales$data@Optional[7618567712963574495]', layout='Optional[tpcds_sf1_iceberg.web_sales$data@Optional[7618567712963574495]]'}, projectLocality = LOCAL] => [ws_item_sk:integer, ws_bill_addr_sk:integer, ws_ext_sales_price:decimal(7,2), ws_sold_date_sk:integer, $hashvalue_328:bigint]
+                                                                                                    Estimates: {rows: 718760 (49.35MB), cpu: 7735370.00, memory: 0.00, network: 0.00}/{rows: 718760 (49.35MB), cpu: 21939580.00, memory: 0.00, network: 0.00}
+                                                                                                    $hashvalue_328 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(ws_sold_date_sk), BIGINT'0')) (30:11)
+                                                                                                    ws_item_sk := 3:ws_item_sk:integer (30:10)
+                                                                                                    ws_sold_date_sk := 34:ws_sold_date_sk:integer (30:10)
+                                                                                                    ws_bill_addr_sk := 7:ws_bill_addr_sk:integer (30:10)
+                                                                                                    ws_ext_sales_price := 23:ws_ext_sales_price:decimal(7,2) (30:10)
+                                                                                            - LocalExchange[HASH][$hashvalue_329] (d_date_sk_156) => [d_date_sk_156:integer, $hashvalue_329:bigint]
+                                                                                                    Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                                - RemoteStreamingExchange[REPLICATE] => [d_date_sk_156:integer, $hashvalue_330:bigint]
+                                                                                                        Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                                    - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.date_dim$data@Optional[1154205875244276767]', layout='Optional[tpcds_sf1_iceberg.date_dim$data@Optional[1154205875244276767]]'}, filterPredicate = ((d_year_162) = (INTEGER'1998')) AND ((d_moy_164) = (INTEGER'9')), projectLocality = LOCAL] => [d_date_sk_156:integer, $hashvalue_331:bigint]
+                                                                                                            Estimates: {rows: 73049 (5.02MB), cpu: 321972.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 643944.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                                            $hashvalue_331 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(d_date_sk_156), BIGINT'0')) (30:21)
+                                                                                                            d_moy_164 := 9:d_moy:integer (30:21)
+                                                                                                            d_date_sk_156 := 1:d_date_sk:integer (30:21)
+                                                                                                            d_year_162 := 7:d_year:integer (30:21)
+                                                                                    - LocalExchange[HASH][$hashvalue_333] (ca_address_sk_184) => [ca_address_sk_184:integer, $hashvalue_333:bigint]
+                                                                                            Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                        - RemoteStreamingExchange[REPLICATE] => [ca_address_sk_184:integer, $hashvalue_334:bigint]
+                                                                                                Estimates: {rows: ? (?), cpu: ?, memory: 0.00, network: ?}
+                                                                                            - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.customer_address$data@Optional[1405840002351874863]', layout='Optional[tpcds_sf1_iceberg.customer_address$data@Optional[1405840002351874863]]'}, filterPredicate = (ca_gmt_offset_195) = (DECIMAL'-5.00'), projectLocality = LOCAL] => [ca_address_sk_184:integer, $hashvalue_335:bigint]
+                                                                                                    Estimates: {rows: 50000 (3.43MB), cpu: 185943.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: 371886.00, memory: 0.00, network: 0.00}/{rows: ? (?), cpu: ?, memory: 0.00, network: 0.00}
+                                                                                                    $hashvalue_335 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(ca_address_sk_184), BIGINT'0')) (30:31)
+                                                                                                    ca_address_sk_184 := 1:ca_address_sk:integer (30:31)
+                                                                                                    ca_gmt_offset_195 := 12:ca_gmt_offset:decimal(5,2) (30:31)
+                                                                            - LocalExchange[HASH][$hashvalue_337] (i_item_sk_197) => [i_item_sk_197:integer, i_item_id_198:varchar, $hashvalue_337:bigint]
+                                                                                    Estimates: {rows: 18000 (1.24MB), cpu: 848805.00, memory: 0.00, network: 673870.00}
+                                                                                - RemoteStreamingExchange[REPLICATE] => [i_item_sk_197:integer, i_item_id_198:varchar, $hashvalue_338:bigint]
+                                                                                        Estimates: {rows: 18000 (1.24MB), cpu: 511870.00, memory: 0.00, network: 673870.00}
+                                                                                    - ScanProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.item$data@Optional[8481639847816879046]', layout='Optional[tpcds_sf1_iceberg.item$data@Optional[8481639847816879046]]'}, projectLocality = LOCAL] => [i_item_sk_197:integer, i_item_id_198:varchar, $hashvalue_339:bigint]
+                                                                                            Estimates: {rows: 18000 (1.24MB), cpu: 174935.00, memory: 0.00, network: 0.00}/{rows: 18000 (1.24MB), cpu: 511870.00, memory: 0.00, network: 0.00}
+                                                                                            $hashvalue_339 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(i_item_sk_197), BIGINT'0')) (30:49)
+                                                                                            i_item_sk_197 := 1:i_item_sk:integer (30:49)
+                                                                                            i_item_id_198 := 2:i_item_id:varchar (30:49)
+                                                                    - LocalExchange[SINGLE] () => [i_item_id_221:varchar, $hashvalue_341:bigint]
+                                                                            Estimates: {rows: 8974 (630.98kB), cpu: 606375.44, memory: 0.00, network: 293074.89}
+                                                                        - RemoteStreamingExchange[REPLICATE] => [i_item_id_221:varchar, $hashvalue_342:bigint]
+                                                                                Estimates: {rows: 8974 (630.98kB), cpu: 606375.44, memory: 0.00, network: 293074.89}
+                                                                            - ScanFilterProject[table = TableHandle {connectorId='iceberg', connectorHandle='tpcds_sf1_iceberg.item$data@Optional[8481639847816879046]', layout='Optional[tpcds_sf1_iceberg.item$data@Optional[8481639847816879046]]'}, filterPredicate = (i_category_232) = (VARCHAR'Music'), projectLocality = LOCAL] => [i_item_id_221:varchar, $hashvalue_343:bigint]
+                                                                                    Estimates: {rows: 18000 (1.24MB), cpu: 229919.00, memory: 0.00, network: 0.00}/{rows: 8974 (630.98kB), cpu: 459838.00, memory: 0.00, network: 0.00}/{rows: 8974 (630.98kB), cpu: 606375.44, memory: 0.00, network: 0.00}
+                                                                                    $hashvalue_343 := combine_hash(BIGINT'0', COALESCE($operator$hash_code(i_item_id_221), BIGINT'0')) (32:46)
+                                                                                    i_category_232 := 13:i_category:varchar (32:45)
+                                                                                    i_item_id_221 := 2:i_item_id:varchar (32:45)
+"

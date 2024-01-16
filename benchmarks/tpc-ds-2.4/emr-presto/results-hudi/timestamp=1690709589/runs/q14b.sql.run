@@ -1,0 +1,5 @@
+SET SESSION
+
+[33mWARNING: Number of stages in the query (72) exceeds the soft limit (50). If the query contains multiple DISTINCTs, please set the 'use_mark_distinct' session property to false. If the query contains multiple CTEs that are referenced more than once, please create temporary table(s) for one or more of the CTEs.[39m
+Query 20230730_090154_00043_9xs9c failed: Query exceeded maximum time limit of 15.00m
+

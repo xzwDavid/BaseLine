@@ -9,6 +9,4 @@ In benchmarks/tpc-ds-2.4/emr-presto folder, run presto-benchmark.py (note: use p
 The result will be outputed in "results_dir" in presto-benchmark.py.  
 Trino and Delta are the same.
 ## Data training
-coming~
 ## Data prediction
-coming~
